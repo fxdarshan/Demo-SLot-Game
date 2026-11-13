@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nesting Dolls Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Lilita+One&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app" id="app">
+  <main class="stage-wrap" id="wrap">
+    <canvas id="stage" aria-label="Slot game"></canvas>
+  </main>
+
+  <aside class="panel" id="panel">
+    <header>
+      <h1>Demo controls</h1>
+      <button id="hidePanel" class="ghost small" title="Hide panel (D)">Hide</button>
+    </header>
+    <div class="scroll">
+      <section>
+        <h2>Next spins</h2>
+        <p class="hint">Spins play these outcomes in order (free spins too). An empty list spins at random.</p>
+        <ol id="queue" class="queue"></ol>
+        <div class="row">
+          <button id="playQueue" class="primary">Play list</button>
+          <button id="spin">Spin once</button>
+          <span class="grow"></span>
+          <button id="clearQueue" class="ghost small">Clear</button>
+        </div>
+        <div class="adds" id="adds"></div>
+      </section>
+
+      <section>
+        <h2>Custom grid</h2>
+        <p class="hint">Pick a symbol and click cells. The Wild Egg can only sit on reel 3.</p>
+        <div id="palette" class="palette"></div>
+        <div id="gridEd" class="grid-ed"></div>
+        <div class="row">
+          <label class="f">Bear if the egg hatches
+            <select id="edBear"><option value="">Random</option><option value="scare">Scare Bear</option><option value="charm">Charm Bear</option><option value="dance">Dance Bear</option></select>
+          </label>
+        </div>
+        <p id="edInfo" class="info"></p>
+        <div class="row"><button id="addCustom" class="small">Add to list</button><button id="copyBoard" class="ghost small">Copy current reels</button></div>
+      </section>
+
+      <section>
+        <h2>Record video</h2>
+        <div class="row">
+          <select id="recMode" aria-label="Recording mode">
+            <option value="spin">Next spin</option>
+            <option value="queue">Whole list</option>
+            <option value="manual">Manual start / stop</option>
+          </select>
+          <button id="rec" class="rec">● Record</button>
+          <span id="recTime" class="mono"></span>
+        </div>
+        <div id="recOut"></div>
+      </section>
+
+      <section>
+        <h2>Speed</h2>
+        <label class="f">Presentation speed <output id="speedOut">1×</output>
+          <input type="range" id="speed" min="0.5" max="3" step="0.25" value="1">
+        </label>
+      </section>
+
+      <section>
+        <h2>Assets</h2>
+        <p id="assetInfo" class="hint"></p>
+        <details><summary>Files still using placeholders</summary><ul id="assetList" class="mono small-list"></ul></details>
+      </section>
+    </div>
+  </aside>
+  <button id="showPanel" class="show-panel" hidden>Demo controls</button>
+</div>
+
+<script src="src/config.js"></script>
+<script src="assets/manifest.js"></script>
+<script src="src/engine.js"></script>
+<script src="src/director.js"></script>
+<script src="src/placeholders.js"></script>
+<script src="src/assets.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/game.js"></script>
+<script src="src/devpanel.js"></script>
+</body>
+</html>
