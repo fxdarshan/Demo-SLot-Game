@@ -26,7 +26,7 @@
     if (!G.queue.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'Empty: spins are random.'; q.appendChild(li); }
     G.queue.forEach((it, i) => {
       const o = OUT[it.type] || OUT.random, li = document.createElement('li');
-      li.innerHTML = `<span class="lbl"><span class="dot" style="background:${o.color}"></span>${o.label}${it.bear ? ' · ' + it.bear : ''}</span>`;
+      li.innerHTML = `<span class="lbl"><span class="dot" style="background:${o.color}"></span>${root.Director.describe(it, C)}${it.bear ? ' · ' + it.bear : ''}</span>`;
       const up = document.createElement('button'); up.textContent = '↑'; up.title = 'Move up'; up.disabled = i === 0;
       up.onclick = () => { [G.queue[i - 1], G.queue[i]] = [G.queue[i], G.queue[i - 1]]; renderQueue(); };
       const rm = document.createElement('button'); rm.textContent = '✕'; rm.title = 'Remove';
@@ -39,6 +39,9 @@
     const b = document.createElement('button'); b.innerHTML = `<span class="dot" style="background:${OUT[k].color}"></span>${OUT[k].label}`;
     b.onclick = () => { G.queue.push({ type: k }); renderQueue(); }; adds.appendChild(b);
   });
+  // symbol win: pick a symbol and a line length from the dropdowns, add it to the list
+  $('#swSym').innerHTML = Object.entries(C.symbolNames).filter(([k]) => k >= 0 && k <= 6).sort((a, b) => a[0] - b[0]).map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
+  $('#swAdd').onclick = () => { G.queue.push({ type: 'symwin', sym: Number($('#swSym').value), len: Number($('#swLen').value) }); renderQueue(); };
   $('#clearQueue').onclick = () => { G.queue = []; renderQueue(); };
   $('#playQueue').onclick = () => { if (G.autoplay) { G.autoplay = false; update(); } else if (!G.busy) root.Game.playQueue(); };
   $('#spin').onclick = () => root.Game.play();

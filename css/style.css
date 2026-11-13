@@ -141,3 +141,13 @@ details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
 @keyframes sp-halo { 0%, 100% { opacity: .55; transform: scale(.95); } 50% { opacity: .85; transform: scale(1.08); } }
 @keyframes sp-sheen { from { transform: translateX(-100%) skewX(-20deg); } to { transform: translateX(250%) skewX(-20deg); } }
 @keyframes sp-rot { to { transform: rotate(360deg); } }
+
+/* symbol-win dropdowns (cheat menu and demo panel) */
+.cheat-menu .symrow { display: flex; gap: 6px; flex-wrap: wrap; padding-top: 2px; }
+.cheat-menu .symrow select { flex: 1 1 110px; min-width: 0; }
+.panel .inline { display: flex; gap: 6px; margin-top: 4px; }
+.panel .inline select { flex: 1; min-width: 0; }
+.cheat-menu .scnote { display: block; color: var(--muted); font-size: 12px; margin-top: 6px; }
+.cheat-menu .symrow .link { padding: 5px 9px; font-size: 12px; background: transparent; }
+.panel .symrow { display: flex; }
+.panel .symrow select { flex: 1; min-width: 0; }

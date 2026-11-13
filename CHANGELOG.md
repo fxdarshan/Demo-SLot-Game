@@ -2,6 +2,12 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Symbol win cheat and dropdowns
+- **Symbol win cheat:** pick any symbol (Santa to Gift Egg) and 3, 4 or 5 in a row from two dropdowns, then **Force next spin** or **Play now**. The board puts that symbol on the middle payline and the director only accepts boards where it is the win. Real engine results, maths unchanged. Handy for checking Santa's sprite animation and each symbol's win.
+- The same dropdowns are in the demo panel's **Next spins** section (**Add to list**), where queue items read for example "Elf win, 4 in a row".
+- **Dropdowns instead of long lists:** the cheat menu's scenarios are now one dropdown with Play and Link, and the demo panel's scenarios a dropdown with **Load into list** and **Play**. The whole cheat menu now fits on screen. Hotkeys are unchanged.
+- New director outcome `symwin` (`{ sym, len }`) and `Director.describe(item)`, which names queue items.
+
 ## 2026-11-13: Santa win animation (sprite sheet)
 - Santa (`sym_00`) now plays the supplied 12-frame sprite sheet (4 × 3: laugh with "Haha!", a jump with dust, a gold sparkle swirl, settle) whenever he is in a winning line, instead of the generic scale pulse.
 - It runs over the whole 45-tick win window (`CONFIG.frames.symWin` 10 + 20 + 15 = 1.5 s at 30 fps). The 12 frames are held for `[3,3,4,4,3,3,5,4,4,4,5,3]` ticks (36 + 9 extra on the key poses), so the animation always ends with the win and Santa returns to his idle art. The speed slider scales it with everything else.

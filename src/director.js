@@ -22,6 +22,7 @@
     b_mega:        { label: 'MEGA banner (shown amount)',        color: '#f2b632', cheat: true },
     b_superb:      { label: 'SUPERB banner (shown amount)',      color: '#3fcf7a', cheat: true },
     b_sensational: { label: 'SENSATIONAL banner (shown amount)', color: '#b46cff', cheat: true },
+    symwin:   { label: 'Symbol win',              color: '#7ad06a' },   // item.sym 0-6, item.len 3-5
     custom:   { label: 'Custom grid',             color: '#2fd0c0' }
   };
 
@@ -98,6 +99,24 @@
         case 'ghost':
           return search(r => { const w = wipeOf(r); return (w && w.special) || false; },
             () => ({ grid: uniformGrid([0, 0, 0, 0, 0, 0, 1], fs || Math.random() < .3), opts: noBear }), 8000);
+        case 'symwin': {
+          // the chosen symbol on the middle payline, len in a row; only boards where that symbol is the win
+          const s = item.sym == null ? 0 : item.sym, n = Math.max(3, Math.min(5, item.len || 3));
+          const make = () => {
+            const g = engine.randomGrid({ allowWild: false });
+            for (let c = 0; c < C.reels; c++) {
+              if (c < n) g[c][1] = s;
+              else if (g[c][1] === s) g[c][1] = (s + 1 + rnd(6)) % 7;     // end the line exactly at n
+            }
+            if (forceWild) g[C.wildReel][0] = W;
+            return { grid: g, opts: noBear };
+          };
+          return search(r => {
+            const w = r.steps.find(x => x.type === 'win');
+            if (!w || wipeOf(r) || !w.wins.some(x => x.sym === s && x.count === n)) return 0;
+            return w.wins.every(x => x.sym === s) ? true : .5;
+          }, make, 4000);
+        }
         case 'custom': {
           const g = item.grid.map(col => col.slice());
           if (forceWild && !g[C.wildReel].includes(W)) g[C.wildReel][1] = W;
@@ -111,7 +130,17 @@
     return { build };
   }
 
-  const Director = { create, OUTCOMES };
+  // readable name of a queued item, e.g. "Elf win, 4 in a row"
+  function describe(item, CONFIG) {
+    const o = OUTCOMES[item.type] || OUTCOMES.random;
+    if (item.type === 'symwin') {
+      const names = (CONFIG && CONFIG.symbolNames) || {};
+      return `${names[item.sym == null ? 0 : item.sym] || 'Symbol'} win, ${item.len || 3} in a row`;
+    }
+    return o.label;
+  }
+
+  const Director = { create, OUTCOMES, describe };
   if (typeof module !== 'undefined' && module.exports) module.exports = Director;
   else root.Director = Director;
 })(typeof window !== 'undefined' ? window : globalThis);

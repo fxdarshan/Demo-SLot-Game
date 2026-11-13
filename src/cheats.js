@@ -7,6 +7,7 @@
  *   S / M / A  Scare Bear large / medium / small
  *   H          Charm Bear          U  upgrade chain      W  Wipe        G  Ghost (100x)
  *   X          single win          N  no win             0  clear forced spins
+ *   Symbol win dropdown (in the menu): pick a symbol and 3, 4 or 5 in a row, then Force next spin or Play now.
  *   Space      spin
  * (*) MEGA, SUPERB and SENSATIONAL are presentation cheats: a single spin tops out at
  *     about 34x under the rules, so a real big-win board is shown with an amount in
@@ -46,14 +47,19 @@
     ['W', 'wipe', 'Wipe'], ['G', 'ghost', 'Ghost (100×)'], ['X', 'small', 'Single win'], ['N', 'nowin', 'No win']
   ];
   const KEYMAP = Object.fromEntries(HOTKEYS.map(([k, t]) => [k.toLowerCase(), t]));
-  const label = t => (OUT[t] || { label: t }).label;
+  const label = t => (typeof t === 'string' ? (OUT[t] || { label: t }).label : root.Director.describe(t, Game.C));
 
   /* ---------------- actions ---------------- */
   function forceNext(type) {
-    G.queue.unshift({ type, cheat: true });
+    const item = typeof type === 'string' ? { type, cheat: true } : Object.assign({ cheat: true }, type);
+    G.queue.unshift(item);
     G.onChange();
-    note(`Next spin: ${label(type)}`);
+    note(`Next spin: ${label(item)}`);
   }
+  // symbol win: the chosen symbol, len in a row (3-5), on the middle payline
+  const symWin = (sym, len) => ({ type: 'symwin', sym: Number(sym), len: Number(len) });
+  const symbolOptions = () => Object.entries(Game.C.symbolNames).filter(([k]) => k >= 0 && k <= 6).sort((a, b) => a[0] - b[0])
+    .map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
   function playScenario(id, opts = {}) {
     const sc = SCENARIOS.find(s => s.id === id); if (!sc) return false;
     G.queue = sc.items.map(type => ({ type, cheat: true }));
@@ -81,22 +87,30 @@
   function renderMenu() {
     menu.innerHTML = `
       <header><b>Cheats</b><span>Forced spins play before anything else. Space spins.</span><button class="x" aria-label="Close">✕</button></header>
-      <section><h4>Play a scenario</h4><div class="sc"></div></section>
+      <section><h4>Play a scenario</h4>
+        <div class="symrow"><select class="scsel" aria-label="Scenario"></select><button class="play sc-play">Play</button><button class="link sc-link" title="Copy a link that opens this scenario">Link</button></div>
+        <small class="scnote"></small></section>
+      <section><h4>Symbol win</h4>
+        <div class="symrow">
+          <select class="sym" aria-label="Symbol">${symbolOptions()}</select>
+          <select class="len" aria-label="In a row"><option value="3">3 in a row</option><option value="4">4 in a row</option><option value="5">5 in a row</option></select>
+          <button class="sw-force">Force next spin</button><button class="play sw-now">Play now</button>
+        </div></section>
       <section><h4>Force the next spin</h4><div class="keys"></div></section>
       <footer><span class="pending"></span><button class="clear">Clear forced (0)</button></footer>
       <p class="fine">* Presentation cheat: a real big-win board with an amount in that banner's range. A single spin can't reach these tiers under the rules.</p>`;
     menu.querySelector('.x').onclick = () => toggle(false);
     menu.querySelector('.clear').onclick = clearForced;
-    const sc = menu.querySelector('.sc');
-    SCENARIOS.forEach(s => {
-      const row = document.createElement('div'); row.className = 'row';
-      row.innerHTML = `<div class="t"><b>${s.label}</b><small>${s.note}</small></div>`;
-      const play = document.createElement('button'); play.className = 'play'; play.textContent = 'Play';
-      play.onclick = () => { toggle(false); playScenario(s.id); };
-      const link = document.createElement('button'); link.className = 'link'; link.textContent = 'Link'; link.title = 'Copy a link that opens this scenario';
-      link.onclick = () => { const u = linkFor(s.id); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => note('Link copied'), () => note(u)); };
-      row.append(play, link); sc.appendChild(row);
-    });
+    const pick = () => symWin(menu.querySelector('.sym').value, menu.querySelector('.len').value);
+    menu.querySelector('.sw-force').onclick = () => forceNext(pick());
+    menu.querySelector('.sw-now').onclick = () => { forceNext(pick()); if (!G.busy) { toggle(false); Game.play(); } };
+    const scsel = menu.querySelector('.scsel'), scnote = menu.querySelector('.scnote');
+    scsel.innerHTML = SCENARIOS.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+    const cur = () => SCENARIOS.find(s => s.id === scsel.value);
+    const showNote = () => { scnote.textContent = cur().note; };
+    scsel.onchange = showNote; showNote();
+    menu.querySelector('.sc-play').onclick = () => { toggle(false); playScenario(cur().id); };
+    menu.querySelector('.sc-link').onclick = () => { const u = linkFor(cur().id); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => note('Link copied'), () => note(u)); };
     const keys = menu.querySelector('.keys');
     HOTKEYS.forEach(([k, t, short]) => {
       const b = document.createElement('button'); b.innerHTML = `<kbd>${k}</kbd>${short}`; b.title = label(t); b.onclick = () => forceNext(t);
@@ -108,22 +122,25 @@
     const n = G.queue.filter(q => q.cheat).length, next = G.queue[0];
     const p = menu.querySelector('.pending'); if (p) p.textContent = n ? `${n} forced spin${n > 1 ? 's' : ''} queued` : 'No forced spins';
     chip.hidden = !(next && next.cheat);
-    if (next && next.cheat) chip.textContent = `Next: ${label(next.type)}${n > 1 ? `  (+${n - 1} more)` : ''}`;
+    if (next && next.cheat) chip.textContent = `Next: ${label(next)}${n > 1 ? `  (+${n - 1} more)` : ''}`;
   }
   const prevChange = G.onChange;
   G.onChange = () => { prevChange(); renderPending(); };
 
   /* ---------------- demo panel: scenario list with Load / Play ---------------- */
   const panelList = $('#scenarios');
-  if (panelList) SCENARIOS.forEach(s => {
-    const row = document.createElement('div'); row.className = 'scen';
-    row.innerHTML = `<span title="${s.note}">${s.label}</span>`;
-    const load = document.createElement('button'); load.className = 'ghost small'; load.textContent = 'Load'; load.title = 'Put this scenario in the list (for recording)';
-    load.onclick = () => playScenario(s.id, { load: true });
-    const play = document.createElement('button'); play.className = 'small'; play.textContent = 'Play';
-    play.onclick = () => playScenario(s.id);
-    row.append(load, play); panelList.appendChild(row);
-  });
+  if (panelList) {
+    panelList.innerHTML = `<div class="symrow"><select id="scPanelSel" aria-label="Scenario"></select></div>
+      <p class="hint" id="scPanelNote"></p>
+      <div class="row"><button class="ghost small" id="scPanelLoad" title="Put this scenario in the list (for recording)">Load into list</button><button class="small" id="scPanelPlay">Play</button></div>`;
+    const sel = $('#scPanelSel');
+    sel.innerHTML = SCENARIOS.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+    const cur = () => SCENARIOS.find(s => s.id === sel.value);
+    const showNote = () => { $('#scPanelNote').textContent = cur().note; };
+    sel.onchange = showNote; showNote();
+    $('#scPanelLoad').onclick = () => playScenario(cur().id, { load: true });
+    $('#scPanelPlay').onclick = () => playScenario(cur().id);
+  }
 
   /* ---------------- hotkeys ---------------- */
   document.addEventListener('keydown', e => {
@@ -141,7 +158,7 @@
     const h = (location.hash.match(/^#scenario-([a-z0-9-]+)$/) || [])[1];
     return q || h;
   }
-  root.Cheats = { SCENARIOS, HOTKEYS, forceNext, playScenario, clearForced, toggle };
+  root.Cheats = { SCENARIOS, HOTKEYS, forceNext, symWin, playScenario, clearForced, toggle };
   renderMenu();
   const want = fromUrl();
   if (want) {

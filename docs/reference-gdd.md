@@ -221,7 +221,7 @@ Without a wipe, a single spin tops out at 34× (17 lines × Yellow 5-of-a-kind).
 ## 9. Demo and QA tools (prototype only)
 
 - **Demo panel (D):** an outcome list, a custom grid painter, speed control, video recording and a replay button for the splash screen.
-- **Cheats (C):** hotkeys force the next spin, eight scenarios play whole sequences (all banners, free spins variants, every bear, Wipe and Ghost, max-win cap), and `?scenario=<id>` links open straight into one. Full reference: [`cheats.md`](cheats.md).
+- **Cheats (C):** hotkeys force the next spin, a dropdown forces a win of any one symbol (3, 4 or 5 in a row), eight scenarios (also a dropdown) play whole sequences (all banners, free spins variants, every bear, Wipe and Ghost, max-win cap), and `?scenario=<id>` links open straight into one. Full reference: [`cheats.md`](cheats.md).
 - **MEGA, SUPERB and SENSATIONAL** are reachable only by a presentation cheat on a single spin (see section 6.1).
 - **None of these change the maths.**
 

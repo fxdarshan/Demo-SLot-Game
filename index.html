@@ -23,7 +23,7 @@
     <div class="scroll">
       <section>
         <h2>Scenarios</h2>
-        <p class="hint">Cheat presets. <b>Play</b> runs one now; <b>Load</b> puts it in the list below so you can record it. In the game, press <kbd>C</kbd> for the cheat menu and hotkeys.</p>
+        <p class="hint">Cheat presets. Pick one from the dropdown: <b>Play</b> runs it now; <b>Load into list</b> puts it in the list below so you can record it. In the game, press <kbd>C</kbd> for the cheat menu and hotkeys.</p>
         <div id="scenarios" class="scenarios"></div>
       </section>
 
@@ -38,6 +38,12 @@
           <button id="clearQueue" class="ghost small">Clear</button>
         </div>
         <div class="adds" id="adds"></div>
+        <div class="row">
+          <label class="f">Symbol win
+            <span class="inline"><select id="swSym" aria-label="Symbol"></select><select id="swLen" aria-label="In a row"><option value="3">3 in a row</option><option value="4">4 in a row</option><option value="5">5 in a row</option></select></span>
+          </label>
+          <button id="swAdd" class="small">Add to list</button>
+        </div>
       </section>
 
       <section>

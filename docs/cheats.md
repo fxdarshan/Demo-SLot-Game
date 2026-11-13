@@ -8,7 +8,8 @@ The cheat controls are page elements drawn over the game, not part of the game c
 
 Press **C**, or click **Cheats (C)** at the top left of the game. **Esc** closes it.
 
-- **Play a scenario:** runs a preset sequence straight away. **Link** copies a URL that opens the game and plays that scenario.
+- **Play a scenario:** a dropdown of the preset sequences (with a one-line description under it). **Play** runs the chosen one straight away; **Link** copies a URL that opens the game and plays it.
+- **Symbol win:** two dropdowns, a symbol (Santa, Mrs Claus, Elf, Nutcracker, Snowman, Gingerbread, Gift Egg) and a line length (3, 4 or 5 in a row). **Force next spin** queues it; **Play now** queues it and spins. See [Symbol wins](#symbol-wins).
 - **Force the next spin:** the same actions as the hotkeys below.
 - **Clear forced (0):** removes forced spins that haven't played yet.
 
@@ -40,6 +41,10 @@ Each key puts one outcome at the front of the list. Press **Space** to spin.
 
 **\* Presentation cheats.** Under the official rules each payline pays only its highest win, so one spin without a wipe tops out at about 34× (17 lines × Yellow 5-of-a-kind). MEGA (50×), SUPERB (100×) and SENSATIONAL (250×) can't happen on a single spin. These cheats play a real big-win board, then show the requested banner with an amount inside that tier's range, and credit that amount. Use them to review banner art and animation, not maths.
 
+## Symbol wins
+
+Pick a symbol and 3, 4 or 5 in a row to see that symbol's win animation (Santa plays his sprite sheet; the others use the scale pulse and upgrade). The board puts the symbol on the middle payline for exactly that length, with no Wild or bear, and the search only accepts boards where that symbol is the win. Wins of lower symbols can still upgrade into higher ones afterwards, as in a normal spin. It is a real engine result, so the maths is unchanged. The same dropdowns are in the demo panel under **Next spins** (**Add to list**), where the item is labelled for example "Elf win, 4 in a row". In code it is the outcome `{ type: 'symwin', sym: 0-6, len: 3-5 }`.
+
 ## Scenarios
 
 | ID | Name | Sequence |
@@ -59,7 +64,7 @@ Free spins take their outcomes from the same list, so items after a trigger play
 
 ## Recording a scenario
 
-1. In the demo panel's **Scenarios** section, press **Load** to put the scenario in the list.
+1. In the demo panel's **Scenarios** section, pick the scenario in the dropdown and press **Load into list**.
 2. Under **Record video**, choose **Whole list** and press **Record**.
 3. Press **D** first to hide the panel. The cheat button and chip are page elements and are never captured.
 

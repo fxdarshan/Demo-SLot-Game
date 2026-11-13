@@ -43,7 +43,7 @@ Opening `index.html` directly also works. In that mode only the synthesised plac
 - **AUTO**: autoplay.
 - Click during a banner: skip ahead.
 - **D**: hide or show the demo panel so the game fills the window for capture.
-- **C**: cheat menu. Hotkeys **1–6**, **F**, **S**, **H**, **W**, **G** and more force the next spin; see [Cheats](#cheats-and-scenarios).
+- **C**: cheat menu. Hotkeys **1–6**, **F**, **S**, **H**, **W**, **G** and more force the next spin, and dropdowns pick a scenario or a symbol win (symbol and 3–5 in a row); see [Cheats](#cheats-and-scenarios).
 
 ## Mechanics (official rules)
 
