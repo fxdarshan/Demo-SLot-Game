@@ -205,7 +205,7 @@ Without a wipe, a single spin tops out at 34× (17 lines × Yellow 5-of-a-kind).
 - **Base game:** a cosy firelit living room with a decorated tree, fireplace and stockings (`bg_base_main`). The whole background breathes gently (scale 1 → 1.02 over 4 s).
 - **Free game:** snowy log cabins under green and violet northern lights (`bg_freegame_main`), with party lights along the frame and falling gold sparkles.
 - The art spec's original direction (warm wood with Russian folk lace) survives in the placeholder reel frame, which is still to be replaced.
-- **Dolls:** brightly painted with a glossy finish, each tier with a distinct face (pacifier, glasses, closed eyes and so on). Earlier gameplay footage showed a knitted-textile look; the asset spec's lace and wood direction is used now.
+- **Symbols:** glossy 3D holiday characters on the nesting-doll silhouette: Santa, Mrs Claus, Elf, Nutcracker, Snowman, Gingerbread, Gift egg. The Wild is a star snow-globe matryoshka, and the bears are reindeer bursting from snow globes (see section 3.1). The original spec's painted dolls with distinct faces (pacifier, glasses, closed eyes) remain the reference for the placeholder art.
 - **Reel 3** is the focus point, because it carries the Wild Egg and the bears.
 
 ---

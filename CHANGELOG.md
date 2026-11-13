@@ -2,6 +2,10 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Docs audit
+- Ran the project-sync checklist across the repo. GitHub matched local, all scripts passed syntax checks, the single-file build was current and the asset checklist matched the files on disk.
+- `docs/reference-gdd.md` section 8: symbol art direction updated from the painted-doll description to the delivered holiday characters.
+
 ## 2026-11-13: Cheats and scenarios
 - **Cheat menu** (**C**), drawn over the game so it never appears in recordings. It plays scenarios and forces the next spin.
 - **Hotkeys:**
