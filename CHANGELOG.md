@@ -2,6 +2,12 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Win sheets pinned to each symbol's round bottom
+- Problem: in the generated sheets the character drifted between frames. Measured on the shipped sheets, the bottom of the body moved up to 35 px (of 400), the bottom centre up to 40 px sideways, and the size changed several percent; the last frame did not match the first, so every win ended with a pop back to the idle art.
+- New `tools/asset-pipeline/normalize_sprite_sheet.py` (replaces `align_sprite_sheet.py` in the pipeline): measures every frame at its round bottom and scales and moves it so grounded frames share one ground line, one bottom centre and one size. Size is the median of belly width, body height and the root of the body area, so spread feet or raised arms do not rescale a frame. Jump and turn frames (`--air`, default 5-9; Santa also 11) keep a jump but get the correction interpolated and never sink below the ground. Santa's, Mrs Claus's, Elf's, Nutcracker's, Snowman's and Gingerbread's sheets all went through it.
+- After: frame 0 and frame 15 have the same bottom (within 1 px), centre (within 1 px) and size (within 3 %), so the animation loops back into the idle art cleanly. `scale`, `ox` and `oy` for all six sheets were recomputed from the new frame 0.
+- Timing is unchanged: 3 ticks (100 ms) a frame. To slow every sheet down, raise `tpf` in `assets/manifest.js` (4 = 133 ms, 2.1 s).
+
 ## 2026-11-13: Win animations for Elf, Nutcracker, Snowman and Gingerbread
 - `sym_02` Elf, `sym_03` Nutcracker, `sym_04` Snowman and `sym_05` Gingerbread play their supplied 16-frame sheets on a win (3 ticks a frame, 1.6 s), via `images.sym_0x_win` and `sprites.sym_0x_win` in the manifest. Only the Gift egg (`sym_06`) still uses the scale pulse.
 - Checked in the build: every sheet plays frames 0 to 15 in order; chained upgrades (win, upgrade, win) play each sheet in turn; no page errors.

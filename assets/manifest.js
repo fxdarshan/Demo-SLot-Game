@@ -33,12 +33,12 @@ window.ASSET_MANIFEST = {
   //   ox, oy: offset from the symbol centre, as a fraction of the symbol size (lines up the body with the idle art)
   // tools/asset-pipeline/cut_sprite_sheet.py prints scale, ox and oy when run with --idle.
   sprites: {
-    sym_00_win: { cols: 4, rows: 4, tpf: 3, scale: 1.2047, ox: -0.0412, oy: -0.0576 },
-    sym_01_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0375, ox: -0.0051, oy: -0.0365 },
-    sym_02_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0468, ox: -0.0078, oy: -0.0613 },
-    sym_03_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0108, ox: -0.0030, oy: -0.0355 },
-    sym_04_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0398, ox: 0.0000, oy: -0.0234 },
-    sym_05_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0879, ox: 0.0000, oy: -0.0393 },
+    sym_00_win: { cols: 4, rows: 4, tpf: 3, scale: 1.2145, ox: 0.003, oy: -0.0622 },
+    sym_01_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0395, ox: 0.0078, oy: -0.0312 },
+    sym_02_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0484, ox: 0.001, oy: -0.0616 },
+    sym_03_win: { cols: 4, rows: 4, tpf: 3, scale: 1.011, ox: -0.0025, oy: -0.0329 },
+    sym_04_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0395, ox: 0.0, oy: -0.0234 },
+    sym_05_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0888, ox: 0.0, oy: -0.0408 },
   },
 
   images: {
