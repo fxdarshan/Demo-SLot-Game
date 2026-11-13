@@ -26,11 +26,11 @@ window.ASSET_MANIFEST = {
 
   images: {
     // 2.1 environment
-    bg_base_main:        'assets/images/environment/bg_base_main.png',
+    bg_base_main:        'assets/images/environment/bg_base_main.jpg',        // cosy firelit living room
     bg_base_frame:       'assets/images/environment/bg_base_frame.png',
     bg_base_reel_strip:  'assets/images/environment/bg_base_reel_strip.png',
     // 3.1 free game environment
-    bg_freegame_main:    'assets/images/environment/bg_freegame_main.png',
+    bg_freegame_main:    'assets/images/environment/bg_freegame_main.jpg',    // snowy cabins under the northern lights
     bg_freegame_frame:   'assets/images/environment/bg_freegame_frame.png',
     fx_reel3_guaranteed_wild_indicator: 'assets/images/fx/fx_reel3_guaranteed_wild_indicator.png',
 

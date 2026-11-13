@@ -13,14 +13,18 @@ The full list of IDs and descriptions is in [`docs/game-asset-specification.md`]
 
 ## Images
 
-**Delivered so far:** the holiday symbol set (13 November 2026). It covers 7 standard symbols, the Wild in both states, and the 5 bears, cut out from their grey studio backgrounds and centred at 300×300. Everything else is still a placeholder.
+**Delivered so far (13 November 2026):**
+- **Holiday symbol set:** 7 standard symbols, the Wild in both states and the 5 bears, cut out from their grey studio backgrounds and centred at 300×300.
+- **Backgrounds:** `bg_base_main` (cosy firelit living room) and `bg_freegame_main` (snowy cabins under the northern lights). Both were supplied at 1376×768, then cropped to exact 16:9 and scaled to 1920×1080 JPG. Re-supply them at 1920×1080 or larger for full sharpness.
+
+Everything else is still a placeholder.
 
 | Asset ID | Path | Size | Delivered |
 | :--- | :--- | :--- | :---: |
-| `bg_base_main` | `assets/images/environment/bg_base_main.png` | 1920×1080 | [ ] |
+| `bg_base_main` | `assets/images/environment/bg_base_main.jpg` | 1920×1080 | [x] |
 | `bg_base_frame` | `assets/images/environment/bg_base_frame.png` | 1920×1080 PNG, clear centre | [ ] |
 | `bg_base_reel_strip` | `assets/images/environment/bg_base_reel_strip.png` | ≈270×810 PNG | [ ] |
-| `bg_freegame_main` | `assets/images/environment/bg_freegame_main.png` | 1920×1080 | [ ] |
+| `bg_freegame_main` | `assets/images/environment/bg_freegame_main.jpg` | 1920×1080 | [x] |
 | `bg_freegame_frame` | `assets/images/environment/bg_freegame_frame.png` | 1920×1080 PNG, clear centre | [ ] |
 | `fx_reel3_guaranteed_wild_indicator` | `assets/images/fx/fx_reel3_guaranteed_wild_indicator.png` | one reel column, PNG | [ ] |
 | `ui_bar_bottom` | `assets/images/ui/ui_bar_bottom.png` | 1920×110 PNG | [ ] |

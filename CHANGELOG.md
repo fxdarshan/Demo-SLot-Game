@@ -2,6 +2,11 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Holiday backgrounds
+- `bg_base_main`: cosy firelit living room with the Christmas tree and fireplace.
+- `bg_freegame_main`: snowy log cabins under the northern lights.
+- Both supplied at 1376×768; cropped to 16:9 and scaled to 1920×1080 JPG (quality 90).
+
 ## 2026-11-13: Holiday symbol art
 - 11 supplied renders cut out from their grey studio backgrounds (rembg, ISNet model), trimmed, centred and exported at 300×300 PNG with spec asset IDs:
   - Santa `sym_00` (highest), Mrs Claus `sym_01`, Elf `sym_02`, Nutcracker `sym_03`, Snowman `sym_04`, Gingerbread `sym_05`, Gift egg `sym_06` (lowest).
