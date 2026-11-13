@@ -10,13 +10,18 @@
     small:    { label: 'Single win',              color: '#4fbf8a' },
     chain:    { label: 'Upgrade chain (2+ pops)', color: '#3fb6c9' },
     scare:    { label: 'Scare Bear (small, 1×)',  color: '#e0794a' },
+    scare2:   { label: 'Scare Bear (medium, 2×)', color: '#dc6a3a' },
     scare3:   { label: 'Scare Bear (large, 3×)',  color: '#d9552a' },
     charm:    { label: 'Charm Bear',              color: '#e05aa0' },
     dance:    { label: 'Dance Bear → Free Spins', color: '#9b6bff' },
     nice:     { label: 'Nice win banner (15×+)',  color: '#d08a4a' },
     big:      { label: 'Big win banner (25×+)',   color: '#ff9a3c' },
     wipe:     { label: 'Wipe Win',                color: '#f2c13a' },
-    ghost:    { label: 'Wipe → Ghost (100×)',     color: '#fff3a8' },
+    ghost:    { label: 'Wipe → Ghost (100×) · EPIC banner', color: '#fff3a8' },
+    // presentation cheats: a real big-win board, then the banner of this tier with an amount in its range
+    b_mega:        { label: 'MEGA banner (shown amount)',        color: '#f2b632', cheat: true },
+    b_superb:      { label: 'SUPERB banner (shown amount)',      color: '#3fcf7a', cheat: true },
+    b_sensational: { label: 'SENSATIONAL banner (shown amount)', color: '#b46cff', cheat: true },
     custom:   { label: 'Custom grid',             color: '#2fd0c0' }
   };
 
@@ -65,6 +70,13 @@
           return search(r => (count(r, 'pop') >= 2 && !wipeOf(r)) || count(r, 'pop'), quiet, 8000);
         case 'scare':
           return search(r => (r.total > 0 && r.total / bet < C.winTiers[0].min && !wipeOf(r)) || .5, bearMake('scare', { scareSize: 1 }));
+        case 'scare2':
+          return search(r => (r.total > 0 && count(r, 'pop') >= 1 && !wipeOf(r)) || r.total, bearMake('scare', { scareSize: 2 }));
+        case 'b_mega': case 'b_superb': case 'b_sensational': {
+          const r = build({ type: 'big' }, ctx);
+          r.bannerTier = item.type.slice(2);       // game.js shows this tier with an amount in its range
+          return r;
+        }
         case 'scare3':
           return search(r => (r.total > 0 && count(r, 'pop') >= 1 && !wipeOf(r)) || r.total, bearMake('scare', { scareSize: 3 }));
         case 'charm':

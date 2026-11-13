@@ -35,7 +35,7 @@
     });
   }
   const adds = $('#adds');
-  ['nowin', 'small', 'chain', 'nice', 'big', 'scare', 'scare3', 'charm', 'dance', 'wipe', 'ghost', 'random'].forEach(k => {
+  ['nowin', 'small', 'chain', 'nice', 'big', 'b_mega', 'b_superb', 'b_sensational', 'scare', 'scare2', 'scare3', 'charm', 'dance', 'wipe', 'ghost', 'random'].forEach(k => {
     const b = document.createElement('button'); b.innerHTML = `<span class="dot" style="background:${OUT[k].color}"></span>${OUT[k].label}`;
     b.onclick = () => { G.queue.push({ type: k }); renderQueue(); }; adds.appendChild(b);
   });

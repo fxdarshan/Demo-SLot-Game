@@ -583,7 +583,7 @@
     } else if (img) {
       // 'Total Win!' sign: the header is in the art; the amount goes on the cleared board
       blockText(fmt(shown), 0, -mh * .02, 104, { maxW: mw * .62 });
-      blockText(`IN ${m.spins} FREE SPINS!`, 0, mh * .13, 40, { colors: ['#ffffff', '#ffe9c8'], stroke: '#3b1505', maxW: mw * .6 });
+      blockText(m.capped ? `MAX WIN ${C.maxWin}× REACHED` : `IN ${m.spins} FREE SPINS!`, 0, mh * .13, 40, { colors: ['#ffffff', '#ffe9c8'], stroke: '#3b1505', maxW: mw * .6 });
     } else {
       blockText('CONGRATULATIONS!', 0, -252, 64, { maxW: 760 });
       if (intro) {
@@ -593,7 +593,7 @@
         blockText(`TOTAL WIN: ${fmt(shown)} IN ${m.spins} FREE SPINS`, 0, -150, 40, { colors: ['#ffffff', '#fff0c8'], maxW: 960 });
         blockText('YOU WON', 0, -60, 60, { colors: ['#ffffff', '#fff0c8'] });
         blockText(fmt(shown), 0, 50, 130, { maxW: 960 });
-        blockText(`IN ${m.spins} FREE SPINS!`, 0, 150, 48, { colors: ['#ffffff', '#fff0c8'] });
+        blockText(m.capped ? `MAX WIN ${C.maxWin}× REACHED` : `IN ${m.spins} FREE SPINS!`, 0, 150, 48, { colors: ['#ffffff', '#fff0c8'] });
       }
     }
     // START / COLLECT button (below supplied art, inside the code-drawn panel)
@@ -831,6 +831,12 @@
     G.spinning = false; G.onChange();
     if (hatch) await waitF(4);
     await playSteps(res.steps);
+    if (res.bannerTier) {
+      // presentation cheat: replace the spin's total with an amount inside the requested banner tier
+      const ti = C.winTiers.findIndex(w => w.id === res.bannerTier), lo = C.winTiers[ti].min, hi = (C.winTiers[ti + 1] || { min: lo * 1.6 }).min;
+      const amount = Math.round(bet() * (lo + (hi - lo) * (.15 + Math.random() * .5)) * 100) / 100;
+      res.total = amount; res.presentationOnly = true; setWin(G.spinBaseWin + amount);
+    }
     const wipe = res.steps.find(st => st.type === 'wipe');
     await bigWinBanner(res.total, { ghost: wipe && wipe.special });
     return res;
@@ -855,8 +861,8 @@
     return true;
   }
   async function freeSpins(count, roundWin) {
-    const fs = G.fs;
-    Object.assign(fs, { left: count, played: 0, total: 0, awarded: count });
+    const fs = G.fs, baseWin = roundWin;
+    Object.assign(fs, { left: count, played: 0, total: 0, awarded: count, capped: false });
     await modal({ kind: 'intro', text1: 'YOU WON', text2: `${count} FREE SPINS!`, onOutro: () => {} });
     await transition('toFree', () => { fs.active = true; G.envTarget = 1; G.env = 1; SND.playMusic('bgm_freegame_loop'); });
     while (fs.left > 0) {
@@ -868,10 +874,13 @@
         await modal({ kind: 'intro', text1: 'YOU WON', text2: `${r.freeSpins} MORE FREE SPINS!` });
         fs.left += r.freeSpins; fs.awarded += r.freeSpins;
       }
-      if (roundWin >= C.maxWin * bet()) { roundWin = C.maxWin * bet(); break; }
+      if (roundWin >= C.maxWin * bet()) {
+        // max win cap (GDD 390x): stop the round, the summary shows the capped amount
+        roundWin = C.maxWin * bet(); fs.total = Math.round((roundWin - baseWin) * 100) / 100; fs.capped = true; fs.left = 0; break;
+      }
     }
     await wait(.4 / G.speed);
-    await modal({ kind: 'outro', amount: fs.total, spins: fs.played, onOutro: () => { fs.active = false; G.envTarget = 0; } });
+    await modal({ kind: 'outro', amount: fs.total, spins: fs.played, capped: fs.capped, onOutro: () => { fs.active = false; G.envTarget = 0; } });
     await transition('toBase');
     SND.playMusic('bgm_basegame_loop');
     return roundWin;
@@ -883,7 +892,8 @@
   async function playQueue(n) {
     G.autoplay = true; G.onChange();
     let i = 0; const max = n ?? G.queue.length;
-    while (G.autoplay && i < max) { await play(); i++; if (i < max) await wait(.8); }
+    // stop once the list is used up: free spins consume list items inside a single round
+    while (G.autoplay && i < max && (i === 0 || G.queue.length)) { await play(); i++; if (i < max && G.queue.length) await wait(.8); }
     G.autoplay = false; G.onChange();
   }
 

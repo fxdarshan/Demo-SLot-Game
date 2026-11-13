@@ -85,3 +85,5 @@
 | Bets locked during a round | Implemented. Bet buttons are disabled while busy | `drawHUD`, input handler |
 | Autoplay | Implemented as on/off. The round-count page is not built yet | `autoplayLoop` |
 | Malfunction clause | Not applicable to the prototype | |
+| Max win (GDD 390×) | Implemented. A round that reaches the cap ends at once, including during free spins; the summary shows "MAX WIN 390× REACHED" | `freeSpins`, `play` |
+| Forced outcomes for demos | Prototype only: cheats and scenarios ([`cheats.md`](cheats.md)) play real engine results, except three marked banner presentation cheats | `src/cheats.js`, `src/director.js` |

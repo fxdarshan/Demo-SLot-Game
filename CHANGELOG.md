@@ -2,6 +2,26 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Cheats and scenarios
+- **Cheat menu** (**C**), drawn over the game so it never appears in recordings. It plays scenarios and forces the next spin.
+- **Hotkeys:**
+  - `1`–`6`: NICE, BIG, MEGA*, SUPERB*, SENSATIONAL*, EPIC
+  - `F`: free spins
+  - `S`/`M`/`A`: Scare Bear large, medium, small
+  - `H`: Charm Bear
+  - `U`: upgrade chain
+  - `W`: Wipe
+  - `G`: Ghost
+  - `X`: win
+  - `N`: no win
+  - `0`: clear forced spins
+- **Eight scenarios:** all win banners, free spins, big free spins round, retrigger, every bear, Wipe and Ghost, max-win cap, base game tour. Each can be played from the menu or the demo panel (**Play** / **Load**).
+- **Scenario links:** `?scenario=<id>` or `#scenario-<id>` loads and plays a scenario.
+- **New outcomes:** medium Scare Bear (`scare2`), and the MEGA / SUPERB / SENSATIONAL presentation cheats (`b_mega`, `b_superb`, `b_sensational`).
+- **Fix:** playing a list stops once the list is used up. Free spins consume list items inside one round, so the old fixed round count added extra random spins.
+- **Fix:** when the 390× cap ends a free spins round, the summary shows the capped amount and "MAX WIN 390× REACHED".
+- **Docs:** new `docs/cheats.md`; README, GDD and spec implementation notes updated.
+
 ## 2026-11-13: Source art in the repo
 - `assets/source/originals/`: every supplied file as received (symbols, backgrounds, banners, popups, anticipation spiral), renamed by the asset ID it became.
 - `assets/source/cutouts/`: full-resolution background-removed versions, plus the Total Win sign with its text removed.

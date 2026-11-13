@@ -82,6 +82,35 @@ details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
+/* ---------- cheats (DOM over the canvas, so never in recordings) ---------- */
+.stage-wrap { position: relative; }
+.scenarios { display: flex; flex-direction: column; gap: 4px; }
+.scen { display: flex; align-items: center; gap: 6px; background: var(--raise); border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px 4px 10px; font-size: 13px; }
+.scen span { flex: 1; }
+.cheat-btn { position: absolute; left: 20px; top: 18px; z-index: 5; font-size: 12.5px; padding: 5px 10px; background: rgba(20,16,28,.78); border-color: rgba(255,255,255,.18); opacity: .75; }
+.cheat-btn:hover, .cheat-btn.on { opacity: 1; border-color: var(--accent); }
+.cheat-menu { position: absolute; left: 20px; top: 56px; z-index: 6; width: min(560px, calc(100% - 40px)); max-height: calc(100% - 80px); overflow: auto;
+  background: rgba(22,18,30,.96); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; box-shadow: 0 16px 40px rgba(0,0,0,.6); }
+.cheat-menu header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.cheat-menu header span { flex: 1; color: var(--muted); font-size: 12px; }
+.cheat-menu header .x { padding: 2px 8px; background: transparent; border-color: transparent; color: var(--muted); }
+.cheat-menu h4 { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 6px; font-weight: 600; }
+.cheat-menu .row { display: flex; align-items: center; gap: 6px; padding: 6px 0; border-top: 1px solid var(--line); }
+.cheat-menu .row .t { flex: 1; min-width: 0; }
+.cheat-menu .row b { display: block; font-size: 13.5px; font-weight: 600; }
+.cheat-menu .row small { display: block; color: var(--muted); font-size: 12px; }
+.cheat-menu .row .play { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 5px 12px; }
+.cheat-menu .row .link { padding: 5px 9px; font-size: 12px; background: transparent; }
+.cheat-menu .keys { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+.cheat-menu .keys button { text-align: left; font-size: 12.5px; padding: 5px 8px; display: flex; align-items: center; gap: 8px; }
+.cheat-menu kbd { min-width: 18px; text-align: center; }
+.cheat-menu footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+.cheat-menu footer button { font-size: 12px; padding: 4px 9px; }
+.cheat-menu .fine { color: var(--muted); font-size: 11.5px; margin: 8px 0 0; }
+.cheat-chip { position: absolute; left: 20px; bottom: 20px; z-index: 5; background: rgba(198,166,255,.95); color: var(--accent-ink); font-weight: 600; font-size: 12.5px; padding: 5px 10px; border-radius: 999px; }
+.cheat-toast { position: absolute; left: 50%; top: 18px; transform: translate(-50%, -8px); opacity: 0; z-index: 7; background: rgba(20,16,28,.92); border: 1px solid var(--line); padding: 7px 14px; border-radius: 10px; font-size: 13px; transition: .2s; pointer-events: none; }
+.cheat-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
 </style>
 </head>
 <body>
@@ -96,6 +125,12 @@ details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
       <button id="hidePanel" class="ghost small" title="Hide panel (D)">Hide</button>
     </header>
     <div class="scroll">
+      <section>
+        <h2>Scenarios</h2>
+        <p class="hint">Cheat presets. <b>Play</b> runs one now; <b>Load</b> puts it in the list below so you can record it. In the game, press <kbd>C</kbd> for the cheat menu and hotkeys.</p>
+        <div id="scenarios" class="scenarios"></div>
+      </section>
+
       <section>
         <h2>Next spins</h2>
         <p class="hint">Spins play these outcomes in order (free spins too). An empty list spins at random.</p>
@@ -651,13 +686,18 @@ window.ASSET_MANIFEST = {
     small:    { label: 'Single win',              color: '#4fbf8a' },
     chain:    { label: 'Upgrade chain (2+ pops)', color: '#3fb6c9' },
     scare:    { label: 'Scare Bear (small, 1×)',  color: '#e0794a' },
+    scare2:   { label: 'Scare Bear (medium, 2×)', color: '#dc6a3a' },
     scare3:   { label: 'Scare Bear (large, 3×)',  color: '#d9552a' },
     charm:    { label: 'Charm Bear',              color: '#e05aa0' },
     dance:    { label: 'Dance Bear → Free Spins', color: '#9b6bff' },
     nice:     { label: 'Nice win banner (15×+)',  color: '#d08a4a' },
     big:      { label: 'Big win banner (25×+)',   color: '#ff9a3c' },
     wipe:     { label: 'Wipe Win',                color: '#f2c13a' },
-    ghost:    { label: 'Wipe → Ghost (100×)',     color: '#fff3a8' },
+    ghost:    { label: 'Wipe → Ghost (100×) · EPIC banner', color: '#fff3a8' },
+    // presentation cheats: a real big-win board, then the banner of this tier with an amount in its range
+    b_mega:        { label: 'MEGA banner (shown amount)',        color: '#f2b632', cheat: true },
+    b_superb:      { label: 'SUPERB banner (shown amount)',      color: '#3fcf7a', cheat: true },
+    b_sensational: { label: 'SENSATIONAL banner (shown amount)', color: '#b46cff', cheat: true },
     custom:   { label: 'Custom grid',             color: '#2fd0c0' }
   };
 
@@ -706,6 +746,13 @@ window.ASSET_MANIFEST = {
           return search(r => (count(r, 'pop') >= 2 && !wipeOf(r)) || count(r, 'pop'), quiet, 8000);
         case 'scare':
           return search(r => (r.total > 0 && r.total / bet < C.winTiers[0].min && !wipeOf(r)) || .5, bearMake('scare', { scareSize: 1 }));
+        case 'scare2':
+          return search(r => (r.total > 0 && count(r, 'pop') >= 1 && !wipeOf(r)) || r.total, bearMake('scare', { scareSize: 2 }));
+        case 'b_mega': case 'b_superb': case 'b_sensational': {
+          const r = build({ type: 'big' }, ctx);
+          r.bannerTier = item.type.slice(2);       // game.js shows this tier with an amount in its range
+          return r;
+        }
         case 'scare3':
           return search(r => (r.total > 0 && count(r, 'pop') >= 1 && !wipeOf(r)) || r.total, bearMake('scare', { scareSize: 3 }));
         case 'charm':
@@ -1775,7 +1822,7 @@ window.ASSET_MANIFEST = {
     } else if (img) {
       // 'Total Win!' sign: the header is in the art; the amount goes on the cleared board
       blockText(fmt(shown), 0, -mh * .02, 104, { maxW: mw * .62 });
-      blockText(`IN ${m.spins} FREE SPINS!`, 0, mh * .13, 40, { colors: ['#ffffff', '#ffe9c8'], stroke: '#3b1505', maxW: mw * .6 });
+      blockText(m.capped ? `MAX WIN ${C.maxWin}× REACHED` : `IN ${m.spins} FREE SPINS!`, 0, mh * .13, 40, { colors: ['#ffffff', '#ffe9c8'], stroke: '#3b1505', maxW: mw * .6 });
     } else {
       blockText('CONGRATULATIONS!', 0, -252, 64, { maxW: 760 });
       if (intro) {
@@ -1785,7 +1832,7 @@ window.ASSET_MANIFEST = {
         blockText(`TOTAL WIN: ${fmt(shown)} IN ${m.spins} FREE SPINS`, 0, -150, 40, { colors: ['#ffffff', '#fff0c8'], maxW: 960 });
         blockText('YOU WON', 0, -60, 60, { colors: ['#ffffff', '#fff0c8'] });
         blockText(fmt(shown), 0, 50, 130, { maxW: 960 });
-        blockText(`IN ${m.spins} FREE SPINS!`, 0, 150, 48, { colors: ['#ffffff', '#fff0c8'] });
+        blockText(m.capped ? `MAX WIN ${C.maxWin}× REACHED` : `IN ${m.spins} FREE SPINS!`, 0, 150, 48, { colors: ['#ffffff', '#fff0c8'] });
       }
     }
     // START / COLLECT button (below supplied art, inside the code-drawn panel)
@@ -2023,6 +2070,12 @@ window.ASSET_MANIFEST = {
     G.spinning = false; G.onChange();
     if (hatch) await waitF(4);
     await playSteps(res.steps);
+    if (res.bannerTier) {
+      // presentation cheat: replace the spin's total with an amount inside the requested banner tier
+      const ti = C.winTiers.findIndex(w => w.id === res.bannerTier), lo = C.winTiers[ti].min, hi = (C.winTiers[ti + 1] || { min: lo * 1.6 }).min;
+      const amount = Math.round(bet() * (lo + (hi - lo) * (.15 + Math.random() * .5)) * 100) / 100;
+      res.total = amount; res.presentationOnly = true; setWin(G.spinBaseWin + amount);
+    }
     const wipe = res.steps.find(st => st.type === 'wipe');
     await bigWinBanner(res.total, { ghost: wipe && wipe.special });
     return res;
@@ -2047,8 +2100,8 @@ window.ASSET_MANIFEST = {
     return true;
   }
   async function freeSpins(count, roundWin) {
-    const fs = G.fs;
-    Object.assign(fs, { left: count, played: 0, total: 0, awarded: count });
+    const fs = G.fs, baseWin = roundWin;
+    Object.assign(fs, { left: count, played: 0, total: 0, awarded: count, capped: false });
     await modal({ kind: 'intro', text1: 'YOU WON', text2: `${count} FREE SPINS!`, onOutro: () => {} });
     await transition('toFree', () => { fs.active = true; G.envTarget = 1; G.env = 1; SND.playMusic('bgm_freegame_loop'); });
     while (fs.left > 0) {
@@ -2060,10 +2113,13 @@ window.ASSET_MANIFEST = {
         await modal({ kind: 'intro', text1: 'YOU WON', text2: `${r.freeSpins} MORE FREE SPINS!` });
         fs.left += r.freeSpins; fs.awarded += r.freeSpins;
       }
-      if (roundWin >= C.maxWin * bet()) { roundWin = C.maxWin * bet(); break; }
+      if (roundWin >= C.maxWin * bet()) {
+        // max win cap (GDD 390x): stop the round, the summary shows the capped amount
+        roundWin = C.maxWin * bet(); fs.total = Math.round((roundWin - baseWin) * 100) / 100; fs.capped = true; fs.left = 0; break;
+      }
     }
     await wait(.4 / G.speed);
-    await modal({ kind: 'outro', amount: fs.total, spins: fs.played, onOutro: () => { fs.active = false; G.envTarget = 0; } });
+    await modal({ kind: 'outro', amount: fs.total, spins: fs.played, capped: fs.capped, onOutro: () => { fs.active = false; G.envTarget = 0; } });
     await transition('toBase');
     SND.playMusic('bgm_basegame_loop');
     return roundWin;
@@ -2075,7 +2131,8 @@ window.ASSET_MANIFEST = {
   async function playQueue(n) {
     G.autoplay = true; G.onChange();
     let i = 0; const max = n ?? G.queue.length;
-    while (G.autoplay && i < max) { await play(); i++; if (i < max) await wait(.8); }
+    // stop once the list is used up: free spins consume list items inside a single round
+    while (G.autoplay && i < max && (i === 0 || G.queue.length)) { await play(); i++; if (i < max && G.queue.length) await wait(.8); }
     G.autoplay = false; G.onChange();
   }
 
@@ -2150,7 +2207,7 @@ window.ASSET_MANIFEST = {
     });
   }
   const adds = $('#adds');
-  ['nowin', 'small', 'chain', 'nice', 'big', 'scare', 'scare3', 'charm', 'dance', 'wipe', 'ghost', 'random'].forEach(k => {
+  ['nowin', 'small', 'chain', 'nice', 'big', 'b_mega', 'b_superb', 'b_sensational', 'scare', 'scare2', 'scare3', 'charm', 'dance', 'wipe', 'ghost', 'random'].forEach(k => {
     const b = document.createElement('button'); b.innerHTML = `<span class="dot" style="background:${OUT[k].color}"></span>${OUT[k].label}`;
     b.onclick = () => { G.queue.push({ type: k }); renderQueue(); }; adds.appendChild(b);
   });
@@ -2258,6 +2315,162 @@ window.ASSET_MANIFEST = {
     $('#assetList').innerHTML = inf.missing.map(k => `<li>${k}: ${root.ASSET_MANIFEST.images[k]}</li>`).join('');
   });
   try { if (root.claude && root.claude.use) root.claude.use('downloads').then(d => { downloads = d; }).catch(() => {}); } catch (e) {}
+})(window);
+
+</script>
+<script>
+/* src/cheats.js */
+/*
+ * Cheats: force the next spin, or play a whole scenario.
+ *
+ *   C          open / close the cheat menu (drawn over the game, never in recordings)
+ *   1 - 6      next spin shows NICE, BIG, MEGA*, SUPERB*, SENSATIONAL*, EPIC (Ghost award)
+ *   F          next spin triggers free spins (Dance Bear)
+ *   S / M / A  Scare Bear large / medium / small
+ *   H          Charm Bear          U  upgrade chain      W  Wipe        G  Ghost (100x)
+ *   X          single win          N  no win             0  clear forced spins
+ *   Space      spin
+ * (*) MEGA, SUPERB and SENSATIONAL are presentation cheats: a single spin tops out at
+ *     about 34x under the rules, so a real big-win board is shown with an amount in
+ *     that banner's range. Everything else is a real outcome from the maths engine.
+ *
+ * Scenario links: ?scenario=<id> or #scenario-<id> loads and plays a scenario on open.
+ */
+(function (root) {
+  const Game = root.Game, G = Game.G, OUT = root.Director.OUTCOMES;
+  const $ = s => document.querySelector(s);
+
+  const SCENARIOS = [
+    { id: 'all-banners', label: 'All win banners', note: 'NICE, BIG, MEGA*, SUPERB*, SENSATIONAL*, then EPIC through the Ghost award',
+      items: ['nice', 'big', 'b_mega', 'b_superb', 'b_sensational', 'ghost'] },
+    { id: 'free-spins', label: 'Free spins', note: 'Dance Bear trigger, then 7 random free spins',
+      items: ['dance'] },
+    { id: 'free-spins-big', label: 'Free spins: big round', note: 'Trigger, then Charm, large Scare, chain, Wipe, Nice banner, win and Ghost inside free spins',
+      items: ['dance', 'charm', 'scare3', 'chain', 'wipe', 'nice', 'small', 'ghost'] },
+    { id: 'retrigger', label: 'Free spins retrigger', note: 'A Dance Bear during free spins adds 7 more',
+      items: ['dance', 'small', 'dance', 'nowin', 'chain', 'small'] },
+    { id: 'all-bears', label: 'Every bear', note: 'Scare small, medium and large, Charm, then Dance into free spins',
+      items: ['scare', 'scare2', 'scare3', 'charm', 'dance'] },
+    { id: 'wipe-ghost', label: 'Wipe and Ghost', note: 'A wipe of one value, then 15 Yellows becoming Ghosts (100×)',
+      items: ['wipe', 'ghost'] },
+    { id: 'max-win', label: 'Max win cap (390×)', note: 'Free spins with repeated Ghost awards until the 390× cap ends the round',
+      items: ['dance', 'ghost', 'ghost', 'ghost'] },
+    { id: 'base-tour', label: 'Base game tour', note: 'No win, win, chain, Scare, Charm, Nice and Big banners, Wipe',
+      items: ['nowin', 'small', 'chain', 'scare', 'charm', 'nice', 'big', 'wipe'] }
+  ];
+
+  // key, outcome type, short label for the menu
+  const HOTKEYS = [
+    ['1', 'nice', 'NICE banner'], ['2', 'big', 'BIG banner'], ['3', 'b_mega', 'MEGA banner*'],
+    ['4', 'b_superb', 'SUPERB banner*'], ['5', 'b_sensational', 'SENSATIONAL banner*'], ['6', 'ghost', 'EPIC (Ghost 100×)'],
+    ['F', 'dance', 'Free spins'], ['S', 'scare3', 'Scare Bear, large'], ['M', 'scare2', 'Scare Bear, medium'],
+    ['A', 'scare', 'Scare Bear, small'], ['H', 'charm', 'Charm Bear'], ['U', 'chain', 'Upgrade chain'],
+    ['W', 'wipe', 'Wipe'], ['G', 'ghost', 'Ghost (100×)'], ['X', 'small', 'Single win'], ['N', 'nowin', 'No win']
+  ];
+  const KEYMAP = Object.fromEntries(HOTKEYS.map(([k, t]) => [k.toLowerCase(), t]));
+  const label = t => (OUT[t] || { label: t }).label;
+
+  /* ---------------- actions ---------------- */
+  function forceNext(type) {
+    G.queue.unshift({ type, cheat: true });
+    G.onChange();
+    note(`Next spin: ${label(type)}`);
+  }
+  function playScenario(id, opts = {}) {
+    const sc = SCENARIOS.find(s => s.id === id); if (!sc) return false;
+    G.queue = sc.items.map(type => ({ type, cheat: true }));
+    G.onChange();
+    note(`Scenario: ${sc.label}`);
+    if (opts.load) return true;
+    if (!G.busy) Game.playQueue(sc.items.length);
+    return true;
+  }
+  function clearForced() { G.queue = G.queue.filter(q => !q.cheat); G.onChange(); note('Forced spins cleared'); }
+
+  /* ---------------- UI: button, menu, next-spin chip (DOM over the canvas) ---------------- */
+  const wrap = $('#wrap');
+  const btn = document.createElement('button'); btn.className = 'cheat-btn'; btn.textContent = 'Cheats (C)'; btn.title = 'Cheat menu';
+  const menu = document.createElement('div'); menu.className = 'cheat-menu'; menu.hidden = true; menu.setAttribute('role', 'dialog'); menu.setAttribute('aria-label', 'Cheats');
+  const chip = document.createElement('div'); chip.className = 'cheat-chip'; chip.hidden = true;
+  const toast = document.createElement('div'); toast.className = 'cheat-toast';
+  wrap.append(btn, menu, chip, toast);
+
+  function note(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(note.t); note.t = setTimeout(() => toast.classList.remove('show'), 1800); }
+  function toggle(show = menu.hidden) { menu.hidden = !show; btn.classList.toggle('on', show); }
+  btn.onclick = () => toggle();
+
+  function linkFor(id) { return location.href.split(/[?#]/)[0] + '?scenario=' + id; }
+  function renderMenu() {
+    menu.innerHTML = `
+      <header><b>Cheats</b><span>Forced spins play before anything else. Space spins.</span><button class="x" aria-label="Close">✕</button></header>
+      <section><h4>Play a scenario</h4><div class="sc"></div></section>
+      <section><h4>Force the next spin</h4><div class="keys"></div></section>
+      <footer><span class="pending"></span><button class="clear">Clear forced (0)</button></footer>
+      <p class="fine">* Presentation cheat: a real big-win board with an amount in that banner's range. A single spin can't reach these tiers under the rules.</p>`;
+    menu.querySelector('.x').onclick = () => toggle(false);
+    menu.querySelector('.clear').onclick = clearForced;
+    const sc = menu.querySelector('.sc');
+    SCENARIOS.forEach(s => {
+      const row = document.createElement('div'); row.className = 'row';
+      row.innerHTML = `<div class="t"><b>${s.label}</b><small>${s.note}</small></div>`;
+      const play = document.createElement('button'); play.className = 'play'; play.textContent = 'Play';
+      play.onclick = () => { toggle(false); playScenario(s.id); };
+      const link = document.createElement('button'); link.className = 'link'; link.textContent = 'Link'; link.title = 'Copy a link that opens this scenario';
+      link.onclick = () => { const u = linkFor(s.id); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => note('Link copied'), () => note(u)); };
+      row.append(play, link); sc.appendChild(row);
+    });
+    const keys = menu.querySelector('.keys');
+    HOTKEYS.forEach(([k, t, short]) => {
+      const b = document.createElement('button'); b.innerHTML = `<kbd>${k}</kbd>${short}`; b.title = label(t); b.onclick = () => forceNext(t);
+      keys.appendChild(b);
+    });
+    renderPending();
+  }
+  function renderPending() {
+    const n = G.queue.filter(q => q.cheat).length, next = G.queue[0];
+    const p = menu.querySelector('.pending'); if (p) p.textContent = n ? `${n} forced spin${n > 1 ? 's' : ''} queued` : 'No forced spins';
+    chip.hidden = !(next && next.cheat);
+    if (next && next.cheat) chip.textContent = `Next: ${label(next.type)}${n > 1 ? `  (+${n - 1} more)` : ''}`;
+  }
+  const prevChange = G.onChange;
+  G.onChange = () => { prevChange(); renderPending(); };
+
+  /* ---------------- demo panel: scenario list with Load / Play ---------------- */
+  const panelList = $('#scenarios');
+  if (panelList) SCENARIOS.forEach(s => {
+    const row = document.createElement('div'); row.className = 'scen';
+    row.innerHTML = `<span title="${s.note}">${s.label}</span>`;
+    const load = document.createElement('button'); load.className = 'ghost small'; load.textContent = 'Load'; load.title = 'Put this scenario in the list (for recording)';
+    load.onclick = () => playScenario(s.id, { load: true });
+    const play = document.createElement('button'); play.className = 'small'; play.textContent = 'Play';
+    play.onclick = () => playScenario(s.id);
+    row.append(load, play); panelList.appendChild(row);
+  });
+
+  /* ---------------- hotkeys ---------------- */
+  document.addEventListener('keydown', e => {
+    if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (k === 'c') { toggle(); return; }
+    if (k === 'escape') { toggle(false); return; }
+    if (k === '0') { clearForced(); return; }
+    if (KEYMAP[k]) { e.preventDefault(); forceNext(KEYMAP[k]); }
+  });
+
+  /* ---------------- scenario links ---------------- */
+  function fromUrl() {
+    const q = new URLSearchParams(location.search).get('scenario');
+    const h = (location.hash.match(/^#scenario-([a-z0-9-]+)$/) || [])[1];
+    return q || h;
+  }
+  root.Cheats = { SCENARIOS, HOTKEYS, forceNext, playScenario, clearForced, toggle };
+  renderMenu();
+  const want = fromUrl();
+  if (want) {
+    // wait for the game to finish loading its art
+    const t0 = Date.now(), go = () => (G.assetInfo || Date.now() - t0 > 8000) ? setTimeout(() => playScenario(want), 800) : setTimeout(go, 100);
+    go();
+  }
 })(window);
 
 </script>

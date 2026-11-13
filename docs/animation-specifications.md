@@ -243,7 +243,9 @@ Every frame count above is stored in `CONFIG.frames` (`src/config.js`) and playe
 | `trans_base_to_freegame` | Implemented | Accordion curtain: 15f close, 45f hold (scene swapped), 15f open |
 | `trans_freegame_to_base` | Implemented | 60f camera zoom-out (1.08 → 1.0) with background dissolve |
 | `banner_fg_trigger` | Implemented | 70% dimmer, elastic scale-in, pulse 1.0–1.04 with rays and glitter, outro scale 1.15 and fade. START continues (auto-continue on by default: `CONFIG.autoContinueModals`) |
-| `banner_fg_summary` | Implemented | Drops in from the top, 75f count-up, holds, shrinks to 0.8 and fades. COLLECT continues |
+| `banner_fg_summary` | Implemented | Drops in from the top, 75f count-up, holds, shrinks to 0.8 and fades. COLLECT continues. When the 390× cap ends the round it reads "MAX WIN 390× REACHED" |
 | `banner_win_*` | Implemented | 75% dimmer, slam 0 → 1.2 → 1.0, impact cue at frame 15, tally frames 30–105, snap to HUD, zoom out to 1.3 and fade |
+
+**Reviewing every banner:** the cheat menu (**C**, see [`cheats.md`](cheats.md)) has an *All win banners* scenario and hotkeys `1`–`6` that show each banner tier on demand.
 
 **Win tiers:** section 7.1 lists five tiers from 25×. The asset spec (section 7.2) lists six tiers from 15×, and the prototype uses the asset spec. See `CONFIG.winTiers`.

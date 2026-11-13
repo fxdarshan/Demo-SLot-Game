@@ -9,7 +9,7 @@
 > 3. [`game-asset-specification.md`](game-asset-specification.md): asset IDs, banner tiers, audio
 > 4. This GDD: everything else (max win, bet range, design intent)
 >
-> The changes from 1.0 are listed in section 9.
+> The changes from 1.0 are listed in section 10.
 
 ---
 
@@ -210,7 +210,14 @@ Without a wipe, a single spin tops out at 34× (17 lines × Yellow 5-of-a-kind).
 
 ---
 
-## 9. Changes from version 1.0
+## 9. Demo and QA tools (prototype only)
+
+- **Demo panel (D):** an outcome list, a custom grid painter, speed control and video recording.
+- **Cheats (C):** hotkeys force the next spin, eight scenarios play whole sequences (all banners, free spins variants, every bear, Wipe and Ghost, max-win cap), and `?scenario=<id>` links open straight into one. Full reference: [`cheats.md`](cheats.md).
+- **MEGA, SUPERB and SENSATIONAL** are reachable only by a presentation cheat on a single spin (see section 6.1).
+- **None of these change the maths.**
+
+## 10. Changes from version 1.0
 
 | Topic | v1.0 | v2.0 (official) |
 | :--- | :--- | :--- |

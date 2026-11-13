@@ -70,3 +70,32 @@ details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
   .panel { border-left: 0; border-top: 1px solid var(--line); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---------- cheats (DOM over the canvas, so never in recordings) ---------- */
+.stage-wrap { position: relative; }
+.scenarios { display: flex; flex-direction: column; gap: 4px; }
+.scen { display: flex; align-items: center; gap: 6px; background: var(--raise); border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px 4px 10px; font-size: 13px; }
+.scen span { flex: 1; }
+.cheat-btn { position: absolute; left: 20px; top: 18px; z-index: 5; font-size: 12.5px; padding: 5px 10px; background: rgba(20,16,28,.78); border-color: rgba(255,255,255,.18); opacity: .75; }
+.cheat-btn:hover, .cheat-btn.on { opacity: 1; border-color: var(--accent); }
+.cheat-menu { position: absolute; left: 20px; top: 56px; z-index: 6; width: min(560px, calc(100% - 40px)); max-height: calc(100% - 80px); overflow: auto;
+  background: rgba(22,18,30,.96); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; box-shadow: 0 16px 40px rgba(0,0,0,.6); }
+.cheat-menu header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.cheat-menu header span { flex: 1; color: var(--muted); font-size: 12px; }
+.cheat-menu header .x { padding: 2px 8px; background: transparent; border-color: transparent; color: var(--muted); }
+.cheat-menu h4 { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 6px; font-weight: 600; }
+.cheat-menu .row { display: flex; align-items: center; gap: 6px; padding: 6px 0; border-top: 1px solid var(--line); }
+.cheat-menu .row .t { flex: 1; min-width: 0; }
+.cheat-menu .row b { display: block; font-size: 13.5px; font-weight: 600; }
+.cheat-menu .row small { display: block; color: var(--muted); font-size: 12px; }
+.cheat-menu .row .play { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 5px 12px; }
+.cheat-menu .row .link { padding: 5px 9px; font-size: 12px; background: transparent; }
+.cheat-menu .keys { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+.cheat-menu .keys button { text-align: left; font-size: 12.5px; padding: 5px 8px; display: flex; align-items: center; gap: 8px; }
+.cheat-menu kbd { min-width: 18px; text-align: center; }
+.cheat-menu footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+.cheat-menu footer button { font-size: 12px; padding: 4px 9px; }
+.cheat-menu .fine { color: var(--muted); font-size: 11.5px; margin: 8px 0 0; }
+.cheat-chip { position: absolute; left: 20px; bottom: 20px; z-index: 5; background: rgba(198,166,255,.95); color: var(--accent-ink); font-weight: 600; font-size: 12.5px; padding: 5px 10px; border-radius: 999px; }
+.cheat-toast { position: absolute; left: 50%; top: 18px; transform: translate(-50%, -8px); opacity: 0; z-index: 7; background: rgba(20,16,28,.92); border: 1px solid var(--line); padding: 7px 14px; border-radius: 10px; font-size: 13px; transition: .2s; pointer-events: none; }
+.cheat-toast.show { opacity: 1; transform: translate(-50%, 0); }

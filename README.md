@@ -8,6 +8,7 @@ A playable HTML5 prototype of a 5×3, 17-line nesting-doll slot. It's built so t
 | [`docs/pay-table.md`](docs/pay-table.md) | Pay table, paylines, special win |
 | [`docs/animation-specifications.md`](docs/animation-specifications.md) | Every animation duration and keyframe phase (30 fps) |
 | [`docs/game-asset-specification.md`](docs/game-asset-specification.md) | Asset IDs, file names, win banner tiers, audio list |
+| [`docs/cheats.md`](docs/cheats.md) | Cheat menu, hotkeys, scenarios, scenario links |
 | [`docs/reference-gdd.md`](docs/reference-gdd.md) | GDD v2.0: the whole design in one place, aligned with the specs above; max win, bet range |
 
 Other docs:
@@ -40,6 +41,7 @@ Opening `index.html` directly also works. In that mode only the synthesised plac
 - **AUTO**: autoplay.
 - Click during a banner: skip ahead.
 - **D**: hide or show the demo panel so the game fills the window for capture.
+- **C**: cheat menu. Hotkeys **1–6**, **F**, **S**, **H**, **W**, **G** and more force the next spin; see [Cheats](#cheats-and-scenarios).
 
 ## Mechanics (official rules)
 
@@ -139,11 +141,12 @@ src/placeholders.js   code-drawn placeholder art
 src/assets.js         loads manifest files, falls back to placeholders
 src/audio.js          file sounds or synthesised placeholders, routed into recordings
 src/devpanel.js       demo controls (not part of the game)
+src/cheats.js         cheat menu, hotkeys, scenarios, scenario links
 tools/simulate.js     Monte Carlo maths check (Node)
 tools/build-single.js builds dist/nesting-dolls-prototype.html (one file, images embedded)
 tools/asset-pipeline/ background removal and symbol export scripts (Python)
 studio/index.html     Slot Demo Studio (generic slot demo recorder)
-docs/                 rules, pay table, animation spec, asset spec, GDD v2.0
+docs/                 rules, pay table, animation spec, asset spec, GDD v2.0, cheats
 CHANGELOG.md          update history
 ```
 
@@ -173,9 +176,29 @@ The documents don't publish reel weights or feature chances, so these were tuned
 - **Rule assumptions:** Wilds count as "the same" for the wipe check, the wipe upgrade happens once per spin, and a Dance Bear during free spins adds 7 more spins.
 - **Anticipation:** it plays only when the Wild will open (`anticipateOn: 'star'`; set `'wild'` for any Wild). The spec's "reel slows slightly" ramp isn't implemented; the reel spins at full speed under the aura.
 
+## Cheats and scenarios
+
+Press **C** in the game for the cheat menu. It's drawn over the game, so it never appears in recordings. Full reference: [`docs/cheats.md`](docs/cheats.md).
+
+- **Force the next spin** with hotkeys:
+  - **1–6:** NICE, BIG, MEGA*, SUPERB*, SENSATIONAL*, EPIC
+  - **F:** free spins
+  - **S / M / A:** Scare Bear large, medium, small
+  - **H:** Charm Bear
+  - **U:** upgrade chain
+  - **W:** Wipe
+  - **G:** Ghost
+  - **X:** win
+  - **N:** no win
+  - **0:** clear forced spins
+- **Scenarios** play a whole sequence: all win banners, free spins, a big free spins round, retrigger, every bear, Wipe and Ghost, the 390× max-win cap, and a base game tour.
+- **Scenario links:** `index.html?scenario=free-spins-big` opens and plays a scenario. The menu's **Link** button copies one.
+
+\* MEGA, SUPERB and SENSATIONAL are presentation cheats. A single spin can't reach them under the rules (it tops out around 34×), so a real big-win board is shown with an amount in that banner's range. Everything else is a real engine outcome.
+
 ## Recording demos
 
-In the demo panel, build a list of outcomes and choose **Record video → Whole list**. Options include No win, Single win, Upgrade chain, Nice/Big banner, Scare Bear (small/large), Charm Bear, Dance Bear → Free spins, Wipe Win, Wipe → Ghost, or a custom grid where you choose which bear the Wild opens to.
+In the demo panel, **Load** a scenario (or build your own list of outcomes) and choose **Record video → Whole list**. Options include No win, Single win, Upgrade chain, Nice/Big banner, Scare Bear (small/large), Charm Bear, Dance Bear → Free spins, Wipe Win, Wipe → Ghost, or a custom grid where you choose which bear the Wild opens to.
 
 Recording captures the 1920×1080 canvas at 30 fps with sound. Press **D** first to hide the panel.
 
