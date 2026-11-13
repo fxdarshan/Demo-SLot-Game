@@ -923,10 +923,13 @@
 
   /* ------------------------------------------------------------ boot */
   async function boot() {
+    const splash = root.Splash && C.splash && C.splash.enabled && !/[?&]nosplash\b/.test(location.search) ? root.Splash : null;
+    if (splash) splash.start(C);
     try { await Promise.race([Promise.all([document.fonts.load(`80px ${SCRIPT}`), document.fonts.load(`80px ${BLOCK}`)]), new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
-    G.assetInfo = await A.load(root.ASSET_MANIFEST, W, H, L);
+    G.assetInfo = await A.load(root.ASSET_MANIFEST, W, H, L, splash && splash.progress);
     requestAnimationFrame(frame);
     G.onChange();
+    if (splash) splash.finish();
   }
 
   root.Game = { G, C, engine, director, play, playQueue, autoplayLoop, boot, canvas: cv, bet, cellCenter };

@@ -19,6 +19,8 @@ The full list of IDs and descriptions is in [`docs/game-asset-specification.md`]
 
 - **Win banners:** `banner_win_nice` (Nice List), `banner_win_mega` (Merry Mega), `banner_win_superb` (Superb Sleigh Ride), `banner_win_sensational` (Sensational Snowfall) and `banner_win_epic` (Epic Christmas, also used for the Ghost award). Cut out, trimmed, WebP. **`banner_win_big` was not in the set**, so BIG WIN still shows the code-drawn ribbon.
 - **Free spins popups:** `modal_freespins_intro` (Festive Win frame; "YOU WON / 7 FREE SPINS!" is drawn in its empty centre) and `modal_freespins_outro` (Total Win wooden sign). The sign's baked-in "2,750,000 COINS / JACKPOT BONUS!" was painted out and the board rebuilt from the surrounding planks, so the real total can be drawn there.
+- **Ghost symbol:** `sym_ghost_idle`, a white and gold egg with Christmas baubles, a halo and glowing wings. The wings, halo and sparkles are kept as soft translucent light (see `tools/asset-pipeline/cut_glow.py`). It is gold rather than the spec's green halo.
+- **Splash logo:** `ui_splash_logo`, the X-Mas Dolls logo cut out the same way (WebP). It is used on the splash / loading screen only; the in-game title is still drawn in code.
 - **Anticipation:** `vfx_anticipation_reel3`, the golden spiral. Its black background was converted to transparency, and it's drawn additively over reel 3 as two drifting, mirrored layers.
 
 Everything else is still a placeholder.
@@ -44,6 +46,7 @@ The supplied originals and full-size cut-outs are kept in [`source/`](source/REA
 | `btn_bet_minus` | `assets/images/ui/btn_bet_minus.png` | ≈80×80 PNG | [ ] |
 | `btn_info` | `assets/images/ui/btn_info.png` | ≈80×80 PNG | [ ] |
 | `ui_freegame_counter` | `assets/images/ui/ui_freegame_counter.png` | ≈440×64 PNG | [ ] |
+| `ui_splash_logo` | `assets/images/ui/ui_splash_logo.webp` | about 900×700, transparent (extra, not in the spec) | [x] |
 | `sym_00_idle` | `assets/images/symbols/sym_00_santa_idle.png` | 300×300 PNG | [x] |
 | `sym_01_idle` | `assets/images/symbols/sym_01_mrs_claus_idle.png` | 300×300 PNG | [x] |
 | `sym_02_idle` | `assets/images/symbols/sym_02_elf_idle.png` | 300×300 PNG | [x] |
@@ -58,7 +61,7 @@ The supplied originals and full-size cut-outs are kept in [`source/`](source/REA
 | `sym_bear_scare_large` | `assets/images/symbols/sym_bear_scare_large.png` | 300×300 PNG | [x] |
 | `sym_bear_charm` | `assets/images/symbols/sym_bear_charm.png` | 300×300 PNG | [x] |
 | `sym_bear_dance` | `assets/images/symbols/sym_bear_dance.png` | 300×300 PNG | [x] |
-| `sym_ghost_idle` | `assets/images/symbols/sym_ghost_idle.png` | 300×300 PNG | [ ] |
+| `sym_ghost_idle` | `assets/images/symbols/sym_ghost_idle.png` | 300×300 PNG | [x] |
 | `modal_freespins_intro` | `assets/images/banners/modal_freespins_intro.webp` | ≈1100×620 PNG | [x] |
 | `modal_freespins_outro` | `assets/images/banners/modal_freespins_outro.webp` | ≈1100×620 PNG | [x] |
 | `banner_win_nice` | `assets/images/banners/banner_win_nice.webp` | ≈1200×360 PNG | [x] |

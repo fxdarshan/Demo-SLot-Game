@@ -40,11 +40,12 @@
     return null;
   }
 
-  Assets.load = async function (manifest, W, H, layout) {
+  Assets.load = async function (manifest, W, H, layout, onProgress) {
     Assets.W = W; Assets.H = H; Assets.L = layout;
     Assets.splitY = manifest.symbolSplitY || .47;
     const entries = Object.entries(manifest.images || {});
-    const loaded = await Promise.all(entries.map(([, src]) => loadImage(src)));
+    let done = 0;
+    const loaded = await Promise.all(entries.map(([, src]) => loadImage(src).then(im => { if (onProgress) onProgress(++done / entries.length); return im; })));
     const missing = [];
     entries.forEach(([key], i) => {
       if (loaded[i]) { Assets.img[key] = loaded[i]; Assets.real[key] = true; }

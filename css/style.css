@@ -99,3 +99,45 @@ details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
 .cheat-chip { position: absolute; left: 20px; bottom: 20px; z-index: 5; background: rgba(198,166,255,.95); color: var(--accent-ink); font-weight: 600; font-size: 12.5px; padding: 5px 10px; border-radius: 999px; }
 .cheat-toast { position: absolute; left: 50%; top: 18px; transform: translate(-50%, -8px); opacity: 0; z-index: 7; background: rgba(20,16,28,.92); border: 1px solid var(--line); padding: 7px 14px; border-radius: 10px; font-size: 13px; transition: .2s; pointer-events: none; }
 .cheat-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- splash / loading screen (DOM over the stage, never recorded) ---------- */
+.splash { --u: .5px; --fade: 700ms; position: absolute; z-index: 20; overflow: hidden; background: #1b090d; color: #ffd9df;
+  font-family: 'Outfit', 'IBM Plex Sans', system-ui, sans-serif; transition: opacity var(--fade) ease; }
+.splash[hidden] { display: none; }
+.splash.out { opacity: 0; pointer-events: none; }
+.splash .sp-bg { position: absolute; inset: 0; background: center / cover no-repeat; filter: saturate(.9); }
+.splash .sp-shade { position: absolute; inset: 0;
+  background: linear-gradient(0deg, #1b090d 0%, rgba(27,9,13,.72) 45%, rgba(27,9,13,.38) 100%), radial-gradient(ellipse at center, rgba(27,9,13,0) 25%, rgba(27,9,13,.82) 100%); }
+.splash .sp-snow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.splash .sp-top { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding: calc(var(--u) * 34) calc(var(--u) * 48); z-index: 3; }
+.splash .sp-brand { display: flex; align-items: center; gap: calc(var(--u) * 12); color: #ffe16d; opacity: .85; font-size: calc(var(--u) * 24); }
+.splash .sp-brand span { font-size: calc(var(--u) * 22); font-weight: 600; letter-spacing: .25em; text-transform: uppercase; }
+.splash .sp-btns { display: flex; gap: calc(var(--u) * 14); }
+.splash .sp-btn { width: calc(var(--u) * 56); height: calc(var(--u) * 56); padding: 0; border-radius: 50%; display: grid; place-items: center; font-size: calc(var(--u) * 28);
+  color: rgba(255,225,109,.85); background: rgba(27,9,13,.55); border: 1px solid rgba(255,225,109,.3); backdrop-filter: blur(6px); cursor: pointer; }
+.splash .sp-btn:hover { color: #ffe16d; border-color: rgba(255,225,109,.8); background: rgba(58,36,40,.65); }
+.splash .sp-hero { position: absolute; left: 0; right: 0; top: 0; bottom: calc(var(--u) * 150); display: grid; place-items: center; z-index: 2; }
+.splash .sp-halo { position: absolute; width: calc(var(--u) * 900); height: calc(var(--u) * 900); border-radius: 50%; filter: blur(calc(var(--u) * 80));
+  background: linear-gradient(35deg, rgba(245,158,11,.25), rgba(255,225,109,.3), rgba(225,29,72,.2)); animation: sp-halo 4s ease-in-out infinite; }
+.splash .sp-logo { position: relative; display: flex; flex-direction: column; align-items: center; animation: sp-float 5s ease-in-out infinite; }
+.splash .sp-logo img { width: calc(var(--u) * 900); max-height: calc(var(--u) * 640); object-fit: contain; filter: drop-shadow(0 calc(var(--u) * 18) calc(var(--u) * 36) rgba(0,0,0,.85)) brightness(1.05); }
+.splash .sp-title { font: calc(var(--u) * 170) 'Lilita One', 'Outfit', sans-serif; color: #ffe16d; text-shadow: 0 calc(var(--u) * 8) 0 #8a1226; }
+.splash .sp-floor { width: 66%; height: calc(var(--u) * 20); margin-top: calc(var(--u) * 4); border-radius: 50%; background: rgba(255,225,109,.35); filter: blur(calc(var(--u) * 22)); }
+.splash .sp-load { position: absolute; left: 50%; bottom: calc(var(--u) * 56); width: calc(var(--u) * 820); transform: translateX(-50%); z-index: 3; }
+.splash .sp-status { display: flex; align-items: center; gap: calc(var(--u) * 12); margin: 0 calc(var(--u) * 8) calc(var(--u) * 14); font-size: calc(var(--u) * 28); font-weight: 600; letter-spacing: .05em; color: #ffe16d; text-shadow: 0 2px 8px rgba(0,0,0,.9); }
+.splash .sp-msg { flex: 1; }
+.splash .sp-pct { font-weight: 700; letter-spacing: .1em; }
+.splash .sp-spin { width: calc(var(--u) * 20); height: calc(var(--u) * 20); border-radius: 50%; border: calc(var(--u) * 3) solid rgba(255,225,109,.3); border-top-color: #ffe16d; animation: sp-rot 1s linear infinite; }
+.splash .sp-bar { position: relative; padding: 2px; border-radius: 999px; background: linear-gradient(90deg, #ffe16d, #fde68a, #e9c400, #d97706); box-shadow: 0 0 24px rgba(255,225,109,.35), 0 8px 20px rgba(0,0,0,.9); }
+.splash .sp-trough { position: relative; padding: 2px; border-radius: 999px; background: rgba(27,9,13,.92); }
+.splash .sp-trough::before { content: ''; position: absolute; inset: 2px; border-radius: 999px; background: #1b080d; box-shadow: inset 0 2px 6px rgba(0,0,0,.95); }
+.splash .sp-fill { position: relative; height: calc(var(--u) * 34); width: 2%; border-radius: 999px; overflow: hidden; transition: width .12s linear;
+  background: linear-gradient(90deg, #b8860b 0%, #ffdb3c 45%, #fff2a8 55%, #ffe16d 80%, #d4af37 100%); box-shadow: 0 0 14px rgba(255,219,60,.85); }
+.splash .sp-sheen { position: absolute; inset: 0 auto 0 0; width: 50%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent); animation: sp-sheen 2.5s cubic-bezier(.4,0,.2,1) infinite; }
+.splash .sp-gloss { position: absolute; inset: 0 0 50% 0; background: rgba(255,255,255,.2); border-radius: 999px 999px 0 0; }
+.splash .sp-bar u { position: absolute; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: #ffe16d; box-shadow: 0 0 6px #ffe16d; }
+.splash .sp-bar u:first-of-type { left: -4px; } .splash .sp-bar u:last-of-type { right: -4px; }
+@keyframes sp-float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.015); } }
+@keyframes sp-halo { 0%, 100% { opacity: .55; transform: scale(.95); } 50% { opacity: .85; transform: scale(1.08); } }
+@keyframes sp-sheen { from { transform: translateX(-100%) skewX(-20deg); } to { transform: translateX(250%) skewX(-20deg); } }
+@keyframes sp-rot { to { transform: rotate(360deg); } }

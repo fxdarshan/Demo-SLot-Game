@@ -135,6 +135,8 @@
   }
   G.onChange = update;
 
+  $('#replaySplash').onclick = () => root.Splash && root.Splash.replay(root.Game.C);
+
   root.Game.boot().then(() => {
     ED_SYMS.forEach(id => { thumbs[id] = thumb(id); });
     renderPalette(); renderEditor(); update(); fit();

@@ -83,7 +83,7 @@ Multipliers are per line, of the total bet. The pay table quotes euros at a €7
 | `sym_wild_idle` | Wild Egg. Lands on **reel 3 only** and substitutes for every standard symbol |
 | `sym_wild_star_idle` | Wild Egg showing a **star** on landing. It opens to a Mystery Bear |
 | `sym_bear_scare_small/med/large`, `sym_bear_charm`, `sym_bear_dance` | The bear revealed from a starred egg |
-| `sym_ghost_idle` | End state of a wipe of 15 Yellows. Pays the special award |
+| `sym_ghost_idle` | End state of a wipe of 15 Santas. Pays the special award. A white and gold egg with a halo and glowing wings |
 
 ---
 
@@ -108,7 +108,7 @@ When the Wild lands it may show a star. A starred Wild opens to one bear, **whet
 
 ### 4.4 Wipe and special award (rules §6, pay table §5)
 - **Wipe:** when all 15 symbols are the same after all win upgrades, they upgrade once more. For example, 15 Pinks become 15 Reds, which then pay as 17 lines of Red.
-- **Special award:** when the wipe applies to 15 Yellows, they become Ghosts and pay **100× bet** (€750 at €7.50), on top of the line wins already paid.
+- **Special award:** when the wipe applies to 15 Santas, they become Ghosts and pay **100× bet** (€750 at €7.50), on top of the line wins already paid.
 - Prototype assumptions: the Wild counts as matching for the wipe check, and a wipe happens at most once per spin.
 
 ---
@@ -198,6 +198,13 @@ Without a wipe, a single spin tops out at 34× (17 lines × Yellow 5-of-a-kind).
 - **Reel area:** wooden folk frame (`bg_base_frame`; `bg_freegame_frame` in free spins) over five reel strips (`bg_base_reel_strip`). Reel 3 glows during free spins (`fx_reel3_guaranteed_wild_indicator`).
 - **Paylines:** coloured paths (`line_overlay_01..17`) and node rings (`line_node_highlight`) on winning positions.
 
+### 7.1 Splash / loading screen (not in the asset spec)
+
+- Shown on start, over the stage: the X-Mas Dolls logo (`ui_splash_logo`) floating over the living-room backdrop, falling snow and gold dust, a status line that cycles ("Loading Festive Wonders...", "Warming up the Reels...", "Polishing Golden Bells...", "Preparing Holiday Magic..."), a percentage and a gold progress bar, then "Welcome to X-Mas Dolls!".
+- The bar follows the real asset load but never finishes before 2.6 s. It then fades out over 0.7 s. A click skips it once loading is done.
+- Corner buttons: sound on/off and fullscreen. It is a DOM overlay, so it never appears in recordings.
+- `CONFIG.splash`: `enabled`, `minMs`, `fadeMs`. `?nosplash` skips it; the demo panel can replay it.
+
 ---
 
 ## 8. Art direction
@@ -206,13 +213,14 @@ Without a wipe, a single spin tops out at 34× (17 lines × Yellow 5-of-a-kind).
 - **Free game:** a cosy firelit living room with a decorated tree, fireplace and stockings (`bg_freegame_main`), with party lights along the frame and falling gold sparkles.
 - The art spec's original direction (warm wood with Russian folk lace) survives in the placeholder reel frame, which is still to be replaced.
 - **Symbols:** glossy 3D holiday characters on the nesting-doll silhouette: Santa, Mrs Claus, Elf, Nutcracker, Snowman, Gingerbread, Gift egg. The Wild is a star snow-globe matryoshka, and the bears are reindeer bursting from snow globes (see section 3.1). The original spec's painted dolls with distinct faces (pacifier, glasses, closed eyes) remain the reference for the placeholder art.
+- **Ghost:** a pearl-white egg with gold filigree and Christmas baubles, a gold halo and glowing wings (the original spec asked for a green halo).
 - **Reel 3** is the focus point, because it carries the Wild Egg and the bears.
 
 ---
 
 ## 9. Demo and QA tools (prototype only)
 
-- **Demo panel (D):** an outcome list, a custom grid painter, speed control and video recording.
+- **Demo panel (D):** an outcome list, a custom grid painter, speed control, video recording and a replay button for the splash screen.
 - **Cheats (C):** hotkeys force the next spin, eight scenarios play whole sequences (all banners, free spins variants, every bear, Wipe and Ghost, max-win cap), and `?scenario=<id>` links open straight into one. Full reference: [`cheats.md`](cheats.md).
 - **MEGA, SUPERB and SENSATIONAL** are reachable only by a presentation cheat on a single spin (see section 6.1).
 - **None of these change the maths.**

@@ -145,8 +145,8 @@
   renderMenu();
   const want = fromUrl();
   if (want) {
-    // wait for the game to finish loading its art
-    const t0 = Date.now(), go = () => (G.assetInfo || Date.now() - t0 > 8000) ? setTimeout(() => playScenario(want), 800) : setTimeout(go, 100);
+    // wait for the game to finish loading its art and for the splash screen to leave
+    const t0 = Date.now(), go = () => ((G.assetInfo && !(root.Splash && root.Splash.active())) || Date.now() - t0 > 12000) ? setTimeout(() => playScenario(want), 800) : setTimeout(go, 100);
     go();
   }
 })(window);

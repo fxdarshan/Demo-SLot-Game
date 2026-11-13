@@ -34,6 +34,8 @@ python3 -m http.server 8000      # then open http://localhost:8000
 
 Opening `index.html` directly also works. In that mode only the synthesised placeholder sounds play.
 
+**Splash screen:** the game opens on a loading screen with the logo and a progress bar, then fades into the base game. Add `?nosplash` to the address to skip it, set `CONFIG.splash.enabled = false`, or replay it from the demo panel (Assets, **Replay splash screen**). Click to skip once loading has finished.
+
 **Controls:**
 - Spin button or **Space**: spin.
 - **i**: paytable and rules.
@@ -101,8 +103,9 @@ Each tier has its own FX: coin fountain, coin drop, double cascade, fireworks wi
 - Both backgrounds: snowy cabins under the northern lights (exterior) for the base game, the firelit living room (interior) for free spins.
 - Five of the six win banners (BIG WIN is still code-drawn).
 - Both free spins popups and the reel 3 anticipation spiral.
+- The Ghost symbol (glowing winged egg) and the X-Mas Dolls logo on the splash screen.
 
-Still placeholders: the reel frames, reel strips, UI buttons, BIG WIN banner and Ghost. [`assets/README.md`](assets/README.md) tracks what has been delivered.
+Still placeholders: the reel frames, reel strips, UI buttons and BIG WIN banner. [`assets/README.md`](assets/README.md) tracks what has been delivered.
 
 Every asset key in [`assets/manifest.js`](assets/manifest.js) is the asset spec's ID. [`assets/README.md`](assets/README.md) is the artists' checklist. To swap one:
 1. Save your file at the listed path, or point the path at your file.
@@ -140,11 +143,12 @@ src/game.js           reels, step animations, banners, modals, transitions, HUD,
 src/placeholders.js   code-drawn placeholder art
 src/assets.js         loads manifest files, falls back to placeholders
 src/audio.js          file sounds or synthesised placeholders, routed into recordings
+src/splash.js         splash / loading screen (DOM overlay, never recorded)
 src/devpanel.js       demo controls (not part of the game)
 src/cheats.js         cheat menu, hotkeys, scenarios, scenario links
 tools/simulate.js     Monte Carlo maths check (Node)
 tools/build-single.js builds dist/x-mas-dolls-prototype.html (one file, images embedded)
-tools/asset-pipeline/ background removal and symbol export scripts (Python)
+tools/asset-pipeline/ background removal (plain and glow-keeping) and symbol export scripts (Python)
 studio/index.html     Slot Demo Studio (generic slot demo recorder)
 docs/                 rules, pay table, animation spec, asset spec, GDD v2.0, cheats
 CHANGELOG.md          update history

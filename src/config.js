@@ -108,6 +108,7 @@
     ],
 
     // ------------------------------------------------------- animation timing (ANIM, frames at 30 fps)
+    splash: { enabled: true, minMs: 2600, fadeMs: 700 },   // loading screen shown at start; ?nosplash skips it
     fps: 30,
     frames: {
       bgBaseLoop: 120,                  // bg_base_loop breathing

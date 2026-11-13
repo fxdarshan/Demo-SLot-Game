@@ -13,6 +13,7 @@
  *   bg_base_reel_strip ...................... one reel column, about 270 x 810 (stretched to the column)
  *   btn_* ................................... about 160 x 160 (spin), 80 x 80 (others)
  *   ui_bar_bottom ........................... 1920 x 110
+ *   ui_splash_logo .......................... transparent logo, about 900 x 700 (fitted on the splash screen)
  *   modal_freespins_* ....................... up to about 1200 x 900 panel (fitted on screen); text is drawn on top
  *   banner_win_* ............................ up to about 1000 x 900 title art (fitted on screen); the amount is drawn below it
  * The symbol upgrade animation splits each doll at symbolSplitY (fraction of height)
@@ -36,6 +37,7 @@ window.ASSET_MANIFEST = {
     vfx_anticipation_reel3: 'assets/images/fx/vfx_anticipation_reel3.webp',   // golden spiral over reel 3 (drawn additive)
 
     // 2.2 UI / HUD
+    ui_splash_logo:      'assets/images/ui/ui_splash_logo.webp',            // X-Mas Dolls logo for the splash / loading screen
     ui_bar_bottom:       'assets/images/ui/ui_bar_bottom.png',
     btn_spin_idle:       'assets/images/ui/btn_spin_idle.png',
     btn_spin_active:     'assets/images/ui/btn_spin_active.png',

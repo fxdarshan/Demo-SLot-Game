@@ -75,6 +75,8 @@ dist/x-mas-dolls-prototype.html?scenario=max-win
 
 Browsers keep sound off until the viewer clicks the page, so a scenario opened from a link starts silent.
 
+The scenario starts once the splash screen has faded out. Add `&nosplash` (for example `?scenario=all-banners&nosplash`) to skip the splash. The cheat menu and hotkeys are covered by the splash while it is showing.
+
 ## Notes
 
 - Cheats don't change the maths. `tools/simulate.js` and the RTP figures ignore them.

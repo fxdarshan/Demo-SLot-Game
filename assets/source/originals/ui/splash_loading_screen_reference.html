@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="dark h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>X-Mas Dolls - Festive Slot Loading Screen</title>
+<!-- Google Fonts: Plus Jakarta Sans, Epilogue, Outfit -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,800;0,900;1,700&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed": "#ffe16d",
+            "surface-container-lowest": "#1b090d",
+            "surface": "#210e12",
+            "on-tertiary-container": "#d1e8eb",
+            "on-secondary-fixed-variant": "#544600",
+            "on-primary-fixed": "#40000a",
+            "primary": "#ffb3b4",
+            "surface-container-low": "#2a161a",
+            "tertiary": "#b4cbce",
+            "on-primary": "#680016",
+            "primary-fixed-dim": "#ffb3b4",
+            "surface-variant": "#462e33",
+            "tertiary-container": "#54696c",
+            "on-tertiary": "#1f3436",
+            "surface-container-highest": "#462e33",
+            "secondary": "#fff9ef",
+            "secondary-container": "#ffdb3c",
+            "outline": "#aa8989",
+            "on-surface-variant": "#e3bebd",
+            "secondary-fixed-dim": "#e9c400",
+            "outline-variant": "#5b4040",
+            "surface-dim": "#210e12",
+            "inverse-surface": "#ffd9df",
+            "tertiary-fixed-dim": "#b4cbce",
+            "on-primary-container": "#ffdada",
+            "error": "#ffb4ab",
+            "primary-container": "#c41e3a",
+            "on-tertiary-fixed": "#091f21",
+            "on-error": "#690005",
+            "background": "#210e12",
+            "inverse-on-surface": "#412a2e",
+            "error-container": "#93000a",
+            "on-secondary-fixed": "#221b00",
+            "on-background": "#ffd9df",
+            "surface-tint": "#ffb3b4",
+            "on-secondary-container": "#725f00",
+            "on-tertiary-fixed-variant": "#364a4d",
+            "primary-fixed": "#ffdad9",
+            "inverse-primary": "#ba1434",
+            "surface-container": "#2f1a1e",
+            "on-primary-fixed-variant": "#920023",
+            "on-error-container": "#ffdad6",
+            "on-surface": "#ffd9df",
+            "surface-container-high": "#3a2428",
+            "on-secondary": "#3a3000",
+            "surface-bright": "#4b3337",
+            "tertiary-fixed": "#d0e7ea"
+          },
+          "fontFamily": {
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Epilogue"],
+            "title-lg": ["Outfit"],
+            "label-md": ["Outfit"],
+            "headline-md": ["Epilogue"],
+            "title-md": ["Outfit"],
+            "headline-xl": ["Epilogue"],
+            "label-lg": ["Outfit"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Outfit"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    @keyframes logo-float {
+      0%, 100% {
+        transform: translateY(0px) scale(1);
+      }
+      50% {
+        transform: translateY(-8px) scale(1.015);
+      }
+    }
+
+    @keyframes halo-breathe {
+      0%, 100% {
+        opacity: 0.55;
+        transform: scale(0.95);
+      }
+      50% {
+        opacity: 0.85;
+        transform: scale(1.08);
+      }
+    }
+
+    @keyframes molten-sheen {
+      0% {
+        transform: translateX(-100%) skewX(-20deg);
+      }
+      100% {
+        transform: translateX(250%) skewX(-20deg);
+      }
+    }
+
+    .animate-logo-float {
+      animation: logo-float 5s ease-in-out infinite;
+    }
+
+    .animate-halo-breathe {
+      animation: halo-breathe 4s ease-in-out infinite;
+    }
+
+    .molten-sheen-sweep {
+      animation: molten-sheen 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md h-full w-full overflow-hidden select-none m-0 p-0 relative">
+<!-- Cozy Warm Holiday Living Room Backdrop -->
+<div class="fixed inset-0 z-0 bg-cover bg-center overflow-hidden transition-all duration-1000 scale-100" style="background-image: url('https://lh3.googleusercontent.com/aida/ALJJyrANb9rqAYLMyBloL44Jug7y6hr8_ERw5J2qYmvQMWTCW0yPGb3_mkrDLqiOd9K2ufcWZfGyS7XDtttCPr7kXAUS1Yk3eLEZHwLBaQYhYBoxOkaE3higbDrbyvo05H4vtaSMXfOPEYz2iNF9rLycf_varxz-hVF2pCvd4ja0M5abL2TaG_v84LB0oX0R-T89V5Y8JOPCVq38-6ErKems3o7dnMJoBZ2Lu38JImWGuvw');">
+<!-- Cinematic Vignette & Ambient Warm Gradients -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/70 to-surface-container-lowest/30 mix-blend-multiply"></div>
+<div class="absolute inset-0 bg-radial-gradient from-transparent via-surface-container-lowest/40 to-surface-container-lowest/90"></div>
+<div class="absolute inset-0 backdrop-blur-[1.5px]"></div>
+</div>
+<!-- Interactive Twinkling Snowflake & Golden Stardust Canvas -->
+<canvas class="fixed inset-0 pointer-events-none z-10 w-full h-full" id="snow-canvas"></canvas>
+<!-- Minimalist Corner Controls -->
+<header class="fixed top-0 left-0 right-0 z-30 flex justify-between items-center px-6 py-5 w-full pointer-events-none">
+<div class="flex items-center gap-2 opacity-80 pointer-events-auto">
+<span class="material-symbols-outlined text-secondary-fixed text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs uppercase tracking-[0.25em] text-secondary-fixed/90 font-semibold font-title-md">Holiday Magic</span>
+</div>
+<div class="flex items-center space-x-3 pointer-events-auto">
+<button aria-label="Toggle Audio" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container-lowest/50 backdrop-blur-md border border-secondary-fixed/30 text-secondary-fixed/80 hover:text-secondary-fixed hover:border-secondary-fixed/80 hover:bg-surface-container-high/60 transition-all duration-200" id="btn-volume">
+<span class="material-symbols-outlined text-lg" data-icon="volume_up">volume_up</span>
+</button>
+<button aria-label="Toggle Fullscreen" class="w-9 h-9 rounded-full flex items-center justify-center bg-surface-container-lowest/50 backdrop-blur-md border border-secondary-fixed/30 text-secondary-fixed/80 hover:text-secondary-fixed hover:border-secondary-fixed/80 hover:bg-surface-container-high/60 transition-all duration-200" id="btn-fullscreen">
+<span class="material-symbols-outlined text-lg" data-icon="fullscreen">fullscreen</span>
+</button>
+</div>
+</header>
+<!-- Main Centered Layout -->
+<main class="relative z-20 w-full h-full flex flex-col justify-between items-center py-10 sm:py-14 px-6 max-w-5xl mx-auto">
+<!-- Top Spacer for Balance -->
+<div class="w-full h-6"></div>
+<!-- Centered 3D Game Logo Hero Area -->
+<div class="relative flex flex-col items-center justify-center my-auto">
+<!-- Magical Warm Golden Aura / Halo -->
+<div class="absolute w-[360px] h-[360px] sm:w-[500px] sm:h-[500px] bg-gradient-to-tr from-amber-500/25 via-secondary-fixed/30 to-rose-600/20 rounded-full blur-[70px] pointer-events-none animate-halo-breathe"></div>
+<!-- 3D Logo with Floating Breathing Motion -->
+<div class="relative animate-logo-float flex flex-col items-center">
+<img alt="X-Mas Dolls Logo" class="w-72 sm:w-96 md:w-[460px] lg:w-[520px] object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.85)] filter brightness-105" src="https://lh3.googleusercontent.com/aida/ALJJyrCWNt3YOnbHmXmuypnntD7RBBGOb_Q3z14ELgkkuX1nNuL-mBefIWe_CzI4JU9w35OH30trOePwpEzEgkG5vaKFFspTlhQVg3zlWX-6C5E-Zrwy1TQNiWIw6JCBeUBR6qPdTN1XOit1niX4Nox4PbSEF--fi6wUbBcVgw6r2_ucXay2o6dwQI-FooqVGyf3CnqtF_vX0dy55mySRtXL4AdRXDgIxhUNq-MA_UWdGlHJ"/>
+<!-- Floor Glow Reflection -->
+<div class="w-2/3 h-5 bg-secondary-fixed/35 blur-xl rounded-full mt-1"></div>
+</div>
+</div>
+<!-- Luxury Loading Bar & Status Zone -->
+<div class="w-full max-w-lg flex flex-col items-center space-y-4 pb-4">
+<!-- Elegant Typography Status & Percentage -->
+<div class="w-full flex items-center justify-between px-2 text-sm sm:text-base font-title-md tracking-wider">
+<div class="flex items-center space-x-2 text-secondary-fixed drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+<span class="material-symbols-outlined text-secondary-fixed text-base animate-spin" style="animation-duration: 4s;">autorenew</span>
+<span class="transition-opacity duration-300 font-medium" id="loading-status-text">Loading Festive Wonders...</span>
+</div>
+<div class="text-secondary-fixed font-bold tracking-widest drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]" id="progress-percentage-label">
+          68%
+        </div>
+</div>
+<!-- Luxury Beveled Gold Frame Loader -->
+<div class="relative w-full p-[2px] rounded-full bg-gradient-to-r from-secondary-fixed via-amber-200 via-secondary-fixed-dim to-amber-600 shadow-[0_0_24px_rgba(255,225,109,0.35),0_8px_20px_rgba(0,0,0,0.9)]">
+<!-- Outer Gold Border Rim -->
+<div class="w-full p-[2px] rounded-full bg-surface-container-lowest/90">
+<!-- Deep Rich Ruby Velvet Trough -->
+<div class="relative w-full h-5 sm:h-6 rounded-full bg-[#1b080d] overflow-hidden shadow-[inset_0_2px_6px_rgba(0,0,0,0.95)] flex items-center p-0.5">
+<!-- Glowing Molten Gold Progress Fill -->
+<div class="h-full rounded-full relative transition-all duration-300 ease-out overflow-hidden shadow-[0_0_14px_rgba(255,219,60,0.85)]" id="progress-bar-fill" style="width: 68%; background: linear-gradient(90deg, #b8860b 0%, #ffdb3c 45%, #fff2a8 55%, #ffe16d 80%, #d4af37 100%);">
+<!-- Animated Diagonal Specular Sheen Sweep -->
+<div class="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/70 to-transparent molten-sheen-sweep"></div>
+<!-- Subtle Inner Gloss Highlight -->
+<div class="absolute inset-x-0 top-0 h-1/2 bg-white/20 rounded-t-full"></div>
+</div>
+</div>
+</div>
+<!-- Ornate Subtle End Accents -->
+<div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-secondary-fixed shadow-[0_0_6px_#ffe16d]"></div>
+<div class="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-secondary-fixed shadow-[0_0_6px_#ffe16d]"></div>
+</div>
+</div>
+</main>
+<!-- Lightweight Falling Snow & Golden Stardust Particle Engine -->
+<script>
+    (function initHolidayAtmosphere() {
+      const canvas = document.getElementById('snow-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      const particles = [];
+      const particleCount = 60;
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * -height;
+          this.size = Math.random() * 2.8 + 0.8;
+          this.speedY = Math.random() * 0.9 + 0.4;
+          this.speedX = (Math.random() - 0.5) * 0.5;
+          this.opacity = Math.random() * 0.65 + 0.25;
+          this.isGold = Math.random() > 0.55;
+        }
+        update() {
+          this.y += this.speedY;
+          this.x += this.speedX + Math.sin(this.y * 0.008) * 0.25;
+          if (this.y > height + 10) {
+            this.reset();
+            this.y = -10;
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          if (this.isGold) {
+            ctx.fillStyle = `rgba(255, 225, 109, ${this.opacity})`;
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = '#ffe16d';
+          } else {
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+            ctx.shadowBlur = 3;
+            ctx.shadowColor = '#ffffff';
+          }
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      for (let i = 0; i < particleCount; i++) {
+        const p = new Particle();
+        p.y = Math.random() * height;
+        particles.push(p);
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // Loading Bar Progress Simulation & Thematic Text Cycler
+    (function handleGameLoadingSimulation() {
+      const progressBar = document.getElementById('progress-bar-fill');
+      const progressLabel = document.getElementById('progress-percentage-label');
+      const statusText = document.getElementById('loading-status-text');
+
+      const holidayStatusMessages = [
+        "Loading Festive Wonders...",
+        "Warming up the Reels...",
+        "Polishing Golden Bells...",
+        "Preparing Holiday Magic..."
+      ];
+
+      let msgIndex = 0;
+      let progress = 68;
+
+      setInterval(() => {
+        msgIndex = (msgIndex + 1) % holidayStatusMessages.length;
+        if (statusText) {
+          statusText.classList.add('opacity-0');
+          setTimeout(() => {
+            statusText.innerText = holidayStatusMessages[msgIndex];
+            statusText.classList.remove('opacity-0');
+          }, 250);
+        }
+      }, 2800);
+
+      const progressInterval = setInterval(() => {
+        if (progress < 100) {
+          progress += 1;
+          if (progressBar) progressBar.style.width = progress + '%';
+          if (progressLabel) progressLabel.innerText = progress + '%';
+        } else {
+          clearInterval(progressInterval);
+          if (statusText) statusText.innerText = "Welcome to X-Mas Dolls!";
+        }
+      }, 150);
+
+      // Audio Toggle
+      const volBtn = document.getElementById('btn-volume');
+      if (volBtn) {
+        let isMuted = false;
+        volBtn.addEventListener('click', () => {
+          isMuted = !isMuted;
+          const icon = volBtn.querySelector('.material-symbols-outlined');
+          if (icon) {
+            icon.innerText = isMuted ? 'volume_off' : 'volume_up';
+            icon.setAttribute('data-icon', isMuted ? 'volume_off' : 'volume_up');
+          }
+        });
+      }
+
+      // Fullscreen Toggle
+      const fullBtn = document.getElementById('btn-fullscreen');
+      if (fullBtn) {
+        fullBtn.addEventListener('click', () => {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+          }
+        });
+      }
+    })();
+  </script>
+</body></html>

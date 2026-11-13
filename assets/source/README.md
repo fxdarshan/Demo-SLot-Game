@@ -16,6 +16,9 @@ These are the master files behind the game assets. The game never loads anything
 | `symbols/sym_bear_scare_grumpy_reindeer` | `sym_bear_scare_small/med/large.png` | Same art at 74%, 86% and 98% of the canvas (the bear's size shows 1, 2 or 3 upgrades) |
 | `symbols/sym_bear_charm_elegant_reindeer` | `sym_bear_charm.png` | 94% |
 | `symbols/sym_bear_dance_joyful_reindeer` | `sym_bear_dance.png` | 94% |
+| `symbols/sym_ghost_idle` | `assets/images/symbols/sym_ghost_idle.png` | Cut out with `cut_glow.py --core 61` (egg solid, wings, halo and sparkles as translucent light), trimmed, 300×300 at 98%, floor haze cleared |
+| `ui/ui_splash_logo` | `assets/images/ui/ui_splash_logo.webp` | Cut out with `cut_glow.py` (sparkle trail kept), trimmed, WebP quality 92 |
+| `ui/splash_loading_screen_reference.*` and `splash_design_system.md` | not loaded | The supplied loading screen design (screenshot, HTML and design tokens). `src/splash.js` and the `.splash` rules in `css/style.css` recreate it |
 | `environment/bg_base_main_aurora_cabins` | `assets/images/environment/bg_base_main.jpg` | 1376×768, cropped to 16:9, scaled to 1920×1080, JPG quality 90 |
 | `environment/bg_freegame_main_living_room` | `assets/images/environment/bg_freegame_main.jpg` | As above |
 | `banners/banner_win_*` | `assets/images/banners/banner_win_*.webp` | Background removed, trimmed, WebP quality 88 |
@@ -28,6 +31,8 @@ These are the master files behind the game assets. The game never loads anything
 ```bash
 pip install "rembg[cpu]"
 python3 tools/asset-pipeline/cut_backgrounds.py assets/source/originals/symbols assets/source/cutouts/symbols
+python3 tools/asset-pipeline/cut_glow.py assets/source/originals/symbols/sym_ghost_idle_original.png assets/source/cutouts/symbols/sym_ghost_cutout_1024.png --core 61
+python3 tools/asset-pipeline/cut_glow.py assets/source/originals/ui/ui_splash_logo_original.png assets/source/cutouts/ui/ui_splash_logo_cutout.png
 python3 tools/asset-pipeline/place_symbols.py      # cut-outs -> assets/images/symbols at 300x300
 ```
 

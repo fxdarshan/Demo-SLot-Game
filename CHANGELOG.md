@@ -2,6 +2,15 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Ghost symbol and splash screen
+- **Ghost symbol** (`sym_ghost_idle`): the supplied glowing winged egg with a halo replaces the code-drawn ghost. It appears when a wipe turns Santas into Ghosts, and on the wipe banner. The wings, halo and sparkles are kept as soft translucent light rather than cut away with the grey background.
+- **Splash / loading screen** (new): the supplied loading screen design, built in as a DOM overlay on the stage. It shows the X-Mas Dolls logo (`ui_splash_logo`, from the supplied logo image, cut out the same way) floating over the living-room backdrop with falling snow and gold dust, a gold progress bar that follows the real asset loading, cycling status lines and a "Welcome to X-Mas Dolls!" finish. Corner buttons toggle sound and fullscreen.
+- It stays up for at least 2.6 s, fades out over 0.7 s, and a click skips it once loading is done. It is not drawn into recordings.
+- Settings: `CONFIG.splash` (`enabled`, `minMs`, `fadeMs`). Open the page with `?nosplash` to skip it. The demo panel's Assets section has **Replay splash screen**.
+- New tool `tools/asset-pipeline/cut_glow.py` removes a flat background but keeps glow (rembg mask for the solid subject, light recovered from the background elsewhere). `place_symbols.py` now includes the ghost and clears the faint floor haze under it.
+- Originals, cut-outs and the supplied loading screen reference (screenshot, HTML, design notes) are saved under `assets/source/`.
+- The asset spec describes a green-halo ghost; the supplied one has a gold halo. The wipe's green light effect is still drawn in code.
+
 ## 2026-11-13: Backgrounds swapped
 - Base game now uses the exterior scene: snowy log cabins under the northern lights (`bg_base_main`).
 - Free spins now use the interior scene: the firelit living room with tree and fireplace (`bg_freegame_main`).
