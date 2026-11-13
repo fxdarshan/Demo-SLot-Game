@@ -1,10 +1,12 @@
 /*
  * Asset loader. Tries every path in assets/manifest.js and falls back to the
- * placeholder art in placeholders.js when a file is missing.
+ * placeholder art in placeholders.js when a file is missing. UI buttons,
+ * modals and banners have no placeholder image: game.js draws them in code
+ * unless a real file exists (check Assets.real[key]).
  */
 (function (root) {
   const P = root.Placeholders;
-  const Assets = { img: {}, real: {}, patchCache: {}, splitY: .47, W: 1920, H: 1080 };
+  const Assets = { img: {}, real: {}, splitY: .47, W: 1920, H: 1080, L: null };
 
   function loadImage(src) {
     return new Promise(res => {
@@ -17,25 +19,29 @@
   }
 
   function placeholder(key) {
-    const W = Assets.W, H = Assets.H;
+    const { W, H, L } = Assets;
     let m;
-    if ((m = key.match(/^symbol_L(\d)(_scared)?$/))) return P.doll(Number(m[1]), { scared: !!m[2] });
-    if (key === 'wild') return P.wild(false);
-    if (key === 'wild_star') return P.wild(true);
-    if (key === 'ghost') return P.ghost();
-    if ((m = key.match(/^bear_(\w+)$/))) return P.bear(m[1]);
-    if (key === 'background') return P.knit(W, H, 'base');
-    if (key === 'background_freespins') return P.knit(W, H, 'free');
-    if (key === 'background_bigwin') return P.knit(W, H, 'big');
-    if (key === 'background_megawin') return P.knit(W, H, 'mega');
-    if (key === 'background_epicwin') return P.knit(W, H, 'epic');
-    if (key === 'background_wipewin') return P.knit(W, H, 'wipe');
-    if (key === 'win_patch') return P.patch(300, '#ffffff');
-    return null; // bubbles and logo are drawn in code when missing
+    if ((m = key.match(/^sym_0(\d)_idle$/))) return P.doll(Number(m[1]));
+    if ((m = key.match(/^sym_0(\d)_scared$/))) return P.doll(Number(m[1]), { scared: true });
+    switch (key) {
+      case 'sym_wild_idle': return P.wild(false);
+      case 'sym_wild_star_idle': return P.wild(true);
+      case 'sym_bear_scare_small': case 'sym_bear_scare_med': case 'sym_bear_scare_large': return P.bear('scare');
+      case 'sym_bear_charm': return P.bear('charm');
+      case 'sym_bear_dance': return P.bear('dance');
+      case 'sym_ghost_idle': return P.ghost();
+      case 'bg_base_main': return P.woodBg(W, H, false);
+      case 'bg_freegame_main': return P.woodBg(W, H, true);
+      case 'bg_base_frame': return P.frame(W, H, L, false);
+      case 'bg_freegame_frame': return P.frame(W, H, L, true);
+      case 'bg_base_reel_strip': return P.reelStrip(L.cell, L.gh);
+      case 'line_node_highlight': return P.nodeRing();
+    }
+    return null;
   }
 
-  Assets.load = async function (manifest, W, H) {
-    Assets.W = W; Assets.H = H;
+  Assets.load = async function (manifest, W, H, layout) {
+    Assets.W = W; Assets.H = H; Assets.L = layout;
     Assets.splitY = manifest.symbolSplitY || .47;
     const entries = Object.entries(manifest.images || {});
     const loaded = await Promise.all(entries.map(([, src]) => loadImage(src)));
@@ -44,34 +50,22 @@
       if (loaded[i]) { Assets.img[key] = loaded[i]; Assets.real[key] = true; }
       else { Assets.img[key] = placeholder(key); missing.push(key); }
     });
-    // scared variants default to the normal symbol when a real one exists without a scared file
-    for (let l = 1; l <= 7; l++) {
-      const k = 'symbol_L' + l, ks = k + '_scared';
-      if (Assets.real[k] && !Assets.real[ks]) Assets.img[ks] = Assets.img[k];
-    }
-    if (Assets.real.wild && !Assets.real.wild_star) Assets.img.wild_star = Assets.img.wild;
+    // extras the spec does not list: scared faces for the Scare Bear, ornament layer for the breathing loop
+    for (let t = 0; t <= 6; t++) Assets.img['sym_0' + t + '_scared'] = Assets.real['sym_0' + t + '_idle'] ? Assets.img['sym_0' + t + '_idle'] : placeholder('sym_0' + t + '_scared');
+    if (!Assets.real.bg_base_main) Assets.img.bg_base_ornaments = P.ornaments(W, H, false);
+    if (!Assets.real.bg_freegame_main) Assets.img.bg_freegame_ornaments = P.ornaments(W, H, true);
+    if (Assets.real.sym_wild_idle && !Assets.real.sym_wild_star_idle) Assets.img.sym_wild_star_idle = Assets.img.sym_wild_idle;
     if (missing.length) console.info('[assets] using placeholders for:', missing.join(', '));
     return { missing, loaded: entries.length - missing.length };
   };
 
   Assets.get = key => Assets.img[key] || null;
-  Assets.symbol = (id, CONFIG, scared, star) => {
-    if (id === CONFIG.WILD) return star ? Assets.img.wild_star : Assets.img.wild;
-    if (id === CONFIG.GHOST) return Assets.img.ghost;
-    return Assets.img['symbol_L' + id + (scared ? '_scared' : '')];
+  Assets.symbol = (id, CONFIG, o = {}) => {
+    if (id === CONFIG.WILD) return o.star ? Assets.img.sym_wild_star_idle : Assets.img.sym_wild_idle;
+    if (id === CONFIG.GHOST) return Assets.img.sym_ghost_idle;
+    return Assets.img['sym_0' + id + (o.scared ? '_scared' : '_idle')];
   };
-
-  /** Win patch tinted to a colour (cached). */
-  Assets.patch = color => {
-    if (Assets.patchCache[color]) return Assets.patchCache[color];
-    const src = Assets.img.win_patch, c = document.createElement('canvas');
-    c.width = src.width; c.height = src.height;
-    const x = c.getContext('2d');
-    x.drawImage(src, 0, 0);
-    x.globalCompositeOperation = 'multiply'; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height);
-    x.globalCompositeOperation = 'destination-in'; x.drawImage(src, 0, 0);
-    return (Assets.patchCache[color] = c);
-  };
+  Assets.bearKey = (bear, size) => bear === 'scare' ? 'sym_bear_scare_' + ['small', 'med', 'large'][(size || 1) - 1] : 'sym_bear_' + bear;
 
   root.Assets = Assets;
 })(window);

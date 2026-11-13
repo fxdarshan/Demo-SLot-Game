@@ -10,7 +10,7 @@
  *   wipe   all 15 symbols the same: they upgrade once more (Yellow -> Ghost = special win)
  * The renderer plays these steps in order, so what you see is what the maths decided.
  *
- * Grid format: grid[reel][row] = symbol id (1..7 doll level, 9 Wild, 0 Ghost).
+ * Grid format: grid[reel][row] = symbol id (0..6 doll tier, 0 = Yellow highest; 9 Wild; 8 Ghost).
  * Works in the browser (window.Engine) and in Node (require('./engine')).
  */
 (function (root) {
@@ -70,7 +70,7 @@
       return wins;
     }
 
-    const upgraded = (s, n = 1) => (s === W || s === C.GHOST) ? s : Math.max(1, s - n);
+    const upgraded = (s, n = 1) => (s === W || s === C.GHOST) ? s : Math.max(0, s - n);
 
     /** The single symbol filling the board, or null. Wilds count as matching if configured. */
     function sameSymbol(grid) {
@@ -83,8 +83,8 @@
       return sym;
     }
 
-    function lowestValue(grid) {           // highest level number = lowest value
-      let worst = 0;
+    function lowestValue(grid) {           // highest tier number = lowest value
+      let worst = -1;
       for (let c = 0; c < N; c++) for (let r = 0; r < R; r++) { const s = grid[c][r]; if (s !== W && s !== C.GHOST && s > worst) worst = s; }
       return worst;
     }
@@ -103,7 +103,7 @@
         const rounds = [];
         for (let i = 0; i < size; i++) {
           const worst = lowestValue(grid);
-          if (worst <= 1) break;
+          if (worst <= 0) break;
           const ch = [];
           for (let c = 0; c < N; c++) for (let r = 0; r < R; r++) if (grid[c][r] === worst) { ch.push({ c, r, from: worst, to: worst - 1 }); grid[c][r] = worst - 1; }
           rounds.push(ch);
@@ -164,7 +164,7 @@
         // which values qualify for an upgrade
         const byRank = {};
         wins.forEach(w => w.positions.forEach(([c, r]) => {
-          const s = grid[c][r]; if (s === W || s <= 1) return;
+          const s = grid[c][r]; if (s === W || s <= 0) return;
           (byRank[s] = byRank[s] || new Set()).add(c + ',' + r);
         }));
         const pops = [];
@@ -184,7 +184,7 @@
         if (!wiped && same !== null && same !== C.GHOST) {
           wiped = true;
           const changes = [];
-          const to = same === 1 ? C.GHOST : same - 1;
+          const to = same === 0 ? C.GHOST : same - 1;
           for (let c = 0; c < N; c++) for (let r = 0; r < R; r++) if (grid[c][r] !== W) { changes.push({ c, r, from: grid[c][r], to }); grid[c][r] = to; }
           if (to === C.GHOST) {
             special = round2(C.specialWin * bet);
@@ -200,9 +200,11 @@
       return { start: clone(startGrid), end: grid, steps, total: total(), freeSpins };
     }
 
+    /** Index into CONFIG.winTiers for a win, or -1 when it is below the first banner. */
     function tierOf(total, bet) {
-      const x = total / bet, t = C.winTiers;
-      return x >= t.epic ? 3 : x >= t.mega ? 2 : x >= t.big ? 1 : 0;
+      const x = total / bet; let t = -1;
+      C.winTiers.forEach((w, i) => { if (x >= w.min) t = i; });
+      return t;
     }
 
     return { randomGrid, randomSymbol, evaluate, resolveSpin, sameSymbol, tierOf, clone, pickWeighted };

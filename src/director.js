@@ -13,7 +13,8 @@
     scare3:   { label: 'Scare Bear (large, 3×)',  color: '#d9552a' },
     charm:    { label: 'Charm Bear',              color: '#e05aa0' },
     dance:    { label: 'Dance Bear → Free Spins', color: '#9b6bff' },
-    big:      { label: 'Big win (10×+)',          color: '#ff9a3c' },
+    nice:     { label: 'Nice win banner (15×+)',  color: '#d08a4a' },
+    big:      { label: 'Big win banner (25×+)',   color: '#ff9a3c' },
     wipe:     { label: 'Wipe Win',                color: '#f2c13a' },
     ghost:    { label: 'Wipe → Ghost (100×)',     color: '#fff3a8' },
     custom:   { label: 'Custom grid',             color: '#2fd0c0' }
@@ -59,29 +60,32 @@
         case 'nowin':
           return search(r => r.total === 0, quiet);
         case 'small':
-          return search(r => (count(r, 'win') === 1 && r.total / bet >= .2 && r.total / bet < C.winTiers.big && !wipeOf(r)) || (r.total > 0 ? .5 : 0), quiet);
+          return search(r => (count(r, 'win') === 1 && r.total / bet >= .2 && r.total / bet < C.winTiers[0].min && !wipeOf(r)) || (r.total > 0 ? .5 : 0), quiet);
         case 'chain':
           return search(r => (count(r, 'pop') >= 2 && !wipeOf(r)) || count(r, 'pop'), quiet, 8000);
         case 'scare':
-          return search(r => (r.total > 0 && r.total / bet < C.winTiers.big && !wipeOf(r)) || .5, bearMake('scare', { scareSize: 1 }));
+          return search(r => (r.total > 0 && r.total / bet < C.winTiers[0].min && !wipeOf(r)) || .5, bearMake('scare', { scareSize: 1 }));
         case 'scare3':
           return search(r => (r.total > 0 && count(r, 'pop') >= 1 && !wipeOf(r)) || r.total, bearMake('scare', { scareSize: 3 }));
         case 'charm':
           return search(r => (count(r, 'win') >= 1 && count(r, 'pop') >= 1 && !wipeOf(r)) || r.total, bearMake('charm'));
         case 'dance':
           return search(r => bearOf(r) === 'dance' || false, bearMake('dance'), 50);
-        case 'big':
-          return search(r => (r.total / bet >= C.winTiers.big && !wipeOf(r)) || r.total, () => {
-            const m = bearMake(Math.random() < .5 ? 'charm' : 'scare', { scareSize: 3 })();
-            return m;
-          }, 6000);
+        case 'nice': case 'big': {
+          // without a wipe a single spin tops out at 34x (17 lines x Yellow 5-of-a-kind)
+          const lo = item.type === 'nice' ? 15 : 25, hi = item.type === 'nice' ? 25 : 50;
+          return search(r => (r.total / bet >= lo && r.total / bet < hi && !wipeOf(r)) || (wipeOf(r) ? 0 : Math.min(r.total, lo * bet)), () => {
+            const g = uniformGrid([0, 0, 1, 1, 2, 3, 4, 5, 6], true);
+            return { grid: g, opts: Object.assign({}, base, { forceBear: Math.random() < .5 ? 'charm' : 'scare', scareSize: 3 }) };
+          }, 8000);
+        }
         case 'wipe':
           // a near-uniform board that chains into a full board of one value (not Yellow)
           return search(r => { const w = wipeOf(r); return (w && !w.special) || false; },
-            () => { const lv = 2 + rnd(4); return { grid: uniformGrid([lv, lv, lv, lv, lv + 1], fs || Math.random() < .3), opts: noBear }; }, 8000);
+            () => { const lv = 1 + rnd(4); return { grid: uniformGrid([lv, lv, lv, lv, lv + 1], fs || Math.random() < .3), opts: noBear }; }, 8000);
         case 'ghost':
           return search(r => { const w = wipeOf(r); return (w && w.special) || false; },
-            () => ({ grid: uniformGrid([1, 1, 1, 1, 1, 1, 2], fs || Math.random() < .3), opts: noBear }), 8000);
+            () => ({ grid: uniformGrid([0, 0, 0, 0, 0, 0, 1], fs || Math.random() < .3), opts: noBear }), 8000);
         case 'custom': {
           const g = item.grid.map(col => col.slice());
           if (forceWild && !g[C.wildReel].includes(W)) g[C.wildReel][1] = W;

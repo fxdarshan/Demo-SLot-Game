@@ -20,7 +20,7 @@
   document.addEventListener('keydown', e => { if (e.key.toLowerCase() === 'd' && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) togglePanel($('#app').classList.contains('no-panel')); });
 
   /* ---------- queue ---------- */
-  G.queue = [{ type: 'small' }, { type: 'chain' }, { type: 'scare3' }, { type: 'charm' }, { type: 'wipe' }, { type: 'dance' }, { type: 'ghost' }];
+  G.queue = [{ type: 'small' }, { type: 'chain' }, { type: 'scare3' }, { type: 'charm' }, { type: 'nice' }, { type: 'wipe' }, { type: 'dance' }, { type: 'ghost' }];
   function renderQueue() {
     const q = $('#queue'); q.innerHTML = '';
     if (!G.queue.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'Empty: spins are random.'; q.appendChild(li); }
@@ -35,7 +35,7 @@
     });
   }
   const adds = $('#adds');
-  ['nowin', 'small', 'chain', 'big', 'scare', 'scare3', 'charm', 'dance', 'wipe', 'ghost', 'random'].forEach(k => {
+  ['nowin', 'small', 'chain', 'nice', 'big', 'scare', 'scare3', 'charm', 'dance', 'wipe', 'ghost', 'random'].forEach(k => {
     const b = document.createElement('button'); b.innerHTML = `<span class="dot" style="background:${OUT[k].color}"></span>${OUT[k].label}`;
     b.onclick = () => { G.queue.push({ type: k }); renderQueue(); }; adds.appendChild(b);
   });
@@ -44,7 +44,7 @@
   $('#spin').onclick = () => root.Game.play();
 
   /* ---------- custom grid ---------- */
-  const ED_SYMS = [7, 6, 5, 4, 3, 2, 1, C.WILD];
+  const ED_SYMS = [6, 5, 4, 3, 2, 1, 0, C.WILD];
   let pick = 3, edGrid = engine.randomGrid({ allowWild: false });
   const thumb = id => { const im = A.symbol(id, C); if (!im) return ''; if (im.src) return im.src; const c = document.createElement('canvas'); c.width = c.height = 72; c.getContext('2d').drawImage(im, 0, 0, 72, 72); return c.toDataURL(); };
   const thumbs = {};
@@ -77,7 +77,7 @@
   function edBear() { const v = $('#edBear').value; if (!v) return {}; const [bear, size] = v.split(':'); return { bear, scareSize: size ? Number(size) : undefined }; }
   $('#edBear').onchange = renderEditor;
   $('#addCustom').onclick = () => { const b = edBear(); G.queue.push({ type: 'custom', grid: edGrid.map(c => c.slice()), bear: b.bear, scareSize: b.scareSize }); renderQueue(); };
-  $('#copyBoard').onclick = () => { edGrid = G.board.map(c => c.map(s => (s === C.GHOST ? 1 : s))); renderEditor(); };
+  $('#copyBoard').onclick = () => { edGrid = G.board.map(c => c.map(s => (s === C.GHOST ? 0 : s))); renderEditor(); };
 
   /* ---------- speed ---------- */
   $('#speed').oninput = e => { G.speed = Number(e.target.value); $('#speedOut').textContent = G.speed + '×'; };
@@ -93,7 +93,7 @@
     if (rec) return true;
     if (!root.MediaRecorder || !cv.captureStream) { $('#recOut').textContent = 'This browser cannot record the canvas. Use Chrome or Edge.'; return false; }
     root.Audio2.init(root.ASSET_MANIFEST);
-    const tracks = [...cv.captureStream(60).getVideoTracks()];
+    const tracks = [...cv.captureStream(C.fps || 30).getVideoTracks()];
     if (root.Audio2.recDest) tracks.push(...root.Audio2.recDest.stream.getAudioTracks());
     const m = mime(); rec = new MediaRecorder(new MediaStream(tracks), m ? { mimeType: m, videoBitsPerSecond: 16e6 } : {});
     chunks = []; rec.ondataavailable = e => e.data.size && chunks.push(e.data);

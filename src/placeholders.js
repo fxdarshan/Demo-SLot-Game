@@ -7,16 +7,17 @@
   const S = 300; // symbol sprite size
   const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 
+  // keyed by spec tier: 0 = sym_00 Yellow grandmother (highest) .. 6 = sym_06 Teal with pacifier (lowest)
   const DOLL = {
-    7: { c: ['#a6e6dc', '#46a89f', '#1c5c57'], face: 'dummy' },
-    6: { c: ['#b8ccff', '#4f73da', '#22377f'], face: 'open' },
-    5: { c: ['#dcbcff', '#8c55d8', '#46207f'], face: 'open' },
-    4: { c: ['#ffc0ea', '#d662b7', '#74205a'], face: 'smile' },
-    3: { c: ['#ffaba4', '#e2463f', '#7a1612'], face: 'open' },
-    2: { c: ['#ffd7a6', '#f08b2e', '#83400b'], face: 'glasses' },
-    1: { c: ['#fff4b0', '#e6c637', '#836708'], face: 'sleep' }
+    6: { c: ['#a6e6dc', '#46a89f', '#1c5c57'], face: 'dummy' },
+    5: { c: ['#b8d8ff', '#5c8fe0', '#22377f'], face: 'open' },
+    4: { c: ['#d4b0ff', '#7a3fc8', '#3a1470'], face: 'open' },
+    3: { c: ['#ffc0ea', '#d662b7', '#74205a'], face: 'smile' },
+    2: { c: ['#ffaba4', '#e2463f', '#7a1612'], face: 'open' },
+    1: { c: ['#ffd7a6', '#f08b2e', '#83400b'], face: 'glasses' },
+    0: { c: ['#fff4b0', '#e6c637', '#836708'], face: 'sleep' }
   };
-  const SCALE = { 7: 1, 6: .97, 5: .95, 4: .93, 3: .91, 2: .88, 1: .85 };
+  const SCALE = { 6: 1, 5: .97, 4: .95, 3: .93, 2: .91, 1: .88, 0: .85 };
 
   function dollPath(x, k) {
     // matryoshka silhouette: round head on a wider round body
@@ -97,7 +98,7 @@
     x.fillStyle = 'rgba(255,255,255,.95)';
     for (let i = -4; i <= 4; i++) { x.beginPath(); x.arc(cx + i * bw * .18, top + h * .88, bw * .07, 0, 7); x.fill(); }
     heart(x, cx, top + h * .74, bw * .42); x.fillStyle = d.c[2]; x.fill();
-    if (level !== 1) for (let i = 0; i < 4; i++) { x.fillStyle = d.c[0]; x.beginPath(); x.arc(cx + (i % 2 ? 1 : -1) * bw * .1, top + h * (.7 + (i > 1 ? .06 : 0)), bw * .05, 0, 7); x.fill(); }
+    if (level !== 0) for (let i = 0; i < 4; i++) { x.fillStyle = d.c[0]; x.beginPath(); x.arc(cx + (i % 2 ? 1 : -1) * bw * .1, top + h * (.7 + (i > 1 ? .06 : 0)), bw * .05, 0, 7); x.fill(); }
     // bow under the face
     x.fillStyle = d.c[2];
     x.beginPath(); x.moveTo(cx, top + h * .47); x.lineTo(cx - bw * .3, top + h * .41); x.lineTo(cx - bw * .3, top + h * .53); x.closePath(); x.fill();
@@ -113,10 +114,13 @@
 
   function ghost() {
     const c = mk(S, S), x = c.getContext('2d');
-    x.save(); x.shadowColor = 'rgba(255,255,170,.95)'; x.shadowBlur = 30;
-    const g = dollPath(x, .95); x.fillStyle = 'rgba(235,255,230,.55)'; x.fill(); x.restore();
-    x.lineWidth = 4; x.strokeStyle = 'rgba(160,220,190,.9)'; dollPath(x, .95); x.stroke();
-    face(x, 'open', g.cx, g.top + g.h * .26, S * .13, { ghost: true });
+    x.save(); x.shadowColor = 'rgba(120,255,160,.95)'; x.shadowBlur = 34;
+    const g = dollPath(x, .88); x.fillStyle = 'rgba(225,255,230,.62)'; x.fill(); x.restore();
+    x.lineWidth = 4; x.strokeStyle = 'rgba(120,230,160,.95)'; dollPath(x, .88); x.stroke();
+    face(x, 'open', g.cx, g.top + g.h * .26, S * .12, { ghost: true });
+    // green halo
+    x.save(); x.shadowColor = '#7dffb0'; x.shadowBlur = 16; x.strokeStyle = '#a8ffc8'; x.lineWidth = 7;
+    x.beginPath(); x.ellipse(S / 2, g.top + 4, S * .13, S * .035, 0, 0, 7); x.stroke(); x.restore();
     return c;
   }
 
@@ -187,52 +191,81 @@
     return c;
   }
 
-  // --- knitted background -------------------------------------------------
-  const PALETTES = {
-    base:  { mid: '#9d8fc9', band: '#6f9fa8', star: '#8576b8' },
-    free:  { mid: '#8fa4d4', band: '#5f8fb8', star: '#7a88c0' },
-    big:   { mid: '#e98ac0', band: '#c55898', star: '#f2b0d5' },
-    mega:  { mid: '#f08a3a', band: '#d24f2a', star: '#ffc070' },
-    epic:  { mid: '#e24a4a', band: '#a82445', star: '#ff9a7a' },
-    wipe:  { mid: '#f2c24a', band: '#ec8e2c', star: '#fff0b0' }
-  };
-  function shade(hex, f) {
-    const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
-    const m = v => Math.max(0, Math.min(255, Math.round(v * f)));
-    return `rgb(${m(r)},${m(g)},${m(b)})`;
-  }
-  function stitch(x, sx, sy, w, h, col) {
-    x.fillStyle = col;
-    x.beginPath(); x.ellipse(sx - w * .2, sy, w * .19, h * .6, -.6, 0, 7); x.fill();
-    x.beginPath(); x.ellipse(sx + w * .2, sy, w * .19, h * .6, .6, 0, 7); x.fill();
-  }
-  function knit(W, H, pal, opts = {}) {
-    const p = PALETTES[pal] || PALETTES.base, c = mk(W, H), x = c.getContext('2d');
-    x.fillStyle = shade(p.mid, .55); x.fillRect(0, 0, W, H);
-    const sw = opts.stitch || 26, sh = sw * .8, cols = Math.ceil(W / sw) + 1, rows = Math.ceil(H / sh) + 1;
-    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-      const sx = i * sw, sy = j * sh, yy = sy / H;
-      let col = p.mid;
-      const bandEdge = .09 + .04 * Math.abs(((i % 8) - 4) / 4); // chevron band edge
-      if (yy < bandEdge || yy > 1 - bandEdge) col = p.band;
-      // faint star motifs centred between the reels
-      const cxs = W / 2, ky = H * .45, dx = Math.abs(((sx - cxs) % (W * .2) + W * .2) % (W * .2) - W * .1), dy = Math.abs(sy - ky);
-      if (!opts.plain && dx + dy * .9 < W * .055 && (dx < sw * .7 || dy < sh * .8 || Math.abs(dx - dy) < sw * .8)) col = p.star;
-      stitch(x, sx, sy, sw, sh, shade(col, .92 + rnd() * .16));
+  // --- environment: wood + folk lace (ASSET 2.1) -----------------------------
+  function doily(x, cx, cy, r, alpha) {
+    x.save(); x.translate(cx, cy); x.globalAlpha = alpha; x.strokeStyle = '#fff6e8'; x.fillStyle = '#fff6e8';
+    for (let ring = 0; ring < 4; ring++) {
+      const rr = r * (1 - ring * .22), n = 18 - ring * 3;
+      for (let i = 0; i < n; i++) {
+        const a = i / n * Math.PI * 2;
+        x.beginPath(); x.arc(Math.cos(a) * rr, Math.sin(a) * rr, r * .07 * (1 - ring * .15), 0, 7);
+        ring % 2 ? x.fill() : (x.lineWidth = 3, x.stroke());
+      }
+      x.lineWidth = 2; x.beginPath(); x.arc(0, 0, rr * .9, 0, 7); x.stroke();
     }
+    for (let i = 0; i < 8; i++) { x.rotate(Math.PI / 4); x.beginPath(); x.ellipse(0, -r * .3, r * .06, r * .22, 0, 0, 7); x.fill(); }
+    x.restore();
+  }
+  function woodBg(W, H, free) {
+    const c = mk(W, H), x = c.getContext('2d');
+    const g = x.createLinearGradient(0, 0, 0, H);
+    if (free) { g.addColorStop(0, '#2a1450'); g.addColorStop(.5, '#3b1a5e'); g.addColorStop(1, '#170a30'); }
+    else { g.addColorStop(0, '#8a3a1e'); g.addColorStop(.5, '#a6492a'); g.addColorStop(1, '#6a2a15'); }
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    // planks
+    for (let i = 0; i < 12; i++) {
+      x.fillStyle = `rgba(0,0,0,${.05 + (i % 3) * .03})`; x.fillRect(i * W / 12, 0, 2, H);
+      for (let k = 0; k < 18; k++) { x.strokeStyle = 'rgba(255,220,180,.04)'; x.lineWidth = 2; x.beginPath(); x.moveTo(i * W / 12 + 10, k * 70 + (i * 37) % 60); x.bezierCurveTo(i * W / 12 + 60, k * 70 + 20, i * W / 12 + 90, k * 70 + 40, i * W / 12 + W / 12 - 10, k * 70 + 10); x.stroke(); }
+    }
+    const v = x.createRadialGradient(W / 2, H * .45, H * .2, W / 2, H * .45, W * .7);
+    v.addColorStop(0, free ? 'rgba(255,180,255,.12)' : 'rgba(255,220,160,.15)'); v.addColorStop(1, 'rgba(0,0,0,.45)');
+    x.fillStyle = v; x.fillRect(0, 0, W, H);
     return c;
   }
-  // a soft knitted patch drawn behind a winning symbol, tinted later
-  function patch(size, color) {
-    const c = mk(size, size), x = c.getContext('2d'), sw = size / 9, sh = sw * .8;
-    for (let j = 0; j < 12; j++) for (let i = 0; i < 10; i++) {
-      const sx = i * sw + (j % 2) * 0, sy = j * sh, dx = Math.abs(sx - size / 2) / (size / 2), dy = Math.abs(sy - size / 2) / (size / 2);
-      if (dx + dy * .75 > 1.05) continue;
-      stitch(x, sx, sy, sw, sh, shade(color, .85 + ((i * 7 + j * 3) % 5) * .06));
-    }
+  // ornaments drawn separately so the base loop can breathe them (ANIM 2.1)
+  function ornaments(W, H, free) {
+    const c = mk(W, H), x = c.getContext('2d');
+    [[W * .06, H * .14, 150], [W * .94, H * .14, 150], [W * .06, H * .78, 170], [W * .94, H * .78, 170], [W * .5, H * .02, 120]].forEach(([cx, cy, r]) => doily(x, cx, cy, r, free ? .22 : .3));
+    return c;
+  }
+  // reel frame overlay: full stage, transparent centre (ASSET 2.1 bg_base_frame / 3.1 bg_freegame_frame)
+  function frame(W, H, L, free) {
+    const c = mk(W, H), x = c.getContext('2d'), p = L.cell * .16, fx = L.x0 - p, fy = L.y0 - p, fw = L.gw + p * 2, fh = L.gh + p * 2, t = p * .9;
+    x.save(); x.shadowColor = 'rgba(0,0,0,.6)'; x.shadowBlur = 30; x.shadowOffsetY = 10;
+    x.beginPath(); x.roundRect(fx - t, fy - t, fw + t * 2, fh + t * 2, 34); x.roundRect(fx, fy, fw, fh, 18);
+    const g = x.createLinearGradient(0, fy - t, 0, fy + fh + t);
+    if (free) { g.addColorStop(0, '#ffe7a0'); g.addColorStop(.5, '#d79a2a'); g.addColorStop(1, '#ffe7a0'); }
+    else { g.addColorStop(0, '#c98a4e'); g.addColorStop(.5, '#7a4523'); g.addColorStop(1, '#c98a4e'); }
+    x.fillStyle = g; x.fill('evenodd'); x.restore();
+    x.lineWidth = 4; x.strokeStyle = free ? '#fff3c4' : '#f2c27a';
+    x.beginPath(); x.roundRect(fx - t + 8, fy - t + 8, fw + t * 2 - 16, fh + t * 2 - 16, 28); x.stroke();
+    x.beginPath(); x.roundRect(fx - 4, fy - 4, fw + 8, fh + 8, 20); x.stroke();
+    // painted folk flowers along the border
+    const flower = (cx, cy) => {
+      x.fillStyle = free ? '#ff5a7a' : '#d8342c';
+      for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2; x.beginPath(); x.ellipse(cx + Math.cos(a) * 9, cy + Math.sin(a) * 9, 7, 5, a, 0, 7); x.fill(); }
+      x.fillStyle = '#ffd34a'; x.beginPath(); x.arc(cx, cy, 5, 0, 7); x.fill();
+    };
+    const step = 110;
+    for (let xx = fx + 40; xx < fx + fw - 20; xx += step) { flower(xx, fy - t / 2); flower(xx, fy + fh + t / 2); }
+    for (let yy = fy + 60; yy < fy + fh - 20; yy += step) { flower(fx - t / 2, yy); flower(fx + fw + t / 2, yy); }
+    return c;
+  }
+  function reelStrip(w, h) {
+    const c = mk(Math.round(w), Math.round(h)), x = c.getContext('2d');
+    const g = x.createLinearGradient(0, 0, w, 0); g.addColorStop(0, 'rgba(255,244,226,.86)'); g.addColorStop(.5, 'rgba(255,250,240,.94)'); g.addColorStop(1, 'rgba(255,244,226,.86)');
+    x.fillStyle = g; x.beginPath(); x.roundRect(3, 0, w - 6, h, 12); x.fill();
+    x.fillStyle = 'rgba(200,120,90,.18)';
+    for (let yy = 10; yy < h; yy += 22) { x.beginPath(); x.arc(10, yy, 4, 0, 7); x.arc(w - 10, yy, 4, 0, 7); x.fill(); }
+    return c;
+  }
+  function nodeRing() {
+    const c = mk(S, S), x = c.getContext('2d');
+    x.save(); x.shadowColor = '#ffd84a'; x.shadowBlur = 24; x.strokeStyle = '#ffe58a'; x.lineWidth = 12;
+    x.beginPath(); x.roundRect(S * .06, S * .06, S * .88, S * .88, S * .16); x.stroke(); x.restore();
+    x.strokeStyle = '#fffbe6'; x.lineWidth = 3; x.beginPath(); x.roundRect(S * .06, S * .06, S * .88, S * .88, S * .16); x.stroke();
     return c;
   }
 
-  root.Placeholders = { S, DOLL, doll, ghost, wild, bear, knit, patch, shade, PALETTES };
+  root.Placeholders = { S, DOLL, doll, ghost, wild, bear, woodBg, ornaments, frame, reelStrip, nodeRing, heart };
 })(window);

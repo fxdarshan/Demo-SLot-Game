@@ -1,77 +1,103 @@
 /*
  * ASSET MANIFEST
  * ---------------------------------------------------------------------------
- * To replace placeholder art or sound: drop a file at the path listed below
- * (or change the path) and reload. A file that is missing simply keeps the
- * built-in placeholder, so you can swap assets one at a time.
+ * Keys are the asset IDs from docs/game-asset-specification.md
+ * ([type]_[category]_[asset_name]_[state]). To replace placeholder art or
+ * sound, save a file at the listed path (or change the path) and reload.
+ * Missing files keep the built-in placeholder, so assets can be swapped one by one.
  *
- * Image sizes (PNG with transparency unless noted):
- *   symbols / wild / bears / ghost ......... 300 x 300, centred, same framing for all
- *   backgrounds ............................ 1920 x 1080, JPG or PNG, no transparency needed
- *   win_patch .............................. 300 x 300, white/grey; it is tinted per symbol colour
- *   bubble_* ............................... about 640 x 360
- *   logo ................................... up to 900 x 300 (optional; game has no logo area by default)
- * Doll "pop" animation splits each symbol image at symbolSplitY (fraction of height)
- * into a lid and a base, so keep the doll's seam near that line or change the value.
+ * Sizes (PNG with transparency unless noted):
+ *   sym_*  .................................. 300 x 300, centred, same framing for every symbol
+ *   bg_*_main ............................... 1920 x 1080 (no transparency needed)
+ *   bg_*_frame .............................. 1920 x 1080 overlay, transparent where the reels show
+ *   bg_base_reel_strip ...................... one reel column, about 270 x 810 (stretched to the column)
+ *   btn_* ................................... about 160 x 160 (spin), 80 x 80 (others)
+ *   ui_bar_bottom ........................... 1920 x 110
+ *   modal_freespins_* ....................... about 1100 x 620 panel; text is drawn on top
+ *   banner_win_* ............................ about 1200 x 360 title art; the amount is drawn below it
+ * The symbol upgrade animation splits each doll at symbolSplitY (fraction of height)
+ * into a lid and a base; keep the doll's seam near that line or change the value.
  *
- * Sounds: MP3 / OGG / WAV. Anything missing falls back to a synthesised placeholder.
- * Sounds only load when the game is served over http(s) (see README: "Run it").
+ * Sounds: MP3 or WAV. They only load when the game is served over http(s) (README: "Run it").
+ * Spine 2D skeletons listed in the asset spec are not wired in yet; see README "Next steps".
  */
 window.ASSET_MANIFEST = {
   symbolSplitY: 0.47,
 
   images: {
-    background:            'assets/images/backgrounds/background.jpg',
-    background_freespins:  'assets/images/backgrounds/background_freespins.jpg',
-    background_bigwin:     'assets/images/backgrounds/background_bigwin.jpg',
-    background_megawin:    'assets/images/backgrounds/background_megawin.jpg',
-    background_epicwin:    'assets/images/backgrounds/background_epicwin.jpg',
-    background_wipewin:    'assets/images/backgrounds/background_wipewin.jpg',
+    // 2.1 environment
+    bg_base_main:        'assets/images/environment/bg_base_main.png',
+    bg_base_frame:       'assets/images/environment/bg_base_frame.png',
+    bg_base_reel_strip:  'assets/images/environment/bg_base_reel_strip.png',
+    // 3.1 free game environment
+    bg_freegame_main:    'assets/images/environment/bg_freegame_main.png',
+    bg_freegame_frame:   'assets/images/environment/bg_freegame_frame.png',
+    fx_reel3_guaranteed_wild_indicator: 'assets/images/fx/fx_reel3_guaranteed_wild_indicator.png',
 
-    symbol_L7:  'assets/images/symbols/L7_teal_dummy.png',
-    symbol_L6:  'assets/images/symbols/L6_blue.png',
-    symbol_L5:  'assets/images/symbols/L5_purple.png',
-    symbol_L4:  'assets/images/symbols/L4_pink.png',
-    symbol_L3:  'assets/images/symbols/L3_red.png',
-    symbol_L2:  'assets/images/symbols/L2_orange_glasses.png',
-    symbol_L1:  'assets/images/symbols/L1_yellow.png',
-    // optional "scared" faces shown when the Scare Bear targets a doll
-    symbol_L7_scared: 'assets/images/symbols/L7_scared.png',
-    symbol_L6_scared: 'assets/images/symbols/L6_scared.png',
-    symbol_L5_scared: 'assets/images/symbols/L5_scared.png',
-    symbol_L4_scared: 'assets/images/symbols/L4_scared.png',
-    symbol_L3_scared: 'assets/images/symbols/L3_scared.png',
-    symbol_L2_scared: 'assets/images/symbols/L2_scared.png',
-    symbol_L1_scared: 'assets/images/symbols/L1_scared.png',
+    // 2.2 UI / HUD
+    ui_bar_bottom:       'assets/images/ui/ui_bar_bottom.png',
+    btn_spin_idle:       'assets/images/ui/btn_spin_idle.png',
+    btn_spin_active:     'assets/images/ui/btn_spin_active.png',
+    btn_spin_disabled:   'assets/images/ui/btn_spin_disabled.png',
+    btn_auto_idle:       'assets/images/ui/btn_auto_idle.png',
+    btn_auto_active:     'assets/images/ui/btn_auto_active.png',
+    btn_bet_plus:        'assets/images/ui/btn_bet_plus.png',
+    btn_bet_minus:       'assets/images/ui/btn_bet_minus.png',
+    btn_info:            'assets/images/ui/btn_info.png',
+    ui_freegame_counter: 'assets/images/ui/ui_freegame_counter.png',
 
-    wild:        'assets/images/symbols/wild_egg.png',
-    wild_star:   'assets/images/symbols/wild_egg_star.png',   // shown when the Wild lands with a star (it will open to a bear)
-    ghost:       'assets/images/symbols/ghost.png',
-    bear_scare:  'assets/images/bears/bear_scare.png',          // shown small / medium / large for 1 / 2 / 3 upgrades
-    bear_charm:  'assets/images/bears/bear_charm.png',
-    bear_dance:  'assets/images/bears/bear_dance.png',
-    bubble_scare:'assets/images/bears/bubble_scare.png',
-    bubble_charm:'assets/images/bears/bubble_charm.png',
-    bubble_dance:'assets/images/bears/bubble_dance.png',
+    // 4.1 standard symbols (idle frames)
+    sym_00_idle: 'assets/images/symbols/sym_00_grandmother_idle.png',   // Tier 0 Yellow (highest)
+    sym_01_idle: 'assets/images/symbols/sym_01_glasses_idle.png',       // Tier 1 Orange
+    sym_02_idle: 'assets/images/symbols/sym_02_red_idle.png',           // Tier 2 Red
+    sym_03_idle: 'assets/images/symbols/sym_03_pink_idle.png',          // Tier 3 Pink
+    sym_04_idle: 'assets/images/symbols/sym_04_purple_idle.png',        // Tier 4 Dark Purple
+    sym_05_idle: 'assets/images/symbols/sym_05_blue_idle.png',          // Tier 5 Light Blue
+    sym_06_idle: 'assets/images/symbols/sym_06_pacifier_idle.png',      // Tier 6 Teal (lowest)
 
-    win_patch:   'assets/images/fx/win_patch.png',
-    logo:        'assets/images/ui/logo.png'
+    // 4.2 special and mystery symbols
+    sym_wild_idle:        'assets/images/symbols/sym_wild_idle.png',
+    sym_wild_star_idle:   'assets/images/symbols/sym_wild_star_idle.png',
+    sym_bear_scare_small: 'assets/images/symbols/sym_bear_scare_small.png',
+    sym_bear_scare_med:   'assets/images/symbols/sym_bear_scare_med.png',
+    sym_bear_scare_large: 'assets/images/symbols/sym_bear_scare_large.png',
+    sym_bear_charm:       'assets/images/symbols/sym_bear_charm.png',
+    sym_bear_dance:       'assets/images/symbols/sym_bear_dance.png',
+    sym_ghost_idle:       'assets/images/symbols/sym_ghost_idle.png',
+
+    // 7 banners and modals (panel / title art; text and amounts are drawn on top)
+    modal_freespins_intro:   'assets/images/banners/modal_freespins_intro.png',
+    modal_freespins_outro:   'assets/images/banners/modal_freespins_outro.png',
+    banner_win_nice:         'assets/images/banners/banner_win_nice.png',
+    banner_win_big:          'assets/images/banners/banner_win_big.png',
+    banner_win_mega:         'assets/images/banners/banner_win_mega.png',
+    banner_win_superb:       'assets/images/banners/banner_win_superb.png',
+    banner_win_sensational:  'assets/images/banners/banner_win_sensational.png',
+    banner_win_epic:         'assets/images/banners/banner_win_epic.png',
+
+    // 8 pay line visualisation (line_overlay_01..17 are drawn as paths in code)
+    line_node_highlight:     'assets/images/fx/line_node_highlight.png'
   },
 
   sounds: {
-    spin:        'assets/audio/spin.mp3',
-    reel_stop:   'assets/audio/reel_stop.mp3',
-    win:         'assets/audio/win.mp3',
-    pop:         'assets/audio/pop.mp3',
-    egg_wobble:  'assets/audio/egg_wobble.mp3',
-    egg_hatch:   'assets/audio/egg_hatch.mp3',
-    bear_scare:  'assets/audio/bear_scare.mp3',
-    bear_charm:  'assets/audio/bear_charm.mp3',
-    bear_dance:  'assets/audio/bear_dance.mp3',
-    fs_start:    'assets/audio/freespins_start.mp3',
-    wipe:        'assets/audio/wipe_win.mp3',
-    bigwin:      'assets/audio/big_win.mp3',
-    music_base:  'assets/audio/music_base.mp3',
-    music_free:  'assets/audio/music_freespins.mp3'
+    bgm_basegame_loop:      'assets/audio/bgm_basegame_loop.mp3',
+    bgm_freegame_loop:      'assets/audio/bgm_freegame_loop.mp3',
+    sfx_spin_button_click:  'assets/audio/sfx_spin_button_click.mp3',
+    sfx_reel_spin:          'assets/audio/sfx_reel_spin.mp3',
+    sfx_reel_stop_01:       'assets/audio/sfx_reel_stop_01.mp3',
+    sfx_reel_stop_02:       'assets/audio/sfx_reel_stop_02.mp3',
+    sfx_reel_stop_03:       'assets/audio/sfx_reel_stop_03.mp3',
+    sfx_reel_stop_04:       'assets/audio/sfx_reel_stop_04.mp3',
+    sfx_reel_stop_05:       'assets/audio/sfx_reel_stop_05.mp3',
+    sfx_anticipation_reel3: 'assets/audio/sfx_anticipation_reel3.mp3',
+    sfx_symbol_win_line:    'assets/audio/sfx_symbol_win_line.mp3',
+    sfx_symbol_upgrade:     'assets/audio/sfx_symbol_upgrade.mp3',
+    sfx_scare_bear_roar:    'assets/audio/sfx_scare_bear_roar.mp3',
+    sfx_charm_bear_magic:   'assets/audio/sfx_charm_bear_magic.mp3',
+    sfx_dance_bear_jig:     'assets/audio/sfx_dance_bear_jig.mp3',
+    sfx_wipe_win_fanfare:   'assets/audio/sfx_wipe_win_fanfare.mp3',
+    sfx_ghost_jackpot:      'assets/audio/sfx_ghost_jackpot.mp3',
+    sfx_countup_loop:       'assets/audio/sfx_countup_loop.mp3',
+    sfx_countup_end:        'assets/audio/sfx_countup_end.mp3'
   }
 };

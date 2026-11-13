@@ -1,8 +1,16 @@
 # Nesting Dolls: slot prototype
 
-A playable HTML5 prototype of a 5×3, 17-line nesting-doll slot. Its rules and maths follow [`docs/official-game-rules.md`](docs/official-game-rules.md) and [`docs/pay-table.md`](docs/pay-table.md). Presentation and timing follow [`docs/reference-gdd.md`](docs/reference-gdd.md) and gameplay footage of the reference game.
+A playable HTML5 prototype of a 5×3, 17-line nesting-doll slot. It's built so the final art, animation and audio can replace the placeholders file by file.
 
-All art and sound comes from files listed in one manifest. Missing files fall back to placeholders drawn in code. You can replace the graphics one file at a time without touching any game code.
+| Spec | Drives |
+| --- | --- |
+| [`docs/official-game-rules.md`](docs/official-game-rules.md) | Mechanics |
+| [`docs/pay-table.md`](docs/pay-table.md) | Pay table, paylines, special win |
+| [`docs/animation-specifications.md`](docs/animation-specifications.md) | Every animation duration and keyframe phase (30 fps) |
+| [`docs/game-asset-specification.md`](docs/game-asset-specification.md) | Asset IDs, file names, win banner tiers, audio list |
+| [`docs/reference-gdd.md`](docs/reference-gdd.md) | Max win, bet range |
+
+Slot Demo Studio, a separate general-purpose demo recorder, is in [`studio/`](studio/index.html).
 
 ## Run it
 
@@ -15,105 +23,141 @@ python3 -m http.server 8000      # then open http://localhost:8000
 
 Opening `index.html` directly also works. In that mode only the synthesised placeholder sounds play.
 
-**Controls:** click the spin button or press **Space**. Click during a celebration to skip it. Press **D** to hide or show the demo panel so the game fills the window for capture.
+**Controls:**
+- Spin button or **Space**: spin.
+- **i**: paytable and rules.
+- **− / +**: bet.
+- **AUTO**: autoplay.
+- Click during a banner: skip ahead.
+- **D**: hide or show the demo panel so the game fills the window for capture.
 
-## What's implemented
+## Mechanics (official rules)
 
 | Feature | Rule |
 | --- | --- |
-| 5×3 grid, 17 fixed paylines | Official line shapes. Left to right, no gaps; only the highest win per line is paid |
-| Pay table | 7 dolls from Teal (lowest) to Yellow (highest). The € values are converted to multiples of the bet (the table is quoted at a €7.50 bet) |
-| Win symbol upgrade | All winning symbols of one value upgrade to the next value, only if that creates new or longer paylines. Repeats until nothing qualifies |
-| Wild (reel 3 only) | Substitutes for all dolls. When it lands showing a **star**, it opens to a bear |
-| Scare Bear | The lowest-value dolls upgrade, repeated 1, 2 or 3 times. Bear size (small, medium, large) shows how many |
-| Charm Bear | Every doll on screen upgrades once |
+| Grid and lines | 5×3, 17 fixed paylines (official shapes), left to right, no gaps. Only the highest win per payline is paid |
+| Symbols | `sym_00` Yellow (highest) … `sym_06` Teal (lowest). Pays are the pay table's € values divided by its €7.50 bet |
+| Win symbol upgrade | Winning symbols of one value upgrade to the next value, only if that creates new or longer paylines. Repeats until nothing qualifies |
+| Wild | Reel 3 only, substitutes for all symbols. Landing with a **star**, it opens to a Mystery Bear |
+| Scare Bear | The lowest symbols upgrade 1, 2 or 3 times (small, medium or large bear) |
+| Charm Bear | All symbols upgrade once |
 | Dance Bear | 7 free spins with a guaranteed Wild on reel 3 every spin |
-| Wipe Win | When all 15 symbols are the same after all upgrades, they all upgrade once more |
-| Special win | A wipe of 15 Yellow dolls turns them into Ghosts and pays 100× bet (€750 at €7.50) |
-| Celebrations | Big / Mega / Epic (10× / 25× / 50×) and Wipe Win, with knitted count-up |
-| Max win cap | 390× bet per round (from the GDD) |
-| Demo controls | Scripted outcome list, custom grid painter (choose the bear and its size), speed control, video recording (MP4 or WebM with sound) |
+| Wipe | 15 identical symbols upgrade once more |
+| Special award | A wipe of 15 Yellows turns them into Ghosts and pays 100× bet (€750 at €7.50). Shown with the EPIC banner |
+| Max win | 390× bet per round (GDD) |
 
-## Replace the art
+## Presentation (animation spec, 30 fps)
 
-1. Open [`assets/manifest.js`](assets/manifest.js). Every image and sound has a key and a file path.
-2. Save your file at that path, or change the path to point at your file.
-3. Reload. The demo panel's **Assets** section lists the files that still use placeholders.
+All frame counts are in `CONFIG.frames` in `src/config.js`. The presentation speed slider in the demo panel scales them all together.
 
-| Key | Default path | Size |
+| Spec ID | Frames | What you see |
 | --- | --- | --- |
-| `symbol_L7` … `symbol_L1` | `assets/images/symbols/L7_teal_dummy.png` … `L1_yellow.png` | 300×300 PNG |
-| `symbol_L*_scared` (optional) | `assets/images/symbols/L*_scared.png` | 300×300 PNG |
-| `wild` / `wild_star` | `assets/images/symbols/wild_egg.png` / `wild_egg_star.png` | 300×300 PNG (plain Wild, and the Wild showing a star before it opens) |
-| `bear_scare` / `bear_charm` / `bear_dance` | `assets/images/bears/…` | 300×300 PNG (bear in the bottom half of the egg). Scare Bear is scaled to show small, medium or large |
-| `bubble_scare` / `bubble_charm` / `bubble_dance` | `assets/images/bears/…` | about 640×360 PNG |
-| `ghost` | `assets/images/symbols/ghost.png` | 300×300 PNG |
-| `background`, `background_freespins`, `background_bigwin`, `background_megawin`, `background_epicwin`, `background_wipewin` | `assets/images/backgrounds/…` | 1920×1080 |
-| `win_patch` | `assets/images/fx/win_patch.png` | 300×300 white/grey PNG, tinted per doll colour |
-| sounds | `assets/audio/…` | MP3, OGG or WAV |
+| `bg_base_loop` | 120 | Background ornaments breathe (scale 1 → 1.02, opacity 0.85 → 1) |
+| `bg_freegame_loop` | 90 | Red/gold party lights cycle every 30f, gold sparkles fall, reel 3 outline pulses (45f sine) |
+| `sym_xx_win` / `sym_xx_upgrade` | 10 + 20 + 15 | Scale to 1.15. Then the doll opens (lid lifts, glow, particle burst) and morphs into the next tier, or settles back to 1.0 |
+| `sym_wild_star_open` | 15 + 20 + 10 | Land squash (scaleY 0.85 → 1), star flash and top shell flies off, bear emerges |
+| `vfx_anticipation_reel3` | 15 + 30 + 15 | Gold aura ramps up, electric sparks, slam stop with flash. Plays when the Wild will open (`anticipateOn`) |
+| `bear_scare_1x/2x/3x` | 45 / 67 / 90 | One 22.5f roar shockwave per upgrade. The lowest dolls get scared, then morph |
+| `bear_charm` | 20 + 25 + 15 | Kiss hearts, hearts sweep to all 15 positions, everything upgrades with a shimmer |
+| `bear_dance` | 45 + 30 | Accordion riff with music notes, then hand-over to the free spins banner |
+| `vfx_wipe_win_sweep` | 30 + 30 + 30 | Gold frame locks the grid, gold flash sweeps across as symbols morph, green light turns Yellows into Ghosts with the win burst |
+| `banner_fg_trigger` | 30 + 90 + 30 | 70% dimmer, elastic scale-in, "CONGRATULATIONS! YOU WON 7 FREE SPINS!", pulse, START |
+| `trans_base_to_freegame` | 15 + 45 + 15 | Accordion curtain wipe; the free game scene is swapped in behind it |
+| `banner_fg_summary` | 30 + 90 + 30 | Drops in from the top, 75f count-up, "TOTAL WIN … IN 7 FREE SPINS", COLLECT, shrinks out |
+| `trans_freegame_to_base` | 60 | Camera zoom-out and background dissolve |
+| `banner_win_*` | 30 + 90 + 30 | 75% dimmer, title slams in (0 → 1.2 → 1.0), tally over frames 30–105, amount snaps to the HUD, zooms out |
+
+**Win banners** follow the asset spec's six tiers:
+
+| Banner | Win |
+| --- | --- |
+| NICE | 15× |
+| BIG | 25× |
+| MEGA | 50× |
+| SUPERB | 100× |
+| SENSATIONAL | 250× |
+| EPIC | 500×, or the Ghost special award |
+
+Each tier has its own FX: coin fountain, coin drop, double cascade, fireworks with confetti cannons, lasers, or full-screen fireworks with coin rain.
+
+**Paylines:** `line_overlay_01..17` are drawn as coloured paths through the winning cells, with `line_node_highlight` rings around each winning symbol.
+
+## Replace the art and sound
+
+Every asset key in [`assets/manifest.js`](assets/manifest.js) is the asset spec's ID. To swap one:
+1. Save your file at the listed path, or point the path at your file.
+2. Reload.
+
+Missing files keep their placeholder. The demo panel's **Assets** section lists the files that still use placeholders.
+
+| Folder | Asset IDs | Size |
+| --- | --- | --- |
+| `assets/images/environment/` | `bg_base_main`, `bg_base_frame`, `bg_base_reel_strip`, `bg_freegame_main`, `bg_freegame_frame` | 1920×1080 (frames are overlays with a clear centre) |
+| `assets/images/symbols/` | `sym_00_idle` … `sym_06_idle`, `sym_wild_idle`, `sym_wild_star_idle`, `sym_bear_scare_small/med/large`, `sym_bear_charm`, `sym_bear_dance`, `sym_ghost_idle` | 300×300 PNG, same framing for all |
+| `assets/images/ui/` | `ui_bar_bottom`, `btn_spin_idle/active/disabled`, `btn_auto_idle/active`, `btn_bet_plus/minus`, `btn_info`, `ui_freegame_counter` | see manifest |
+| `assets/images/banners/` | `modal_freespins_intro/outro`, `banner_win_nice/big/mega/superb/sensational/epic` | panel and title art; text and amounts are drawn on top |
+| `assets/images/fx/` | `fx_reel3_guaranteed_wild_indicator`, `line_node_highlight` | see manifest |
+| `assets/audio/` | `bgm_basegame_loop`, `bgm_freegame_loop`, `sfx_spin_button_click`, `sfx_reel_spin`, `sfx_reel_stop_01..05`, `sfx_anticipation_reel3`, `sfx_symbol_win_line`, `sfx_symbol_upgrade`, `sfx_scare_bear_roar`, `sfx_charm_bear_magic`, `sfx_dance_bear_jig`, `sfx_wipe_win_fanfare`, `sfx_ghost_jackpot`, `sfx_countup_loop`, `sfx_countup_end` | MP3 or WAV |
 
 Tips:
-- Keep the same framing for every symbol: centred on a 300×300 canvas with transparent padding.
-- The pop animation splits each doll image horizontally at `symbolSplitY` (default 0.47 of the height) into a lid and a base. Put your doll's seam near that line, or change the value in the manifest.
-- Once real symbols are in, set `showLevelBadges: false` in `src/config.js` to remove the small "L5" tags. They only appear on placeholder dolls anyway.
-- Music (`music_base`, `music_free`) only plays from real files. There is no synthesised music.
+- The upgrade animation splits each doll image at `symbolSplitY` (0.47 of the height) into a lid and a base. Put your doll's seam near that line, or change the value in the manifest.
+- Placeholder dolls carry small `sym_0x` tags. They disappear once real symbols are in, or set `showLevelBadges: false`.
+- Music only plays from real files.
 
 ## Project layout
 
 ```
 index.html            page + demo panel
 css/style.css         panel styling
-assets/manifest.js    every art and sound file path  ← edit this to swap assets
-assets/images/…       drop artwork here
-assets/audio/…        drop sounds here
-src/config.js         maths, timing and presentation settings
-src/engine.js         pure game maths: paylines, conditional upgrades, bears, wipe and special win
-src/director.js       builds scripted outcomes for demos (search over random grids)
-src/game.js           reels, step-by-step presentation, free spins, celebrations, UI bar
+assets/manifest.js    every asset path, keyed by spec asset ID  ← edit this to swap assets
+assets/images/…       artwork, by spec category
+assets/audio/…        sound
+src/config.js         maths, frame timings (30 fps), banner tiers, presentation switches
+src/engine.js         pure maths: paylines, conditional upgrades, bears, wipe and special win
+src/director.js       builds scripted outcomes for demos
+src/game.js           reels, step animations, banners, modals, transitions, HUD, paytable
 src/placeholders.js   code-drawn placeholder art
 src/assets.js         loads manifest files, falls back to placeholders
 src/audio.js          file sounds or synthesised placeholders, routed into recordings
 src/devpanel.js       demo controls (not part of the game)
 tools/simulate.js     Monte Carlo maths check (Node)
-docs/official-game-rules.md   official rules (source of truth for mechanics)
-docs/pay-table.md             official pay table and paylines
-docs/reference-gdd.md         design document (presentation, timing, max win)
+studio/index.html     Slot Demo Studio (generic slot demo recorder)
+docs/                 rules, pay table, animation spec, asset spec, GDD
 ```
 
-The engine returns a list of **steps** for each spin: `hatch`, `bear`, `win`, `pop`, `wipe`. `game.js` animates them one by one. To redo the presentation (for example in Pixi or Spine), keep `engine.js` and replace the drawing code.
+The engine returns a list of steps per spin (`hatch`, `bear`, `win`, `pop`, `wipe`), and `game.js` animates them. To rebuild the presentation in Pixi or Spine, keep `engine.js` and replace the drawing code.
 
 ## Maths
 
-The pay table, paylines and special win come from the official documents. The documents don't publish the reel weights or feature chances, so these were tuned with the simulator to hit the published targets. Results from `node tools/simulate.js 3000000`:
+`node tools/simulate.js 2000000` results:
 
 | Metric | Prototype | Target |
 | --- | --- | --- |
-| RTP | 96.25% (about ±0.5% between runs) | 95.8% |
+| RTP | 96.0% (±0.5% between runs) | 95.8% |
 | Hit frequency | 27.8% | 29.8% (GDD) |
-| Free spins | 1 in 118 | about 1 in 118 (GDD) |
-| Wipe Win | 1 in about 1,200 | not published |
-| Ghost special win (100×) | 1 in about 1,700 | not published |
+| Free spins | 1 in 117 | about 1 in 118 (GDD) |
+| Wipe | 1 in about 1,200 | not published |
+| Ghost special (100×) | 1 in about 1,600 | not published |
 | Max win | 390× cap | 390× (GDD) |
 
-What was tuned or assumed, all in `src/config.js`:
-- **Tuned:** symbol weights (`weights`), how often a landed Wild shows a star (`starChance` 29% base, 8% in free spins), bear weights, and Scare Bear size weights.
-- **Assumed:** a Dance Bear during free spins adds 7 more spins.
-- **Assumed:** Wild positions count as "the same" for the wipe check. Otherwise no wipe could ever happen in free spins, where the Wild is guaranteed.
-- **Assumed:** the wipe upgrade happens once per spin. The footage shows a Wipe Win of 15 Yellows that didn't then turn to Ghosts.
-- **Interpretation:** when several values qualify for an upgrade at the same time, they all upgrade together.
+The documents don't publish reel weights or feature chances, so these were tuned to hit the targets: symbol weights, Wild star chance (29% base, 8% in free spins), bear weights and Scare Bear size weights. This is prototype maths for demos, not certified maths.
 
-The doll colour order matches the pay table: Teal with pacifier (L7, lowest), Blue, Purple, Pink, Red, Orange with glasses, Yellow grandmother (L1, highest).
+## Decisions where the documents disagree or are silent
 
-This is prototype maths for demos, not certified game maths.
+- **Win banner tiers:** the animation spec starts at NICE 25×; the asset spec has NICE 15× and BIG 25×. The asset spec's six tiers are used, editable in `CONFIG.winTiers`.
+- **Which banners can actually appear:** only the highest win per line is paid, so one spin tops out at 34× without a wipe. In practice you'll see NICE and BIG on single spins, and EPIC for the Ghost award. MEGA and above need a large free spins round, and the 390× cap (GDD) means 500× EPIC is reached only through the special award.
+- **When banners show:** win banners play after each base spin and each free spin. The free spins summary covers the whole bonus.
+- **Dance Bear order:** the current spin's wins finish first, then the free spins trigger banner plays.
+- **Rule assumptions:** Wilds count as "the same" for the wipe check, the wipe upgrade happens once per spin, and a Dance Bear during free spins adds 7 more spins.
+- **Anticipation:** it plays only when the Wild will open (`anticipateOn: 'star'`; set `'wild'` for any Wild). The spec's "reel slows slightly" ramp isn't implemented; the reel spins at full speed under the aura.
 
 ## Recording demos
 
-In the demo panel, build a list of outcomes: No win, Single win, Upgrade chain, Scare Bear (small or large), Charm Bear, Dance Bear → Free spins, Big win, Wipe Win, Wipe → Ghost (100×), or a custom grid you paint yourself, including which bear the Wild opens to. Then choose **Record video → Whole list**.
+In the demo panel, build a list of outcomes and choose **Record video → Whole list**. Options include No win, Single win, Upgrade chain, Nice/Big banner, Scare Bear (small/large), Charm Bear, Dance Bear → Free spins, Wipe Win, Wipe → Ghost, or a custom grid where you choose which bear the Wild opens to.
 
-Recording captures the 1920×1080 canvas with sound and stops by itself. You get a download link for the file. Press **D** before recording to hide the panel.
+Recording captures the 1920×1080 canvas at 30 fps with sound. Press **D** first to hide the panel.
 
 ## Next steps
 
-- Spine2D or sprite-sheet animations for the doll pop, egg hatch and bears. Each step in `game.js` (`playStep`) is the place to hook them in.
-- Portrait layout for mobile.
-- Real reel strips instead of per-cell weights, once the maths are final.
+- **Spine 2D:** the asset spec calls for skeletal animations (`sym_xx_win`, `sym_xx_upgrade`, `bear_scare_1x/2x/3x`, `bear_charm`, `bear_dance`). Each one maps to a single function in `game.js` (`showWin`, `playHatch`, `playBear`, `playWipe`), already timed to the spec. The next step is loading `.json` + `.atlas` with the Spine web runtime and playing the named animation there in place of the code-drawn tween.
+- Autoplay round-count page, portrait layout, and reel strips once the maths are final.
