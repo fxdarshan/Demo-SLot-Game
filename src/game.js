@@ -340,6 +340,18 @@
     ctx.strokeStyle = '#ffd34a'; ctx.lineWidth = 10; ctx.shadowColor = '#ffb000'; ctx.shadowBlur = 40;
     ctx.beginPath(); ctx.roundRect(x + 2, y0 - 8, cell - 4, gh + 16, 20); ctx.stroke();
     ctx.restore();
+    const sw = A.real.vfx_anticipation_reel3 && A.get('vfx_anticipation_reel3');
+    if (sw) {
+      // supplied golden spiral: two additive layers, one mirrored and drifting, so it twists over the 2 s
+      const hh = gh + cell * .5, ww = sw.width * hh / sw.height, cx = x + cell / 2, cy = y0 + gh / 2;
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < 2; k++) {
+        ctx.save(); ctx.globalAlpha = alpha * (k ? .55 : .9); ctx.translate(cx, cy + Math.sin(t * 3 + k * 2) * 18);
+        ctx.scale((k ? -1 : 1) * (1 + .06 * Math.sin(t * 5 + k)), 1 + .03 * Math.sin(t * 4));
+        ctx.drawImage(sw, -ww / 2, -hh / 2, ww, hh); ctx.restore();
+      }
+      ctx.restore();
+    }
     if (!a.flash && f > r1 && Math.random() < .8) {
       for (let k = 0; k < 2; k++) emit('spark', x + Math.random() * cell, y0 + Math.random() * gh, 1, { angle: Math.random() * 6.28, spread: 6, speed: 220, gravity: 0, life: .4, size: 8, color: ['#fff6b0', '#ffd34a', '#ffffff'] });
     }
@@ -522,12 +534,15 @@
     if (tier.fx === 'lasers' || tier.fx === 'epic') rays(W / 2, H * .4, t * (tier.fx === 'lasers' ? 3 : 1), tier.fx === 'epic' ? 'rgba(170,230,255,.55)' : 'rgba(200,120,255,.5)', alpha, tier.fx === 'lasers' ? 8 : 18);
     else rays(W / 2, H * .4, t, 'rgba(255,220,140,.35)', alpha * .8);
     if (b.ghost) drawSprite(A.get('sym_ghost_idle'), W / 2, H * .2, 300, { alpha: alpha * .9 });
-    ctx.translate(W / 2, H * .4 + dy); ctx.scale(scale, scale);
     const img = A.real['banner_win_' + tier.id] && A.get('banner_win_' + tier.id);
-    if (img) ctx.drawImage(img, -img.width / 2, -img.height / 2);
+    // supplied title art is fitted into a box above the amount; otherwise the code-drawn ribbon
+    const k = img ? Math.min(W * .5 / img.width, H * .6 / img.height) : 1, ih = img ? img.height * k : 190;
+    const cy = img ? H * .36 : H * .4;
+    ctx.translate(W / 2, cy + dy); ctx.scale(scale, scale);
+    if (img) ctx.drawImage(img, -img.width * k / 2, -ih / 2, img.width * k, ih);
     else { ribbon(0, 0, 1100, 190, tier.colors); blockText(tier.label, 0, -6, 110, { colors: ['#ffffff', tier.colors[0], tier.colors[1]], maxW: 1000 }); }
     ctx.restore();
-    blockText(fmt(shown), W / 2, H * .64 + dy, 150, { alpha, scale: f < fi ? ease.out(f / fi) : 1, maxW: W * .8 });
+    blockText(fmt(shown), W / 2, (img ? cy + ih / 2 + 78 : H * .64) + dy, img ? 130 : 150, { alpha, scale: f < fi ? ease.out(f / fi) : 1, maxW: W * .8 });
     if (f >= total) { const r = b.resolve; G.banner = null; r(); }
   }
   // free spins trigger (pulse + rays, START) and summary (drop in, tally, COLLECT)
@@ -548,31 +563,44 @@
     if (intro) { rays(W / 2, H * .45, t, 'rgba(255,215,120,.45)', alpha); if (f > fi && f < fi + fl && Math.random() < .6) emit('spark', W / 2 + (Math.random() - .5) * 900, H * .45 + (Math.random() - .5) * 400, 1, { angle: 0, spread: 6, speed: 60, gravity: 0, life: .7, size: 8, color: ['#fff6c8', '#ffd34a'] }); }
     ctx.translate(W / 2, H * .45 + dy); ctx.scale(scale, scale);
     const key = intro ? 'modal_freespins_intro' : 'modal_freespins_outro', img = A.real[key] && A.get(key);
-    if (img) ctx.drawImage(img, -img.width / 2, -img.height / 2);
+    const mk = img ? Math.min(1100 / img.width, 680 / img.height) : 1, mw = img ? img.width * mk : 1080, mh = img ? img.height * mk : 600;
+    if (img) ctx.drawImage(img, -mw / 2, -mh / 2, mw, mh);
     else {
       ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 40; const g = ctx.createLinearGradient(0, -300, 0, 300); g.addColorStop(0, '#a8402a'); g.addColorStop(1, '#5a1a10');
       ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(-540, -300, 1080, 600, 40); ctx.fill(); ctx.shadowBlur = 0;
       ctx.lineWidth = 8; ctx.strokeStyle = '#f2c27a'; ctx.stroke(); ctx.setLineDash([14, 10]); ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect(-510, -270, 1020, 540, 30); ctx.stroke(); ctx.setLineDash([]);
       ribbon(0, -250, 820, 120, ['#fff2c0', '#e8b23a', '#8a4a10']);
     }
-    blockText('CONGRATULATIONS!', 0, -252, 64, { maxW: 760 });
-    if (intro) {
-      blockText(m.text1, 0, -90, 66, { colors: ['#ffffff', '#fff0c8'], maxW: 960 });
-      blockText(m.text2, 0, 30, 130, { colors: ['#fffbe0', '#ffd04a', '#e07b00'], maxW: 960 });
-    } else {
-      const tu = clamp((f - fi) / FR.summaryTally, 0, 1), shown = m.amount * ease.out(tu);
+    const tu = clamp((f - fi) / FR.summaryTally, 0, 1), shown = (m.amount || 0) * ease.out(tu);
+    if (!intro) {
       if (tu > 0 && tu < 1 && t - (m.tick || 0) > .07) { m.tick = t; SND.play('sfx_countup_loop'); }
       if (tu >= 1 && !m.ended) { m.ended = true; SND.play('sfx_countup_end'); }
-      blockText(`TOTAL WIN: ${fmt(shown)} IN ${m.spins} FREE SPINS`, 0, -150, 40, { colors: ['#ffffff', '#fff0c8'], maxW: 960 });
-      blockText('YOU WON', 0, -60, 60, { colors: ['#ffffff', '#fff0c8'] });
-      blockText(fmt(shown), 0, 50, 130, { maxW: 960 });
-      blockText(`IN ${m.spins} FREE SPINS!`, 0, 150, 48, { colors: ['#ffffff', '#fff0c8'] });
     }
-    // START / COLLECT button
-    const bl = intro ? 'START' : 'COLLECT', pulse = 1 + .04 * Math.sin(t * 6);
-    ctx.save(); ctx.translate(0, 235); ctx.scale(pulse, pulse); const g2 = ctx.createLinearGradient(0, -40, 0, 40); g2.addColorStop(0, '#9be86a'); g2.addColorStop(1, '#2f8a2a');
+    if (img && intro) {
+      // 'Festive Win!' frame: the title is in the art; the award sits in the open centre above the reindeer
+      blockText(m.text1, 0, -mh * .06, 48, { colors: ['#ffffff', '#ffe9c8'], stroke: '#7a1a10', maxW: mw * .5 });
+      blockText(m.text2, 0, mh * .08, 78, { colors: ['#fffbe0', '#ffd04a', '#e07b00'], stroke: '#5a1a05', maxW: mw * .56 });
+    } else if (img) {
+      // 'Total Win!' sign: the header is in the art; the amount goes on the cleared board
+      blockText(fmt(shown), 0, -mh * .02, 104, { maxW: mw * .62 });
+      blockText(`IN ${m.spins} FREE SPINS!`, 0, mh * .13, 40, { colors: ['#ffffff', '#ffe9c8'], stroke: '#3b1505', maxW: mw * .6 });
+    } else {
+      blockText('CONGRATULATIONS!', 0, -252, 64, { maxW: 760 });
+      if (intro) {
+        blockText(m.text1, 0, -90, 66, { colors: ['#ffffff', '#fff0c8'], maxW: 960 });
+        blockText(m.text2, 0, 30, 130, { colors: ['#fffbe0', '#ffd04a', '#e07b00'], maxW: 960 });
+      } else {
+        blockText(`TOTAL WIN: ${fmt(shown)} IN ${m.spins} FREE SPINS`, 0, -150, 40, { colors: ['#ffffff', '#fff0c8'], maxW: 960 });
+        blockText('YOU WON', 0, -60, 60, { colors: ['#ffffff', '#fff0c8'] });
+        blockText(fmt(shown), 0, 50, 130, { maxW: 960 });
+        blockText(`IN ${m.spins} FREE SPINS!`, 0, 150, 48, { colors: ['#ffffff', '#fff0c8'] });
+      }
+    }
+    // START / COLLECT button (below supplied art, inside the code-drawn panel)
+    const bl = intro ? 'START' : 'COLLECT', pulse = 1 + .04 * Math.sin(t * 6), by = img ? mh / 2 + 28 : 235;
+    ctx.save(); ctx.translate(0, by); ctx.scale(pulse, pulse); const g2 = ctx.createLinearGradient(0, -40, 0, 40); g2.addColorStop(0, '#9be86a'); g2.addColorStop(1, '#2f8a2a');
     ctx.fillStyle = g2; ctx.beginPath(); ctx.roundRect(-150, -38, 300, 76, 38); ctx.fill(); ctx.lineWidth = 5; ctx.strokeStyle = '#163f12'; ctx.stroke(); ctx.restore();
-    blockText(bl, 0, 237, 46, { colors: ['#ffffff', '#eaffd8'], stroke: '#163f12' });
+    blockText(bl, 0, by + 2, 46, { colors: ['#ffffff', '#eaffd8'], stroke: '#163f12' });
     ctx.restore();
     if (f >= fi + fl && !m.outroCalled) { m.outroCalled = true; if (m.onOutro) m.onOutro(); }
     if (f >= fi + fl + fo) { const r = m.resolve; G.modal = null; r(); }

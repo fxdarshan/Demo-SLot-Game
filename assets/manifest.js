@@ -13,8 +13,8 @@
  *   bg_base_reel_strip ...................... one reel column, about 270 x 810 (stretched to the column)
  *   btn_* ................................... about 160 x 160 (spin), 80 x 80 (others)
  *   ui_bar_bottom ........................... 1920 x 110
- *   modal_freespins_* ....................... about 1100 x 620 panel; text is drawn on top
- *   banner_win_* ............................ about 1200 x 360 title art; the amount is drawn below it
+ *   modal_freespins_* ....................... up to about 1200 x 900 panel (fitted on screen); text is drawn on top
+ *   banner_win_* ............................ up to about 1000 x 900 title art (fitted on screen); the amount is drawn below it
  * The symbol upgrade animation splits each doll at symbolSplitY (fraction of height)
  * into a lid and a base; keep the doll's seam near that line or change the value.
  *
@@ -33,6 +33,7 @@ window.ASSET_MANIFEST = {
     bg_freegame_main:    'assets/images/environment/bg_freegame_main.jpg',    // snowy cabins under the northern lights
     bg_freegame_frame:   'assets/images/environment/bg_freegame_frame.png',
     fx_reel3_guaranteed_wild_indicator: 'assets/images/fx/fx_reel3_guaranteed_wild_indicator.png',
+    vfx_anticipation_reel3: 'assets/images/fx/vfx_anticipation_reel3.webp',   // golden spiral over reel 3 (drawn additive)
 
     // 2.2 UI / HUD
     ui_bar_bottom:       'assets/images/ui/ui_bar_bottom.png',
@@ -67,14 +68,14 @@ window.ASSET_MANIFEST = {
     sym_ghost_idle:       'assets/images/symbols/sym_ghost_idle.png',
 
     // 7 banners and modals (panel / title art; text and amounts are drawn on top)
-    modal_freespins_intro:   'assets/images/banners/modal_freespins_intro.png',
-    modal_freespins_outro:   'assets/images/banners/modal_freespins_outro.png',
-    banner_win_nice:         'assets/images/banners/banner_win_nice.png',
+    modal_freespins_intro:   'assets/images/banners/modal_freespins_intro.webp',   // 'Festive Win!' frame; text drawn in the centre
+    modal_freespins_outro:   'assets/images/banners/modal_freespins_outro.webp',   // 'Total Win!' wooden sign; amount drawn on the board
+    banner_win_nice:         'assets/images/banners/banner_win_nice.webp',          // 'Nice List!' wreath
     banner_win_big:          'assets/images/banners/banner_win_big.png',
-    banner_win_mega:         'assets/images/banners/banner_win_mega.png',
-    banner_win_superb:       'assets/images/banners/banner_win_superb.png',
-    banner_win_sensational:  'assets/images/banners/banner_win_sensational.png',
-    banner_win_epic:         'assets/images/banners/banner_win_epic.png',
+    banner_win_mega:         'assets/images/banners/banner_win_mega.webp',          // 'Merry Mega!' golden star
+    banner_win_superb:       'assets/images/banners/banner_win_superb.webp',        // 'Superb Sleigh Ride!' bells
+    banner_win_sensational:  'assets/images/banners/banner_win_sensational.webp',   // 'Sensational Snowfall!' ice
+    banner_win_epic:         'assets/images/banners/banner_win_epic.webp',          // 'Epic Christmas!' sleigh (also the Ghost award)
 
     // 8 pay line visualisation (line_overlay_01..17 are drawn as paths in code)
     line_node_highlight:     'assets/images/fx/line_node_highlight.png'

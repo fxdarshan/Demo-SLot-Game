@@ -2,6 +2,18 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Win banners, free spins popups, anticipation FX
+- Five win banners, cut out and converted to WebP:
+  - Nice List = `banner_win_nice`
+  - Merry Mega = `banner_win_mega`
+  - Superb Sleigh Ride = `banner_win_superb`
+  - Sensational Snowfall = `banner_win_sensational`
+  - Epic Christmas = `banner_win_epic`
+  - BIG has no art yet and keeps the code-drawn ribbon.
+- Free spins popups: the Festive Win frame (`modal_freespins_intro`) and the Total Win sign (`modal_freespins_outro`). The baked-in jackpot text was removed from the sign.
+- Reel 3 anticipation: golden spiral (`vfx_anticipation_reel3`), black converted to alpha and drawn additively.
+- Presentation code: supplied banner art is fitted on screen with the amount below; popup text is laid out inside the supplied frames. The code-drawn "CONGRATULATIONS!" header is skipped when the art has its own title.
+
 ## 2026-11-13: Holiday backgrounds
 - `bg_base_main`: cosy firelit living room with the Christmas tree and fireplace.
 - `bg_freegame_main`: snowy log cabins under the northern lights.

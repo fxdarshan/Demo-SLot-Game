@@ -168,6 +168,19 @@ These are the six tiers from the asset spec. The animation spec's five-tier tabl
 | SENSATIONAL WIN | 250× to under 500× | Amethyst, laser sweeps, heavy coin shower |
 | EPIC WIN | 500× or more, or the special award | Diamond blue, full fireworks, coin rain, Ghost rays |
 
+**Delivered banner art (holiday set):**
+
+| Tier | Banner |
+| :--- | :--- |
+| NICE | Nice List! (wreath) |
+| BIG | none yet; code-drawn ribbon |
+| MEGA | Merry Mega! (golden star) |
+| SUPERB | Superb Sleigh Ride! (bells) |
+| SENSATIONAL | Sensational Snowfall! (ice) |
+| EPIC | Epic Christmas! (sleigh) |
+
+The five supplied banners match the animation spec's five-tier list (section 7.1). If BIG WIN is dropped, switch `CONFIG.winTiers` to those five tiers and thresholds.
+
 Without a wipe, a single spin tops out at 34× (17 lines × Yellow 5-of-a-kind). In practice, single spins show NICE or BIG, the special award shows EPIC, and the higher tiers need a big free spins round. With the 390× cap, EPIC by amount is unreachable, so EPIC appears only for the special award.
 
 ---

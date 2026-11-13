@@ -17,6 +17,10 @@ The full list of IDs and descriptions is in [`docs/game-asset-specification.md`]
 - **Holiday symbol set:** 7 standard symbols, the Wild in both states and the 5 bears, cut out from their grey studio backgrounds and centred at 300×300.
 - **Backgrounds:** `bg_base_main` (cosy firelit living room) and `bg_freegame_main` (snowy cabins under the northern lights). Both were supplied at 1376×768, then cropped to exact 16:9 and scaled to 1920×1080 JPG. Re-supply them at 1920×1080 or larger for full sharpness.
 
+- **Win banners:** `banner_win_nice` (Nice List), `banner_win_mega` (Merry Mega), `banner_win_superb` (Superb Sleigh Ride), `banner_win_sensational` (Sensational Snowfall) and `banner_win_epic` (Epic Christmas, also used for the Ghost award). Cut out, trimmed, WebP. **`banner_win_big` was not in the set**, so BIG WIN still shows the code-drawn ribbon.
+- **Free spins popups:** `modal_freespins_intro` (Festive Win frame; "YOU WON / 7 FREE SPINS!" is drawn in its empty centre) and `modal_freespins_outro` (Total Win wooden sign). The sign's baked-in "2,750,000 COINS / JACKPOT BONUS!" was painted out and the board rebuilt from the surrounding planks, so the real total can be drawn there.
+- **Anticipation:** `vfx_anticipation_reel3`, the golden spiral. Its black background was converted to transparency, and it's drawn additively over reel 3 as two drifting, mirrored layers.
+
 Everything else is still a placeholder.
 
 | Asset ID | Path | Size | Delivered |
@@ -27,6 +31,7 @@ Everything else is still a placeholder.
 | `bg_freegame_main` | `assets/images/environment/bg_freegame_main.jpg` | 1920×1080 | [x] |
 | `bg_freegame_frame` | `assets/images/environment/bg_freegame_frame.png` | 1920×1080 PNG, clear centre | [ ] |
 | `fx_reel3_guaranteed_wild_indicator` | `assets/images/fx/fx_reel3_guaranteed_wild_indicator.png` | one reel column, PNG | [ ] |
+| `vfx_anticipation_reel3` | `assets/images/fx/vfx_anticipation_reel3.webp` | about 400×1376, transparent | [x] |
 | `ui_bar_bottom` | `assets/images/ui/ui_bar_bottom.png` | 1920×110 PNG | [ ] |
 | `btn_spin_idle` | `assets/images/ui/btn_spin_idle.png` | ≈160×160 PNG | [ ] |
 | `btn_spin_active` | `assets/images/ui/btn_spin_active.png` | ≈160×160 PNG | [ ] |
@@ -52,14 +57,14 @@ Everything else is still a placeholder.
 | `sym_bear_charm` | `assets/images/symbols/sym_bear_charm.png` | 300×300 PNG | [x] |
 | `sym_bear_dance` | `assets/images/symbols/sym_bear_dance.png` | 300×300 PNG | [x] |
 | `sym_ghost_idle` | `assets/images/symbols/sym_ghost_idle.png` | 300×300 PNG | [ ] |
-| `modal_freespins_intro` | `assets/images/banners/modal_freespins_intro.png` | ≈1100×620 PNG | [ ] |
-| `modal_freespins_outro` | `assets/images/banners/modal_freespins_outro.png` | ≈1100×620 PNG | [ ] |
-| `banner_win_nice` | `assets/images/banners/banner_win_nice.png` | ≈1200×360 PNG | [ ] |
+| `modal_freespins_intro` | `assets/images/banners/modal_freespins_intro.webp` | ≈1100×620 PNG | [x] |
+| `modal_freespins_outro` | `assets/images/banners/modal_freespins_outro.webp` | ≈1100×620 PNG | [x] |
+| `banner_win_nice` | `assets/images/banners/banner_win_nice.webp` | ≈1200×360 PNG | [x] |
 | `banner_win_big` | `assets/images/banners/banner_win_big.png` | ≈1200×360 PNG | [ ] |
-| `banner_win_mega` | `assets/images/banners/banner_win_mega.png` | ≈1200×360 PNG | [ ] |
-| `banner_win_superb` | `assets/images/banners/banner_win_superb.png` | ≈1200×360 PNG | [ ] |
-| `banner_win_sensational` | `assets/images/banners/banner_win_sensational.png` | ≈1200×360 PNG | [ ] |
-| `banner_win_epic` | `assets/images/banners/banner_win_epic.png` | ≈1200×360 PNG | [ ] |
+| `banner_win_mega` | `assets/images/banners/banner_win_mega.webp` | ≈1200×360 PNG | [x] |
+| `banner_win_superb` | `assets/images/banners/banner_win_superb.webp` | ≈1200×360 PNG | [x] |
+| `banner_win_sensational` | `assets/images/banners/banner_win_sensational.webp` | ≈1200×360 PNG | [x] |
+| `banner_win_epic` | `assets/images/banners/banner_win_epic.webp` | ≈1200×360 PNG | [x] |
 | `line_node_highlight` | `assets/images/fx/line_node_highlight.png` | 300×300 PNG | [ ] |
 
 Optional extra, not in the spec: `sym_00_scared` … `sym_06_scared`, frightened faces shown while the Scare Bear targets a doll. To use them, add these keys to `manifest.js`.

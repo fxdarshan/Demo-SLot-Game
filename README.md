@@ -94,7 +94,13 @@ Each tier has its own FX: coin fountain, coin drop, double cascade, fireworks wi
 
 ## Replace the art and sound
 
-**Current art:** the holiday symbol set (Santa highest down to the Gift egg, the star snow-globe Wild, three reindeer bears) and both backgrounds are in. The base game is the firelit living room; free spins are the snowy cabins under the northern lights. The reel frames, reel strips, UI, banners and Ghost are still placeholders. [`assets/README.md`](assets/README.md) tracks what has been delivered.
+**Current art** (details in [`assets/README.md`](assets/README.md)):
+- The holiday symbol set: Santa highest down to the Gift egg, the star snow-globe Wild, three reindeer bears.
+- Both backgrounds: the firelit living room for the base game, snowy cabins under the northern lights for free spins.
+- Five of the six win banners (BIG WIN is still code-drawn).
+- Both free spins popups and the reel 3 anticipation spiral.
+
+Still placeholders: the reel frames, reel strips, UI buttons, BIG WIN banner and Ghost. [`assets/README.md`](assets/README.md) tracks what has been delivered.
 
 Every asset key in [`assets/manifest.js`](assets/manifest.js) is the asset spec's ID. [`assets/README.md`](assets/README.md) is the artists' checklist. To swap one:
 1. Save your file at the listed path, or point the path at your file.

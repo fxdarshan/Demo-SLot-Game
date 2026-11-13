@@ -174,10 +174,10 @@ Every asset ID above is a key in [`assets/manifest.js`](../assets/manifest.js). 
 | 3.1 Free game (`bg_freegame_main`, `bg_freegame_frame`, `ui_freegame_counter`, `fx_reel3_guaranteed_wild_indicator`) | Wired, with placeholders |
 | 4.1 Standard symbols, idle frames (`sym_00_idle` … `sym_06_idle`) | Wired. `_win` and `_upgrade` are code animations until Spine is integrated |
 | 4.2 Special symbols (`sym_wild_*`, `sym_bear_*`, `sym_ghost_idle`) | Wired as still images. Spine animations (`bear_scare_1x` etc.) are not integrated yet |
-| 5 VFX (`vfx_anticipation_reel3`, `vfx_star_wild_reveal`, `vfx_symbol_upgrade_burst`, `vfx_scare_bear_wave`, `vfx_charm_bear_hearts`, `vfx_wipe_win_sweep`, `vfx_ghost_transformation`) | Built as code particles and shapes, timed to the animation spec |
+| 5 VFX (`vfx_anticipation_reel3` now uses the supplied golden spiral image; `vfx_star_wild_reveal`, `vfx_symbol_upgrade_burst`, `vfx_scare_bear_wave`, `vfx_charm_bear_hearts`, `vfx_wipe_win_sweep`, `vfx_ghost_transformation`) | Built as code particles and shapes, timed to the animation spec |
 | 6 Transitions (`trans_base_to_freegame`, `trans_freegame_to_base`, `overlay_screen_dimmer`) | Built in code |
-| 7.1 Free spins modals (`modal_freespins_intro/outro`) | Wired. The image is the panel; text and the START / COLLECT button are drawn on top |
-| 7.2 Win banners (`banner_win_nice` … `banner_win_epic`) | Wired. The image is the title art; the amount is drawn below |
+| 7.1 Free spins modals (`modal_freespins_intro/outro`) | Wired, and art delivered (Festive Win frame, Total Win sign). Text, amount and the START / COLLECT button are drawn on top |
+| 7.2 Win banners (`banner_win_nice` … `banner_win_epic`) | Wired, and art delivered for nice, mega, superb, sensational and epic. The image is fitted on screen with the amount below. `banner_win_big` has no art yet |
 | 8 Paylines (`line_overlay_01..17`, `line_node_highlight`) | Lines drawn as paths; node ring wired as an image |
 | 9 Audio (BGM and all SFX listed) | Wired. Missing SFX use synthesised placeholders; BGM plays only from real files |
 
