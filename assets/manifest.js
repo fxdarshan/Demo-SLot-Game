@@ -26,13 +26,14 @@ window.ASSET_MANIFEST = {
   symbolSplitY: 0.47,
 
   // Sprite sheets that replace a symbol's win pulse (sym_xx_win). Frames run left to right, top to bottom.
-  //   holds: ticks (1/30 s) each frame stays on screen; the sum is stretched over the symbol win window
-  //          (CONFIG.frames.symWin, 45 ticks = 1.5 s), so the animation always ends with the win
+  //   loops: how many times the whole sheet plays during the symbol win window (CONFIG.frames.symWin, 45 ticks = 1.5 s).
+  //          3 passes = 16 frames every 0.5 s, ending on the last frame.
+  //   holds: alternative to loops: ticks (1/30 s) each frame stays on screen; the sum is stretched over the win window
   //   scale: drawn size of one frame as a multiple of the symbol size (makes the body match the idle art)
   //   ox, oy: offset from the symbol centre, as a fraction of the symbol size (lines up the body with the idle art)
   // tools/asset-pipeline/cut_sprite_sheet.py prints scale, ox and oy when run with --idle.
   sprites: {
-    sym_00_win: { cols: 4, rows: 3, holds: [3, 3, 4, 4, 3, 3, 5, 4, 4, 4, 5, 3], scale: 1.2504, ox: -0.0083, oy: -0.023 },
+    sym_00_win: { cols: 4, rows: 4, loops: 3, scale: 1.2047, ox: -0.0412, oy: -0.0576 },
   },
 
   images: {

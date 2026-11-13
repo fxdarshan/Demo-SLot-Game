@@ -7,6 +7,8 @@ fixed square cell, so the character keeps its position from frame to frame (jump
 
     python3 tools/asset-pipeline/cut_sprite_sheet.py <sheet.png> <out.webp> [--cols 4] [--rows 3] [--cell 400]
         [--clear FRAME:x0,y0,x1,y1 ...]      transparent box inside one frame, in frame pixels (watermarks)
+        [--clear-gray FRAME:x0,y0,x1,y1 ...] like --clear, but only removes grey (unsaturated) pixels in the box, so a
+                                             watermark next to the character can go without touching its colours
         [--idle <idle.png>]                   the symbol's idle image: prints how to size and place the sprite
 
 Frame boxes are rounded, so a sheet that does not divide evenly (1792 / 3 rows) still lines up.
@@ -24,6 +26,7 @@ ap.add_argument('sheet'); ap.add_argument('out')
 ap.add_argument('--cols', type=int, default=4); ap.add_argument('--rows', type=int, default=3)
 ap.add_argument('--cell', type=int, default=400)
 ap.add_argument('--clear', action='append', default=[])
+ap.add_argument('--clear-gray', action='append', default=[])
 ap.add_argument('--idle')
 ap.add_argument('--png', help='also save the full-resolution cut-out sheet here')
 a = ap.parse_args()
@@ -35,13 +38,23 @@ clear = {}
 for c in a.clear:
     f, box = c.split(':'); clear.setdefault(int(f), []).append([int(v) for v in box.split(',')])
 
+cgray = {}
+for c in a.clear_gray:
+    f, box = c.split(':'); cgray.setdefault(int(f), []).append([int(v) for v in box.split(',')])
+
 session = new_session('isnet-general-use')
 cells, bodies = [], []
 for i in range(a.cols * a.rows):
     col, row = i % a.cols, i // a.cols
     x0, x1 = round(col * fw), round((col + 1) * fw); y0, y1 = round(row * fh), round((row + 1) * fh)
-    img, solid = cut(sheet.crop((x0, y0, x1, y1)), session=session)
+    crop = sheet.crop((x0, y0, x1, y1))
+    img, solid = cut(crop, session=session)
     arr = np.array(img)
+    src = np.asarray(crop).astype(np.float32)
+    sat = (src.max(-1) - src.min(-1)) / np.maximum(src.max(-1), 1)
+    for (bx0, by0, bx1, by1) in cgray.get(i, []):
+        m = np.zeros(sat.shape, bool); m[by0:by1, bx0:bx1] = sat[by0:by1, bx0:bx1] < .10
+        arr[m, 3] = 0; solid[m] = False
     for (bx0, by0, bx1, by1) in clear.get(i, []):
         arr[by0:by1, bx0:bx1, 3] = 0; solid[by0:by1, bx0:bx1] = False
     img = Image.fromarray(arr, 'RGBA')

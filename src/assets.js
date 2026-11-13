@@ -72,6 +72,10 @@
   };
   // frame to show at progress p (0..1) of the win window
   Assets.winSpriteFrame = (sp, p) => {
+    if (sp.loops) {                                  // whole sheet played `loops` times, ending on the last frame
+      const n = sp.cols * sp.rows;
+      return p >= 1 ? n - 1 : Math.min(n - 1, Math.floor(((p * sp.loops) % 1) * n));
+    }
     const total = sp.holds.reduce((a, b) => a + b, 0), tick = Math.min(total - 1, Math.max(0, Math.floor(p * total)));
     let acc = 0; for (let i = 0; i < sp.holds.length; i++) { acc += sp.holds[i]; if (tick < acc) return i; }
     return sp.holds.length - 1;

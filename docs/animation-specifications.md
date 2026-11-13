@@ -234,7 +234,7 @@ Every frame count above is stored in `CONFIG.frames` (`src/config.js`) and playe
 | `bg_base_loop` | Implemented | Ornament layer breathes scale 1.0 → 1.02, opacity 0.85 → 1.0. With real art, the whole `bg_base_main` breathes |
 | `bg_freegame_loop` | Implemented | Lights alternate red/gold every 30f, gold sparkles fall, reel 3 outline pulses on a 45f sine |
 | `sym_xx_win` / `sym_xx_upgrade` | Implemented | 10f scale to 1.15, 20f nest opens (lid lifts, glow, particle burst), 15f morph or settle |
-| `sym_00_win` (Santa) | Implemented as a sprite sheet | The supplied 12-frame sheet plays over the same 45f window (frame holds `[3,3,4,4,3,3,5,4,4,4,5,3]`) instead of the scale pulse. Santa is the top tier, so he never upgrades mid-win. Other symbols keep the pulse until they get a sheet |
+| `sym_00_win` (Santa) | Implemented as a sprite sheet | The supplied 16-frame sheet plays three passes (15f, 0.5 s each, 31.25 ms per frame) over the same 45f window instead of the scale pulse, ending on the last frame. Santa is the top tier, so he never upgrades mid-win. Other symbols keep the pulse until they get a sheet |
 | `sym_wild_star_open` | Implemented | 15f landing squash, 20f star flash and hatch, 10f bear emerges |
 | `vfx_anticipation_reel3` | Partly | Aura ramp, sustained sparks and slam-stop flash are in. The slight reel slowdown is not; the reel keeps full speed |
 | `bear_scare_1x/2x/3x` | Implemented | 11.25f intro + one 22.5f roar wave per upgrade + 11.25f outro = 45 / 67.5 / 90f |
