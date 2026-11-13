@@ -15,7 +15,7 @@ The full list of IDs and descriptions is in [`docs/game-asset-specification.md`]
 
 **Delivered so far (13 November 2026):**
 - **Holiday symbol set:** 7 standard symbols, the Wild in both states and the 5 bears, cut out from their grey studio backgrounds and centred at 300×300.
-- **Backgrounds:** `bg_base_main` (cosy firelit living room) and `bg_freegame_main` (snowy cabins under the northern lights). Both were supplied at 1376×768, then cropped to exact 16:9 and scaled to 1920×1080 JPG. Re-supply them at 1920×1080 or larger for full sharpness.
+- **Backgrounds:** `bg_base_main` (exterior: snowy cabins under the northern lights) and `bg_freegame_main` (interior: cosy firelit living room). Both were supplied at 1376×768, then cropped to exact 16:9 and scaled to 1920×1080 JPG. Re-supply them at 1920×1080 or larger for full sharpness.
 
 - **Win banners:** `banner_win_nice` (Nice List), `banner_win_mega` (Merry Mega), `banner_win_superb` (Superb Sleigh Ride), `banner_win_sensational` (Sensational Snowfall) and `banner_win_epic` (Epic Christmas, also used for the Ghost award). Cut out, trimmed, WebP. **`banner_win_big` was not in the set**, so BIG WIN still shows the code-drawn ribbon.
 - **Free spins popups:** `modal_freespins_intro` (Festive Win frame; "YOU WON / 7 FREE SPINS!" is drawn in its empty centre) and `modal_freespins_outro` (Total Win wooden sign). The sign's baked-in "2,750,000 COINS / JACKPOT BONUS!" was painted out and the board rebuilt from the surrounding planks, so the real total can be drawn there.

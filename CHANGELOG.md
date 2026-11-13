@@ -2,6 +2,11 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Backgrounds swapped
+- Base game now uses the exterior scene: snowy log cabins under the northern lights (`bg_base_main`).
+- Free spins now use the interior scene: the firelit living room with tree and fireplace (`bg_freegame_main`).
+- The image files and their source originals were renamed to match (`bg_base_main_aurora_cabins.png`, `bg_freegame_main_living_room.png`). Effects are unchanged: the base background still breathes, and free spins keep the party lights and gold sparkles.
+
 ## 2026-11-13: Renamed to X-Mas Dolls
 - Game name **X-Mas Dolls** (`CONFIG.title`), shown at the top of the base game (the free spins counter takes that spot during free spins) and in the paytable header.
 - Page title "X-Mas Dolls Prototype"; recordings save as `x-mas-dolls-demo-<date>.<ext>`.

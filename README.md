@@ -98,7 +98,7 @@ Each tier has its own FX: coin fountain, coin drop, double cascade, fireworks wi
 
 **Current art** (details in [`assets/README.md`](assets/README.md)):
 - The holiday symbol set: Santa highest down to the Gift egg, the star snow-globe Wild, three reindeer bears.
-- Both backgrounds: the firelit living room for the base game, snowy cabins under the northern lights for free spins.
+- Both backgrounds: snowy cabins under the northern lights (exterior) for the base game, the firelit living room (interior) for free spins.
 - Five of the six win banners (BIG WIN is still code-drawn).
 - Both free spins popups and the reel 3 anticipation spiral.
 
