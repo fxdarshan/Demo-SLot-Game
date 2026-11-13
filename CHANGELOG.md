@@ -2,6 +2,13 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Win animations for Elf, Nutcracker, Snowman and Gingerbread
+- `sym_02` Elf, `sym_03` Nutcracker, `sym_04` Snowman and `sym_05` Gingerbread play their supplied 16-frame sheets on a win (3 ticks a frame, 1.6 s), via `images.sym_0x_win` and `sprites.sym_0x_win` in the manifest. Only the Gift egg (`sym_06`) still uses the scale pulse.
+- Checked in the build: every sheet plays frames 0 to 15 in order; chained upgrades (win, upgrade, win) play each sheet in turn; no page errors.
+- `cut_sprite_sheet.py --dewatermark`: removes the generator's four-point sparkle from the sheet corner (shape in `tools/asset-pipeline/watermark_star_mask.png`). It overlaps the body on the snowman, gingerbread and elf, so `--clear-gray` could not be used (it would erase the white snowman); the sparkle is inpainted and the body outline in that spot rebuilt from the rest of the character. This also removes the notch the Mrs Claus cut had.
+- `--chroma` fix: the "magenta" background is really about (253, 35, 255) and varies per sheet, so the colour is measured from each sheet and anything within 14 of it is fully transparent. Before, a faint 8% light haze sat over the whole background.
+- Mrs Claus's sheet was re-cut with both fixes.
+
 ## 2026-11-13: Mrs Claus win animation
 - Mrs Claus (`sym_01`) now plays the supplied 16-frame sheet on a win: 3 ticks (100 ms) a frame, 1.6 s, same as Santa. Manifest: `images.sym_01_win` and `sprites.sym_01_win`.
 - She upgrades to Santa, so the upgrade step now waits for the sheet to finish (`playSteps` / `showWin`), then the morph runs as before. Santa never upgrades, so nothing changed for him.

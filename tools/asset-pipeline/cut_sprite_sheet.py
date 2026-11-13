@@ -11,6 +11,9 @@ fixed square cell, so the character keeps its position from frame to frame (jump
                                              watermark next to the character can go without touching its colours
         [--chroma]                            sheet is on solid magenta #FF00FF: key it directly (rembg mistakes magenta
                                              for light and shifts the colours)
+        [--dewatermark]                       inpaint the generator's four-point sparkle watermark in the sheet's bottom-right
+                                             corner (shape in watermark_star_mask.png) before cutting; works even where it
+                                             overlaps the character, which --clear / --clear-gray cannot do
         [--idle <idle.png>]                   the symbol's idle image: prints how to size and place the sprite
 
 Frame boxes are rounded, so a sheet that does not divide evenly (1792 / 3 rows) still lines up.
@@ -30,12 +33,23 @@ ap.add_argument('--cell', type=int, default=400)
 ap.add_argument('--clear', action='append', default=[])
 ap.add_argument('--clear-gray', action='append', default=[])
 ap.add_argument('--idle')
+ap.add_argument('--dewatermark', action='store_true', help='inpaint the Gemini sparkle in the bottom-right corner of the sheet before cutting')
 ap.add_argument('--chroma', action='store_true', help='the background is solid #FF00FF: key it out instead of using rembg')
 ap.add_argument('--png', help='also save the full-resolution cut-out sheet here')
 a = ap.parse_args()
 
 sheet = Image.open(a.sheet).convert('RGB')
 W, H = sheet.size
+if a.dewatermark:
+    import cv2
+    star = np.array(Image.open(os.path.join(os.path.dirname(__file__), 'watermark_star_mask.png'))) > 127
+    R = star.shape[0] // 2; k = W / 2048                      # mask was measured on a 2048 px sheet, centre (1937, 1937)
+    cx = cy = round(1937 * k)
+    if k != 1: star = np.array(Image.fromarray(star.astype(np.uint8) * 255).resize((round(star.shape[1] * k),) * 2)) > 127; R = star.shape[0] // 2
+    full = np.zeros((H, W), np.uint8); full[cy - R:cy - R + star.shape[0], cx - R:cx - R + star.shape[1]] = star
+    full = cv2.dilate(full, np.ones((21, 21), np.uint8))
+    star_zone = full > 0                                      # where the watermark was (dilated), in sheet pixels
+    sheet = Image.fromarray(cv2.inpaint(np.array(sheet), full, 7, cv2.INPAINT_TELEA))
 fw, fh = W / a.cols, H / a.rows
 clear = {}
 for c in a.clear:
@@ -46,17 +60,25 @@ for c in a.clear_gray:
     f, box = c.split(':'); cgray.setdefault(int(f), []).append([int(v) for v in box.split(',')])
 
 def chroma_cut(crop):
-    # alpha from magenta-ness d = min(r,b) - g (255 on #FF00FF, <= 0 on warm or green colours), magenta un-mixed from edges
+    # alpha from magenta-ness d = min(r,b) - g, then the background colour is un-mixed from soft edges.
+    # The generator's "#FF00FF" is really about (253, 35, 255) and varies a little, so the background colour and its d
+    # are measured from the sheet itself; d within 14 of the background's counts as fully background (no haze).
     src = np.asarray(crop).astype(np.float32)
     d = np.minimum(src[..., 0], src[..., 2]) - src[..., 1]
-    al = np.clip(1 - (d - 20) / 215, 0, 1); al[al < .02] = 0
+    mag = BG_COLOR
+    al = np.clip((BG_D - 14 - d) / (BG_D - 14 - 20), 0, 1); al[al < .02] = 0
     k = np.maximum(al, 1e-3)[..., None]
-    mag = np.array([255, 0, 255], np.float32)
     rgb = np.clip((src - mag * (1 - al[..., None])) / k, 0, 255)
     rgb[al == 0] = 0
     out = np.dstack([rgb, al * 255]).astype(np.uint8)
     return Image.fromarray(out, 'RGBA'), al > .9
 
+if a.chroma:
+    _px = np.asarray(sheet).reshape(-1, 3).astype(np.float32)
+    _d = np.minimum(_px[:, 0], _px[:, 2]) - _px[:, 1]
+    _bg = _px[_d > np.percentile(_d, 60)]                       # the sheet is mostly background
+    BG_COLOR = np.median(_bg, axis=0); BG_D = float(np.median(_d[_d > np.percentile(_d, 60)]))
+    print('background colour', BG_COLOR.round(), 'd', round(BG_D))
 session = None if a.chroma else new_session('isnet-general-use')
 cells, bodies = [], []
 for i in range(a.cols * a.rows):
@@ -72,6 +94,15 @@ for i in range(a.cols * a.rows):
         arr[m, 3] = 0; solid[m] = False
     for (bx0, by0, bx1, by1) in clear.get(i, []):
         arr[by0:by1, bx0:bx1, 3] = 0; solid[by0:by1, bx0:bx1] = False
+    if a.dewatermark and star_zone[y0:y1, x0:x1].any():
+        # inpainting smears the body outward past its real edge, so inside the watermark zone the body's outline is
+        # rebuilt from the rest of the character: the convex hull of the solid pixels outside the zone
+        zone = star_zone[y0:y1, x0:x1]
+        pts = np.argwhere((arr[..., 3] > 230) & ~zone)[:, ::-1].astype(np.int32)
+        hull = np.zeros(zone.shape, np.uint8); cv2.fillConvexPoly(hull, cv2.convexHull(pts), 255)
+        hull = cv2.GaussianBlur(hull, (0, 0), 1.2)
+        arr[..., 3] = np.where(zone, np.minimum(arr[..., 3], hull), arr[..., 3])
+        solid = arr[..., 3] > 230
     img = Image.fromarray(arr, 'RGBA')
     cells.append(img); bodies.append(solid)
     print('frame', i, img.size, 'body px', int(solid.sum()))

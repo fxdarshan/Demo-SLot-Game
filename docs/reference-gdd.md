@@ -144,7 +144,7 @@ All timings follow [`animation-specifications.md`](animation-specifications.md) 
 | :--- | :--- | :--- |
 | Base ambient loop | `bg_base_loop` | 4.0 s loop |
 | Free game ambient loop | `bg_freegame_loop` | 3.0 s loop |
-| Symbol win / upgrade | `sym_xx_win`, `sym_xx_upgrade` | 1.5 s (10f pop, 20f open, 15f settle/morph). Santa and Mrs Claus play a 16-frame sprite sheet once at 100 ms a frame (1.6 s, the win waits for it) |
+| Symbol win / upgrade | `sym_xx_win`, `sym_xx_upgrade` | 1.5 s (10f pop, 20f open, 15f settle/morph). Every symbol except the Gift egg plays a 16-frame sprite sheet once at 100 ms a frame (1.6 s, the win waits for it) |
 | Wild star opening | `sym_wild_star_open` | 1.5 s |
 | Reel 3 anticipation | `vfx_anticipation_reel3` | 2.0 s |
 | Scare Bear | `bear_scare_1x/2x/3x` | 1.5 / 2.25 / 3.0 s |

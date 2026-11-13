@@ -35,6 +35,10 @@ window.ASSET_MANIFEST = {
   sprites: {
     sym_00_win: { cols: 4, rows: 4, tpf: 3, scale: 1.2047, ox: -0.0412, oy: -0.0576 },
     sym_01_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0375, ox: -0.0051, oy: -0.0365 },
+    sym_02_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0468, ox: -0.0078, oy: -0.0613 },
+    sym_03_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0108, ox: -0.0030, oy: -0.0355 },
+    sym_04_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0398, ox: 0.0000, oy: -0.0234 },
+    sym_05_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0879, ox: 0.0000, oy: -0.0393 },
   },
 
   images: {
@@ -82,6 +86,10 @@ window.ASSET_MANIFEST = {
     sym_ghost_idle:       'assets/images/symbols/sym_ghost_idle.png',
     sym_00_win:           'assets/images/symbols/sym_00_santa_win_sheet.webp',   // Santa win animation: 4 x 4 sprite sheet, see sprites below
     sym_01_win:           'assets/images/symbols/sym_01_mrs_claus_win_sheet.webp', // Mrs Claus win animation: 4 x 4 sprite sheet
+    sym_02_win:           'assets/images/symbols/sym_02_elf_win_sheet.webp',         // Elf
+    sym_03_win:           'assets/images/symbols/sym_03_nutcracker_win_sheet.webp',  // Nutcracker
+    sym_04_win:           'assets/images/symbols/sym_04_snowman_win_sheet.webp',     // Snowman
+    sym_05_win:           'assets/images/symbols/sym_05_gingerbread_win_sheet.webp', // Gingerbread
 
     // 7 banners and modals (panel / title art; text and amounts are drawn on top)
     modal_freespins_intro:   'assets/images/banners/modal_freespins_intro.webp',   // 'Festive Win!' frame; text drawn in the centre
