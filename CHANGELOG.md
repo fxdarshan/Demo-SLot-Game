@@ -4,7 +4,8 @@ All notable changes to the prototype. Newest first.
 
 ## 2026-11-13: Santa win animation upgraded to 16 frames
 - Santa's win sprite sheet is replaced by the supplied **16-frame** sheet (4 × 4: standing laugh with "Haha!", jump with dust, two gold sparkle swirls, arms-up cheer, a landing with dust and sparks), for smoother motion than the 12-frame one.
-- It plays **3 passes of all 16 frames over the 1.5 s win window** (`CONFIG.frames.symWin` = 45 ticks): 0.5 s per pass, 31.25 ms per frame, ending on frame 15, then Santa returns to his idle art. The speed slider scales it as before.
+- It plays **one pass of all 16 frames over the 1.5 s win window** (`CONFIG.frames.symWin` = 45 ticks): about 94 ms per frame (10.7 fps), ending on frame 15, then Santa returns to his idle art. The speed slider scales it as before.
+- Fix: the first version played 3 passes in 1.5 s (32 fps), which felt too fast; the old 12-frame sheet had run once over the same window. Now one pass, so the extra frames make it smoother, not faster. Set `loops` in the manifest to repeat it.
 - `assets/manifest.js` `sprites.sym_00_win` is now `{ cols: 4, rows: 4, loops: 3, scale, ox, oy }`. New `loops` option: the whole sheet plays that many times and ends on the last frame (`holds` still works for hand-timed sheets). `Assets.winSpriteFrame` handles both.
 - The sheet's corner watermark (frame 15, right beside Santa's hand) was removed with a new `cut_sprite_sheet.py --clear-gray` option that clears only grey, unsaturated pixels in a box, so the character is untouched. New cut-out size 1600 × 1600 (400 px cells).
 - The previous 12-frame sheet's original and cut-out stay in `assets/source/` for reference.
