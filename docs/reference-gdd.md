@@ -57,6 +57,23 @@ sym_06 Teal ─▶ sym_05 Blue ─▶ sym_04 Purple ─▶ sym_03 Pink ─▶ sy
 | `sym_05` | 5 | Light blue | 0.50× (€3.75) | 0.20× (€1.50) | 0.10× (€0.75) |
 | `sym_06` | 6 | Teal with pacifier (lowest) | 0.40× (€3.00) | 0.20× (€1.50) | 0.10× (€0.75) |
 
+**Current art set (holiday reskin, 13 November 2026):**
+
+| Tier | Asset ID | Character |
+| :---: | :--- | :--- |
+| 0 | `sym_00` | Santa (highest) |
+| 1 | `sym_01` | Mrs Claus |
+| 2 | `sym_02` | Elf |
+| 3 | `sym_03` | Nutcracker |
+| 4 | `sym_04` | Snowman |
+| 5 | `sym_05` | Gingerbread |
+| 6 | `sym_06` | Gift egg (lowest) |
+
+- **Wild:** star snow-globe matryoshka.
+- **Bears:** reindeer bursting out of snow globes. Scare = grumpy "Frost Frenzy", Charm = elegant, Dance = joyful jingle-bell.
+
+The pays and upgrade order above are unchanged. Only the art differs from the colour descriptions.
+
 Multipliers are per line, of the total bet. The pay table quotes euros at a €7.50 bet (the €750 special award = 100×), so each multiplier is the euro value divided by 7.5.
 
 ### 3.2 Special symbols

@@ -47,22 +47,23 @@ window.ASSET_MANIFEST = {
     ui_freegame_counter: 'assets/images/ui/ui_freegame_counter.png',
 
     // 4.1 standard symbols (idle frames)
-    sym_00_idle: 'assets/images/symbols/sym_00_grandmother_idle.png',   // Tier 0 Yellow (highest)
-    sym_01_idle: 'assets/images/symbols/sym_01_glasses_idle.png',       // Tier 1 Orange
-    sym_02_idle: 'assets/images/symbols/sym_02_red_idle.png',           // Tier 2 Red
-    sym_03_idle: 'assets/images/symbols/sym_03_pink_idle.png',          // Tier 3 Pink
-    sym_04_idle: 'assets/images/symbols/sym_04_purple_idle.png',        // Tier 4 Dark Purple
-    sym_05_idle: 'assets/images/symbols/sym_05_blue_idle.png',          // Tier 5 Light Blue
-    sym_06_idle: 'assets/images/symbols/sym_06_pacifier_idle.png',      // Tier 6 Teal (lowest)
+    // Holiday art set (2026-11-13). Tier order = pay value, 0 highest.
+    sym_00_idle: 'assets/images/symbols/sym_00_santa_idle.png',         // Tier 0 Santa (highest)
+    sym_01_idle: 'assets/images/symbols/sym_01_mrs_claus_idle.png',     // Tier 1 Mrs Claus
+    sym_02_idle: 'assets/images/symbols/sym_02_elf_idle.png',           // Tier 2 Elf
+    sym_03_idle: 'assets/images/symbols/sym_03_nutcracker_idle.png',    // Tier 3 Nutcracker
+    sym_04_idle: 'assets/images/symbols/sym_04_snowman_idle.png',       // Tier 4 Snowman
+    sym_05_idle: 'assets/images/symbols/sym_05_gingerbread_idle.png',   // Tier 5 Gingerbread
+    sym_06_idle: 'assets/images/symbols/sym_06_gift_idle.png',          // Tier 6 Gift egg (lowest)
 
     // 4.2 special and mystery symbols
-    sym_wild_idle:        'assets/images/symbols/sym_wild_idle.png',
-    sym_wild_star_idle:   'assets/images/symbols/sym_wild_star_idle.png',
-    sym_bear_scare_small: 'assets/images/symbols/sym_bear_scare_small.png',
+    sym_wild_idle:        'assets/images/symbols/sym_wild_idle.png',        // star snow-globe matryoshka
+    sym_wild_star_idle:   'assets/images/symbols/sym_wild_star_idle.png',   // same doll with a gold aura (will open)
+    sym_bear_scare_small: 'assets/images/symbols/sym_bear_scare_small.png',  // grumpy 'Frost Frenzy' reindeer, 3 sizes
     sym_bear_scare_med:   'assets/images/symbols/sym_bear_scare_med.png',
     sym_bear_scare_large: 'assets/images/symbols/sym_bear_scare_large.png',
-    sym_bear_charm:       'assets/images/symbols/sym_bear_charm.png',
-    sym_bear_dance:       'assets/images/symbols/sym_bear_dance.png',
+    sym_bear_charm:       'assets/images/symbols/sym_bear_charm.png',       // elegant reindeer with glowing antlers
+    sym_bear_dance:       'assets/images/symbols/sym_bear_dance.png',       // joyful jingle-bell reindeer
     sym_ghost_idle:       'assets/images/symbols/sym_ghost_idle.png',
 
     // 7 banners and modals (panel / title art; text and amounts are drawn on top)

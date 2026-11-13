@@ -26,8 +26,8 @@
     GHOST: 8,
     WILD: 9,
     symbolNames: {
-      0: 'Yellow Grandmother', 1: 'Orange (glasses)', 2: 'Red', 3: 'Pink',
-      4: 'Dark Purple', 5: 'Light Blue', 6: 'Teal (pacifier)', 9: 'Wild Egg', 8: 'Ghost'
+      0: 'Santa', 1: 'Mrs Claus', 2: 'Elf', 3: 'Nutcracker',
+      4: 'Snowman', 5: 'Gingerbread', 6: 'Gift Egg', 9: 'Wild (star snow globe)', 8: 'Ghost'
     },
 
     // ------------------------------------------------------------ paylines (PAY section 6)

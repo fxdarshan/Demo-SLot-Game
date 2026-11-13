@@ -19,7 +19,7 @@ Slot Demo Studio, a separate general-purpose demo recorder, is in [`studio/`](st
 
 ## Play it
 
-- **Single file:** [`dist/nesting-dolls-prototype.html`](dist/nesting-dolls-prototype.html) has everything inlined. Download it and double-click; it runs in any modern browser with no server. It always shows the placeholder art, because files from `assets/` are not embedded. Rebuild it after changes with `node tools/build-single.js`.
+- **Single file:** [`dist/nesting-dolls-prototype.html`](dist/nesting-dolls-prototype.html) has everything inlined, including every image in `assets/`. Download it and double-click; it runs in any modern browser with no server. Sounds aren't embedded, so it uses the synthesised placeholder sounds. Rebuild it after any change with `node tools/build-single.js`.
 - **Online link:** turn on GitHub Pages under the repo's **Settings → Pages**, with source **Deploy from a branch**, branch `main`, folder `/ (root)`. The game is then live at https://fxdarshan.github.io/Demo-SLot-Game/ and updates on every push. Real art and sound in `assets/` load there too.
 
 ## Run it
@@ -93,6 +93,8 @@ Each tier has its own FX: coin fountain, coin drop, double cascade, fireworks wi
 **Paylines:** `line_overlay_01..17` are drawn as coloured paths through the winning cells, with `line_node_highlight` rings around each winning symbol.
 
 ## Replace the art and sound
+
+**Current art:** the holiday symbol set is in. It covers the standard symbols (Santa highest down to the Gift egg), the star snow-globe Wild, and the three reindeer bears. The environment, UI, banners and Ghost are still placeholders. [`assets/README.md`](assets/README.md) tracks what has been delivered.
 
 Every asset key in [`assets/manifest.js`](assets/manifest.js) is the asset spec's ID. [`assets/README.md`](assets/README.md) is the artists' checklist. To swap one:
 1. Save your file at the listed path, or point the path at your file.

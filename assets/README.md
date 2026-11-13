@@ -13,6 +13,8 @@ The full list of IDs and descriptions is in [`docs/game-asset-specification.md`]
 
 ## Images
 
+**Delivered so far:** the holiday symbol set (13 November 2026). It covers 7 standard symbols, the Wild in both states, and the 5 bears, cut out from their grey studio backgrounds and centred at 300×300. Everything else is still a placeholder.
+
 | Asset ID | Path | Size | Delivered |
 | :--- | :--- | :--- | :---: |
 | `bg_base_main` | `assets/images/environment/bg_base_main.png` | 1920×1080 | [ ] |
@@ -31,20 +33,20 @@ The full list of IDs and descriptions is in [`docs/game-asset-specification.md`]
 | `btn_bet_minus` | `assets/images/ui/btn_bet_minus.png` | ≈80×80 PNG | [ ] |
 | `btn_info` | `assets/images/ui/btn_info.png` | ≈80×80 PNG | [ ] |
 | `ui_freegame_counter` | `assets/images/ui/ui_freegame_counter.png` | ≈440×64 PNG | [ ] |
-| `sym_00_idle` | `assets/images/symbols/sym_00_grandmother_idle.png` | 300×300 PNG | [ ] |
-| `sym_01_idle` | `assets/images/symbols/sym_01_glasses_idle.png` | 300×300 PNG | [ ] |
-| `sym_02_idle` | `assets/images/symbols/sym_02_red_idle.png` | 300×300 PNG | [ ] |
-| `sym_03_idle` | `assets/images/symbols/sym_03_pink_idle.png` | 300×300 PNG | [ ] |
-| `sym_04_idle` | `assets/images/symbols/sym_04_purple_idle.png` | 300×300 PNG | [ ] |
-| `sym_05_idle` | `assets/images/symbols/sym_05_blue_idle.png` | 300×300 PNG | [ ] |
-| `sym_06_idle` | `assets/images/symbols/sym_06_pacifier_idle.png` | 300×300 PNG | [ ] |
-| `sym_wild_idle` | `assets/images/symbols/sym_wild_idle.png` | 300×300 PNG | [ ] |
-| `sym_wild_star_idle` | `assets/images/symbols/sym_wild_star_idle.png` | 300×300 PNG | [ ] |
-| `sym_bear_scare_small` | `assets/images/symbols/sym_bear_scare_small.png` | 300×300 PNG | [ ] |
-| `sym_bear_scare_med` | `assets/images/symbols/sym_bear_scare_med.png` | 300×300 PNG | [ ] |
-| `sym_bear_scare_large` | `assets/images/symbols/sym_bear_scare_large.png` | 300×300 PNG | [ ] |
-| `sym_bear_charm` | `assets/images/symbols/sym_bear_charm.png` | 300×300 PNG | [ ] |
-| `sym_bear_dance` | `assets/images/symbols/sym_bear_dance.png` | 300×300 PNG | [ ] |
+| `sym_00_idle` | `assets/images/symbols/sym_00_santa_idle.png` | 300×300 PNG | [x] |
+| `sym_01_idle` | `assets/images/symbols/sym_01_mrs_claus_idle.png` | 300×300 PNG | [x] |
+| `sym_02_idle` | `assets/images/symbols/sym_02_elf_idle.png` | 300×300 PNG | [x] |
+| `sym_03_idle` | `assets/images/symbols/sym_03_nutcracker_idle.png` | 300×300 PNG | [x] |
+| `sym_04_idle` | `assets/images/symbols/sym_04_snowman_idle.png` | 300×300 PNG | [x] |
+| `sym_05_idle` | `assets/images/symbols/sym_05_gingerbread_idle.png` | 300×300 PNG | [x] |
+| `sym_06_idle` | `assets/images/symbols/sym_06_gift_idle.png` | 300×300 PNG | [x] |
+| `sym_wild_idle` | `assets/images/symbols/sym_wild_idle.png` | 300×300 PNG | [x] |
+| `sym_wild_star_idle` | `assets/images/symbols/sym_wild_star_idle.png` | 300×300 PNG | [x] |
+| `sym_bear_scare_small` | `assets/images/symbols/sym_bear_scare_small.png` | 300×300 PNG | [x] |
+| `sym_bear_scare_med` | `assets/images/symbols/sym_bear_scare_med.png` | 300×300 PNG | [x] |
+| `sym_bear_scare_large` | `assets/images/symbols/sym_bear_scare_large.png` | 300×300 PNG | [x] |
+| `sym_bear_charm` | `assets/images/symbols/sym_bear_charm.png` | 300×300 PNG | [x] |
+| `sym_bear_dance` | `assets/images/symbols/sym_bear_dance.png` | 300×300 PNG | [x] |
 | `sym_ghost_idle` | `assets/images/symbols/sym_ghost_idle.png` | 300×300 PNG | [ ] |
 | `modal_freespins_intro` | `assets/images/banners/modal_freespins_intro.png` | ≈1100×620 PNG | [ ] |
 | `modal_freespins_outro` | `assets/images/banners/modal_freespins_outro.png` | ≈1100×620 PNG | [ ] |

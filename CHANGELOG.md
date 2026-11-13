@@ -2,6 +2,14 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Holiday symbol art
+- 11 supplied renders cut out from their grey studio backgrounds (rembg, ISNet model), trimmed, centred and exported at 300×300 PNG with spec asset IDs:
+  - Santa `sym_00` (highest), Mrs Claus `sym_01`, Elf `sym_02`, Nutcracker `sym_03`, Snowman `sym_04`, Gingerbread `sym_05`, Gift egg `sym_06` (lowest).
+  - Star snow-globe matryoshka = `sym_wild_idle`; the same doll with a baked gold aura = `sym_wild_star_idle`.
+  - Grumpy "Frost Frenzy" reindeer = `sym_bear_scare_small/med/large` (74 / 86 / 98% of the canvas), elegant reindeer = `sym_bear_charm`, joyful jingle-bell reindeer = `sym_bear_dance`.
+- Symbol files renamed to describe the art (for example `sym_00_santa_idle.png`); asset IDs unchanged.
+- The single-file build now embeds every image found in `assets/` as a data URI, so the double-click version shows the real art.
+
 ## 2026-11-13: Shareable builds
 - `tools/build-single.js` builds `dist/nesting-dolls-prototype.html`, a single self-contained file anyone can double-click to play.
 - Added `.nojekyll` so the repo can be served as-is by GitHub Pages (setup steps in the README).
