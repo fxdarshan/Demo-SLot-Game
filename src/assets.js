@@ -51,7 +51,11 @@
       else { Assets.img[key] = placeholder(key); missing.push(key); }
     });
     // extras the spec does not list: scared faces for the Scare Bear, ornament layer for the breathing loop
-    for (let t = 0; t <= 6; t++) Assets.img['sym_0' + t + '_scared'] = Assets.real['sym_0' + t + '_idle'] ? Assets.img['sym_0' + t + '_idle'] : placeholder('sym_0' + t + '_scared');
+    for (let t = 0; t <= 6; t++) {
+      const k = 'sym_0' + t + '_scared';
+      if (Assets.real[k]) continue;   // an optional real scared face was supplied in the manifest
+      Assets.img[k] = Assets.real['sym_0' + t + '_idle'] ? Assets.img['sym_0' + t + '_idle'] : placeholder(k);
+    }
     if (!Assets.real.bg_base_main) Assets.img.bg_base_ornaments = P.ornaments(W, H, false);
     if (!Assets.real.bg_freegame_main) Assets.img.bg_freegame_ornaments = P.ornaments(W, H, true);
     if (Assets.real.sym_wild_idle && !Assets.real.sym_wild_star_idle) Assets.img.sym_wild_star_idle = Assets.img.sym_wild_idle;

@@ -159,3 +159,28 @@ Banners display animated headers, coin fountains, and count-up counters based on
 * `sfx_ghost_jackpot`: Ethereal choir sting + jackpot chime for €750 payout.
 * `sfx_countup_loop`: Ticking sound during win counter accumulation.
 * `sfx_countup_end`: Final tally splash sound.
+---
+
+## Prototype implementation status
+
+> This section was added for the prototype. Everything above is the asset spec, unchanged.
+
+Every asset ID above is a key in [`assets/manifest.js`](../assets/manifest.js). Save a file at its path and reload; anything missing uses a code-drawn placeholder. The handoff checklist with paths and sizes is in [`assets/README.md`](../assets/README.md).
+
+| Section | Status |
+| :--- | :--- |
+| 2.1 Environment (`bg_base_main`, `bg_base_frame`, `bg_base_reel_strip`) | Wired, with placeholders |
+| 2.2 UI / HUD (`ui_bar_bottom`, `btn_spin_*`, `btn_auto_*`, `btn_bet_plus/minus`, `btn_info`, `disp_*`) | Wired. Buttons are drawn in code until images exist; `disp_*` are code components |
+| 3.1 Free game (`bg_freegame_main`, `bg_freegame_frame`, `ui_freegame_counter`, `fx_reel3_guaranteed_wild_indicator`) | Wired, with placeholders |
+| 4.1 Standard symbols, idle frames (`sym_00_idle` … `sym_06_idle`) | Wired. `_win` and `_upgrade` are code animations until Spine is integrated |
+| 4.2 Special symbols (`sym_wild_*`, `sym_bear_*`, `sym_ghost_idle`) | Wired as still images. Spine animations (`bear_scare_1x` etc.) are not integrated yet |
+| 5 VFX (`vfx_anticipation_reel3`, `vfx_star_wild_reveal`, `vfx_symbol_upgrade_burst`, `vfx_scare_bear_wave`, `vfx_charm_bear_hearts`, `vfx_wipe_win_sweep`, `vfx_ghost_transformation`) | Built as code particles and shapes, timed to the animation spec |
+| 6 Transitions (`trans_base_to_freegame`, `trans_freegame_to_base`, `overlay_screen_dimmer`) | Built in code |
+| 7.1 Free spins modals (`modal_freespins_intro/outro`) | Wired. The image is the panel; text and the START / COLLECT button are drawn on top |
+| 7.2 Win banners (`banner_win_nice` … `banner_win_epic`) | Wired. The image is the title art; the amount is drawn below |
+| 8 Paylines (`line_overlay_01..17`, `line_node_highlight`) | Lines drawn as paths; node ring wired as an image |
+| 9 Audio (BGM and all SFX listed) | Wired. Missing SFX use synthesised placeholders; BGM plays only from real files |
+
+**Extras the spec doesn't list:** optional `sym_0x_scared` faces for the Scare Bear, and a sound toggle in the HUD.
+
+**Format note:** the prototype loads PNG, JPG or WebP images and MP3 or WAV audio. Spine (`.json` + `.atlas` + `.png`) and Lottie are not supported yet; see the README's "Next steps".

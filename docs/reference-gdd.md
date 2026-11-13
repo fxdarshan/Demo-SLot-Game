@@ -1,183 +1,194 @@
 # Game Design Document (GDD)
-## Project Title: Babushkas
-**Developer:** Thunderkick  
-**Engine & Tech:** HTML5 Canvas, WebGL, Low-overhead mobile rendering  
-**Release Date:** August 2016  
-**Document Version:** 1.0 (Full Technical & Gameplay Specification)
+## Project: Nesting Dolls (prototype, using Babushkas by Thunderkick, 2016, as reference)
+**Engine & tech:** HTML5 Canvas 2D, single canvas at 1920×1080, no build step  
+**Document version:** 2.0, aligned with the official rules, pay table, animation spec and asset spec
+
+> **Version 2.0 note.** Version 1.0 of this document was written before the official rules and pay table were available. Where they disagreed, the official documents win. The order of authority is:
+> 1. [`official-game-rules.md`](official-game-rules.md) and [`pay-table.md`](pay-table.md): mechanics and pays
+> 2. [`animation-specifications.md`](animation-specifications.md): timings
+> 3. [`game-asset-specification.md`](game-asset-specification.md): asset IDs, banner tiers, audio
+> 4. This GDD: everything else (max win, bet range, design intent)
+>
+> The changes from 1.0 are listed in section 9.
 
 ---
 
-## 1. Executive Summary & Core Concept
+## 1. Core concept
 
-**Babushkas** is a 5-reel, 3-row, 17-line video slot designed around traditional Slavic Matryoshka nesting dolls. The game features a tactile, knitted textile aesthetic with a lighthearted Slavic folk soundscape. 
-
-Unlike conventional slots that use cascading reel drops or simple static paylines, *Babushkas* introduces an **In-Place Symbol Evolution** mechanism. Winning symbols do not vanish; instead, they "pop" open to reveal a smaller, higher-value doll contained within. This creates multi-stage chain reactions from a single base spin.
+A 5-reel, 3-row, 17-line video slot built around Russian nesting dolls. Wins don't vanish. Winning dolls **open up to reveal a smaller, more valuable doll** inside, which can make new wins and chain again. A Wild Egg on the middle reel can hatch one of three Mystery Bears that upgrade the board or award free spins. When all 15 positions end up the same, the board upgrades once more. A full board of the top doll becomes Ghosts and pays a special award.
 
 ---
 
-## 2. Technical & Mathematical Architecture
+## 2. Key parameters
 
-### 2.1 Key Parameters
-
-| Metric | Value | Notes |
+| Metric | Value | Source |
 | :--- | :--- | :--- |
-| **Grid Dimensions** | 5 Reels × 3 Rows | Standard matrix layout |
-| **Paylines** | 17 | Fixed payline structure |
-| **Theoretical RTP** | 95.80% | Measured over long-term simulation |
-| **Volatility** | Low | High hit frequency, lower top-end payout scale |
-| **Hit Frequency** | 29.80% | ~3 out of 10 spins yield a winning combination |
-| **Free Spins Frequency** | ~1 in 118 spins | ~0.85% trigger chance per base spin |
-| **Max Win Exposure** | 390× Total Bet | Strictly capped top end |
-| **Min / Max Bet** | $0.10 / $100.00 | Adjustable base stake limits |
+| Grid | 5 reels × 3 rows | Rules |
+| Paylines | 17 fixed, left to right, no gaps | Rules / pay table |
+| Win per payline | Only the highest win per line is paid | Rules §7 |
+| Theoretical RTP | 95.8% | Rules |
+| Hit frequency | 29.8% target (prototype measures 27.8%) | GDD 1.0 |
+| Free spins frequency | About 1 in 118 spins (prototype measures 1 in 117) | GDD 1.0 |
+| Max win | 390× total bet per round | GDD 1.0 |
+| Bet range | €0.10 to €100.00 | GDD 1.0 |
+| Volatility | Low | GDD 1.0 |
 
-### 2.2 Win Evaluation Logic
-Wins pay left to right on adjacent reels across the 17 fixed paylines, starting from Reel 1. Evaluation occurs sequentially after each symbol upgrade tier.
+Prototype figures come from `node tools/simulate.js 2000000`.
 
 ---
 
-## 3. Symbol Hierarchy & Paytable Mechanics
+## 3. Symbols and pays
 
-### 3.1 Inverted Value Model
-The payout system operates on an inverted hierarchy: **the smaller the nesting doll, the higher its value**.
+### 3.1 Standard symbols (upgrade order)
+
+An **upgrade** replaces a symbol with the next symbol of higher pay value. The smaller the doll, the higher the value.
 
 ```
-[Level 7: Blue]  -->  [Level 6: Green]  -->  [Level 5: Purple]  -->  [Level 4: Purp/Red]
-      0.4x                   0.5x                   0.7x                   0.8x
-                                                                             │
-[Level 0: Ghost] <--  [Level 1: Yellow] <--  [Level 2: Orange] <--  [Level 3: Red]
-   Wipe Win (100x)           2.0x                   1.5x                   1.0x
+sym_06 Teal ─▶ sym_05 Blue ─▶ sym_04 Purple ─▶ sym_03 Pink ─▶ sym_02 Red ─▶ sym_01 Orange ─▶ sym_00 Yellow ─▶ (Ghost: wipe only)
 ```
 
-### 3.2 Detailed Paytable (5-of-a-Kind Payouts)
+| Asset ID | Tier | Description | 5 of a kind | 4 of a kind | 3 of a kind |
+| :--- | :---: | :--- | :---: | :---: | :---: |
+| `sym_00` | 0 | Yellow grandmother with heart (highest) | 2.00× (€15.00) | 1.00× (€7.50) | 0.50× (€3.75) |
+| `sym_01` | 1 | Orange with glasses | 1.50× (€11.25) | 0.80× (€6.00) | 0.40× (€3.00) |
+| `sym_02` | 2 | Red | 1.00× (€7.50) | 0.60× (€4.50) | 0.30× (€2.25) |
+| `sym_03` | 3 | Pink | 0.80× (€6.00) | 0.40× (€3.00) | 0.20× (€1.50) |
+| `sym_04` | 4 | Dark purple | 0.70× (€5.25) | 0.40× (€3.00) | 0.20× (€1.50) |
+| `sym_05` | 5 | Light blue | 0.50× (€3.75) | 0.20× (€1.50) | 0.10× (€0.75) |
+| `sym_06` | 6 | Teal with pacifier (lowest) | 0.40× (€3.00) | 0.20× (€1.50) | 0.10× (€0.75) |
 
-| Symbol Tier | Visual Description | 5-of-a-Kind Payout (Multiplier of Total Bet) |
+Multipliers are per line, of the total bet. The pay table quotes euros at a €7.50 bet (the €750 special award = 100×), so each multiplier is the euro value divided by 7.5.
+
+### 3.2 Special symbols
+
+| Asset ID | Role |
+| :--- | :--- |
+| `sym_wild_idle` | Wild Egg. Lands on **reel 3 only** and substitutes for every standard symbol |
+| `sym_wild_star_idle` | Wild Egg showing a **star** on landing. It opens to a Mystery Bear |
+| `sym_bear_scare_small/med/large`, `sym_bear_charm`, `sym_bear_dance` | The bear revealed from a starred egg |
+| `sym_ghost_idle` | End state of a wipe of 15 Yellows. Pays the special award |
+
+---
+
+## 4. Features
+
+### 4.1 Win symbol upgrade (rules §3.2, pay table §4)
+After each evaluation, all winning symbols of one value upgrade to the next value, but **only if that creates new or longer paylines**. Each value is tested on its own, and every value that qualifies upgrades together. The board is evaluated again and the loop repeats until no value qualifies. Lines pay only their highest win, so an improved line pays the difference.
+
+### 4.2 Wild Egg and Mystery Bears (rules §4, pay table §3)
+When the Wild lands it may show a star. A starred Wild opens to one bear, **whether or not it is part of a win**. The bear acts before wins are evaluated.
+
+| Bear | Effect |
+| :--- | :--- |
+| Scare Bear | The lowest-value symbols on screen upgrade. This repeats 1, 2 or 3 times, matching the bear's size (small, medium or large) |
+| Charm Bear | Every symbol on screen upgrades once |
+| Dance Bear | Awards 7 free spins |
+
+### 4.3 Free spins (rules §5, pay table §3.3)
+- 7 spins at the triggering bet, part of the same game round.
+- A Wild Egg is guaranteed on reel 3 every free spin.
+- Prototype assumption: a Dance Bear during free spins adds 7 more.
+
+### 4.4 Wipe and special award (rules §6, pay table §5)
+- **Wipe:** when all 15 symbols are the same after all win upgrades, they upgrade once more. For example, 15 Pinks become 15 Reds, which then pay as 17 lines of Red.
+- **Special award:** when the wipe applies to 15 Yellows, they become Ghosts and pay **100× bet** (€750 at €7.50), on top of the line wins already paid.
+- Prototype assumptions: the Wild counts as matching for the wipe check, and a wipe happens at most once per spin.
+
+---
+
+## 5. Game round flow
+
+```
+Spin ─▶ Reels stop (reel 3 anticipation if the Wild will open)
+        │
+        ├─ Wild landed with a star? ── yes ─▶ Egg opens ─▶ Bear effect (Scare / Charm / Dance)
+        │
+        ▼
+   Evaluate 17 lines ─▶ Pay new or improved line wins
+        │
+        ├─ Does upgrading any winning value create new or longer lines? ── yes ─▶ Upgrade ─▶ (evaluate again)
+        │
+        ├─ All 15 the same (first time this spin)? ── yes ─▶ Wipe upgrade ─▶ Yellow? ─▶ Ghosts + 100× award
+        │                                                                     └─ otherwise evaluate again
+        ▼
+   Win banner (by win size) ─▶ Dance Bear awarded? ─▶ Free spins trigger banner ─▶ Free spins ─▶ Summary
+        │
+        ▼
+   Round total added to balance (capped at 390×)
+```
+
+---
+
+## 6. Presentation and pacing
+
+All timings follow [`animation-specifications.md`](animation-specifications.md) at **30 fps** and live in `CONFIG.frames`.
+
+| Event | Spec ID | Duration |
 | :--- | :--- | :--- |
-| **Level 7** | Largest Outer Blue Doll with Dummy | **0.4×** |
-| **Level 6** | Green Doll | **0.5×** |
-| **Level 5** | Purple Doll | **0.7×** |
-| **Level 4** | Purple/Red Doll | **0.8×** |
-| **Level 3** | Red Doll | **1.0×** |
-| **Level 2** | Orange Doll with Glasses | **1.5×** |
-| **Level 1** | Smallest Yellow Doll (Eyes Closed) | **2.0×** |
-| **Level 0** | Ghost Symbol (Wipe Win State) | **100× Flat Bonus** (on board clear) |
+| Base ambient loop | `bg_base_loop` | 4.0 s loop |
+| Free game ambient loop | `bg_freegame_loop` | 3.0 s loop |
+| Symbol win / upgrade | `sym_xx_win`, `sym_xx_upgrade` | 1.5 s (10f pop, 20f open, 15f settle/morph) |
+| Wild star opening | `sym_wild_star_open` | 1.5 s |
+| Reel 3 anticipation | `vfx_anticipation_reel3` | 2.0 s |
+| Scare Bear | `bear_scare_1x/2x/3x` | 1.5 / 2.25 / 3.0 s |
+| Charm Bear | `bear_charm` | 2.0 s |
+| Dance Bear | `bear_dance` | 2.5 s |
+| Wipe and Ghost | `vfx_wipe_win_sweep` | 3.0 s |
+| Free spins trigger / summary | `banner_fg_trigger`, `banner_fg_summary` | 5.0 s each |
+| Base to free game transition | `trans_base_to_freegame` | 2.5 s |
+| Free game to base transition | `trans_freegame_to_base` | 2.0 s |
+| Win banners | `banner_win_*` | 5.0 s |
 
-### 3.3 Special Symbols
+### 6.1 Win banner tiers
+These are the six tiers from the asset spec. The animation spec's five-tier table, starting at 25×, is superseded.
 
-* **Wild Egg Symbol:** Appears **exclusively on Reel 3** (center column). Acts as a standard Wild substitute for all standard doll symbols. When participating in a winning line, it activates one of three **Mystery Bear** features.
-* **Ghost Symbol:** A special end-state symbol triggered only during a full-board Wipe Win event.
+| Tier | Win | FX |
+| :--- | :--- | :--- |
+| NICE WIN | 15× to under 25× | Bronze, coin fountain |
+| BIG WIN | 25× to under 50× | Silver, coin drop |
+| MEGA WIN | 50× to under 100× | Gold and ruby, double coin cascade |
+| SUPERB WIN | 100× to under 250× | Ruby and emerald, fireworks, confetti cannons |
+| SENSATIONAL WIN | 250× to under 500× | Amethyst, laser sweeps, heavy coin shower |
+| EPIC WIN | 500× or more, or the special award | Diamond blue, full fireworks, coin rain, Ghost rays |
 
----
-
-## 4. Feature Mechanics & Triggers
-
-### 4.1 Symbol Upgrade Chain Reaction
-1. **Trigger:** Any 3-, 4-, or 5-of-a-kind payline win during base play or free spins.
-2. **Execution:** 
-   - Each winning doll pops open in its grid position, advancing to the next higher-value doll tier (e.g., Green $\rightarrow$ Purple).
-   - The game re-evaluates all 17 paylines across the grid.
-3. **Chain State:** If upgraded symbols form *new* or improved line wins, those winning symbols pop open again to the next tier.
-4. **Termination:** The sequence ends when no new winning lines exist, or when all winning symbols reach Level 1 (Yellow).
-
-### 4.2 Mystery Bear Modifiers (Wild Egg Hatching)
-* **Trigger:** The Wild Egg symbol lands on Reel 3 and forms part of a valid payline win.
-* **Hatch Logic:** The egg wobbles, cracks open, and randomly unleashes one of three bear modifiers:
-
-#### A. Scare Bear
-* **Effect:** Upgrades the lowest-value symbol(s) currently visible on the entire grid by 1, 2, or 3 levels.
-* **Design Goal:** Consolidates board state to create larger multi-symbol matching groups.
-
-#### B. Charm Bear
-* **Effect:** Upgrades **all** symbols currently on the reels by exactly 1 level simultaneously.
-* **Design Goal:** Instant global value boost and payline re-evaluation.
-
-#### C. Dance Bear (Free Spins Trigger)
-* **Effect:** Awards **7 Free Spins**.
-
-### 4.3 Dance Bear Free Spins Round
-* **Trigger:** Revealed from the Wild Egg via the Dance Bear modifier.
-* **Spin Count:** 7 spins.
-* **Guaranteed Central Wild:** **On every single free spin, a Wild Egg is guaranteed to occupy Reel 3.**
-* **Impact:** Guarantees a persistent Wild on every spin, drastically increasing hit frequency, chain-reaction triggers, and secondary Mystery Bear hatches.
-
-### 4.4 Wipe Win Sequence
-* **Trigger:** All 15 positions on the grid become occupied by the top-tier Level 1 Yellow Doll.
-* **Execution:**
-  1. All 17 active paylines pay out their maximum 5-of-a-kind Level 1 Yellow Doll rewards ($17 \times 2.0\text{x} = 34\text{x}$ base).
-  2. A dramatic pause occurs as all 15 Yellow Dolls transform simultaneously into Level 0 **Ghosts**.
-  3. The screen is wiped, and a flat **100× Total Bet** bonus is awarded on top of the line payouts.
+Without a wipe, a single spin tops out at 34× (17 lines × Yellow 5-of-a-kind). In practice, single spins show NICE or BIG, the special award shows EPIC, and the higher tiers need a big free spins round. With the 390× cap, EPIC by amount is unreachable, so EPIC appears only for the special award.
 
 ---
 
-## 5. Game Loop & State Flow Diagram
+## 7. UI layout (asset spec §2.2)
 
-```
-                       ┌─────────────────────────┐
-                       │     Player Spin         │
-                       └────────────┬────────────┘
-                                    │
-                                    ▼
-                       ┌─────────────────────────┐
-                       │   Reels Stop (R1-R5)    │
-                       └────────────┬────────────┘
-                                    │
-                      Is there a Payline Win?
-                               /         \
-                             NO           YES
-                            /               \
-                           ▼                 ▼
-                 ┌───────────────┐   ┌───────────────────────────┐
-                 │  Spin Ends    │   │  Pop Winning Symbols +1   │
-                 └───────────────┘   └─────────────┬─────────────┘
-                                                   │
-                                     Does Win Include Reel 3 Wild Egg?
-                                              /            \
-                                            NO              YES
-                                           /                  \
-                                          ▼                    ▼
-                                ┌──────────────────┐  ┌──────────────────┐
-                                │ Re-Evaluate Grid │  │ Hatch Mystery    │
-                                └────────┬─────────┘  │ Bear Modifier    │
-                                         │            └────────┬─────────┘
-                           New Wins Formed?                    │
-                                /        \                     ▼
-                              YES         NO          ┌──────────────────┐
-                               /            \         │ Apply Scare/     │
-                              └──────┐       │        │ Charm/Dance Bear │
-                                     │       │        └────────┬─────────┘
-                                     ▼       ▼                 │
-                              [Loop Upgrade] [Pay Total Win] ◄─┘
-```
+- **Bottom bar** (`ui_bar_bottom`):
+  - info / paytable (`btn_info`)
+  - balance (`disp_balance`)
+  - round win (`disp_win`, counts up)
+  - bet with − / + (`btn_bet_minus`, `btn_bet_plus`, `disp_bet`)
+  - autoplay (`btn_auto_idle/active`)
+  - spin (`btn_spin_idle/active/disabled`)
+- **Free spins counter** (`ui_freegame_counter`): top centre, "SPINS LEFT: X / 7".
+- **Reel area:** wooden folk frame (`bg_base_frame`; `bg_freegame_frame` in free spins) over five reel strips (`bg_base_reel_strip`). Reel 3 glows during free spins (`fx_reel3_guaranteed_wild_indicator`).
+- **Paylines:** coloured paths (`line_overlay_01..17`) and node rings (`line_node_highlight`) on winning positions.
 
 ---
 
-## 6. Animation, Sound, & Pacing Matrix
+## 8. Art direction
 
-| Gameplay Event | Visual Animation | Audio Element | Timing Duration |
-| :--- | :--- | :--- | :--- |
-| **Base Spin Cycle** | Reels spin smoothly with motion blur. | Mechanical spin sound. | 1.5s – 2.0s |
-| **Sequential Stop** | Left-to-right reel locking with a soft doll "bounce." | Soft wooden thud per reel lock. | 0.2s – 0.3s per reel |
-| **Symbol Upgrade ("Pop")** | Doll opens, top half lifts off, inner doll expands. | Wooden snap / fabric pop sound. | ~0.5s per symbol tier |
-| **Wild Egg Anticipation** | Wild Egg on Reel 3 wobbles/shakes in place. | Low-pitch tension rattle. | 1.0s – 1.5s |
-| **Bear Reveal** | Egg splits, Bear character springs out. | Upbeat synth sound / accordion flourish. | ~0.5s |
-| **Free Spin Transition** | Background lighting shifts tone, UI frame lights up. | Upbeat Slavic balalaika musical shift. | 2.0s – 3.0s |
-| **Wipe Win Transformation** | Yellow dolls turn transparent ghost-white in unison. | Ethereal chime / gong effect. | 1.5s – 2.0s |
-| **Wipe Win Execution** | Screen wipes clean; 100x bonus UI badge slams in. | Heavy brass hit & cheer audio. | 1.0s – 1.5s |
-| **Big Win Presentation** | Counter counts up with light knitted coin particles. | Celebratory folk music clip. | 3.0s – 4.0s (kept brief) |
+- **Base game:** warm wood with Russian folk lace ornaments that breathe gently.
+- **Free game:** a festive night scene with party lights along the frame and falling gold sparkles.
+- **Dolls:** brightly painted with a glossy finish, each tier with a distinct face (pacifier, glasses, closed eyes and so on). Earlier gameplay footage showed a knitted-textile look; the asset spec's lace and wood direction is used now.
+- **Reel 3** is the focus point, because it carries the Wild Egg and the bears.
 
 ---
 
-## 7. User Interface (UI) & Art Direction
+## 9. Changes from version 1.0
 
-### 7.1 Visual Palette & Style
-* **Theme:** Handcrafted Russian folk art with knitted, tactile textures.
-* **Color Scheme:** Soft pastel backgrounds (lavenders, mint greens, warm pinks) contrasting against brightly painted doll symbols.
-* **Focus Point:** Central Reel (Reel 3) highlighted visually to draw focus toward the Wild Egg mechanics.
-
-### 7.2 UI Layout Architecture
-* **Top Bar:** Balance display, Win display.
-* **Central Area:** 5×3 Grid with subtle stitch-pattern payline markers.
-* **Bottom Bar:** 
-  * Bet Adjustment controls ($0.10 to $100.00).
-  * Autoplay control.
-  * Spin Button (central wood/knitted button motif).
-  * Game Rules & Paytable menu buttons.
+| Topic | v1.0 | v2.0 (official) |
+| :--- | :--- | :--- |
+| Symbol numbering | Level 7 (Blue) … Level 1 (Yellow), Level 0 Ghost | Tier 6 (Teal) … Tier 0 (Yellow); Ghost is the wipe end state |
+| Pays | 5-of-a-kind only | Full 3/4/5-of-a-kind table (section 3.1) |
+| Paylines | Shapes not given | Official 17 shapes |
+| Upgrade rule | Every winning symbol upgrades | Only when it creates new or longer lines; highest win per line |
+| Wild trigger | Bear only when the egg is part of a win | Bear when the Wild lands with a star |
+| Scare Bear | Upgrades by 1, 2 or 3 levels at once | Upgrades the lowest symbols, repeated 1–3 times |
+| Wipe | All Yellow → 34× lines + 100× bonus | Any 15 identical upgrade once; 15 Yellow → Ghost, 100× special award |
+| Win banners | Single "Big Win" (3–4 s) | Six tiers, 5 s each |
+| Free spins UI | Not specified | Trigger and summary modals, transitions, spins-left counter |

@@ -8,7 +8,12 @@ A playable HTML5 prototype of a 5×3, 17-line nesting-doll slot. It's built so t
 | [`docs/pay-table.md`](docs/pay-table.md) | Pay table, paylines, special win |
 | [`docs/animation-specifications.md`](docs/animation-specifications.md) | Every animation duration and keyframe phase (30 fps) |
 | [`docs/game-asset-specification.md`](docs/game-asset-specification.md) | Asset IDs, file names, win banner tiers, audio list |
-| [`docs/reference-gdd.md`](docs/reference-gdd.md) | Max win, bet range |
+| [`docs/reference-gdd.md`](docs/reference-gdd.md) | GDD v2.0: the whole design in one place, aligned with the specs above; max win, bet range |
+
+Other docs:
+- [`assets/README.md`](assets/README.md): artwork and audio handoff checklist (every file name, path and size)
+- [`CHANGELOG.md`](CHANGELOG.md): what changed in each update
+- Each spec in `docs/` ends with a **Prototype implementation status** section showing what is built and where
 
 Slot Demo Studio, a separate general-purpose demo recorder, is in [`studio/`](studio/index.html).
 
@@ -84,7 +89,7 @@ Each tier has its own FX: coin fountain, coin drop, double cascade, fireworks wi
 
 ## Replace the art and sound
 
-Every asset key in [`assets/manifest.js`](assets/manifest.js) is the asset spec's ID. To swap one:
+Every asset key in [`assets/manifest.js`](assets/manifest.js) is the asset spec's ID. [`assets/README.md`](assets/README.md) is the artists' checklist. To swap one:
 1. Save your file at the listed path, or point the path at your file.
 2. Reload.
 
@@ -122,7 +127,8 @@ src/audio.js          file sounds or synthesised placeholders, routed into recor
 src/devpanel.js       demo controls (not part of the game)
 tools/simulate.js     Monte Carlo maths check (Node)
 studio/index.html     Slot Demo Studio (generic slot demo recorder)
-docs/                 rules, pay table, animation spec, asset spec, GDD
+docs/                 rules, pay table, animation spec, asset spec, GDD v2.0
+CHANGELOG.md          update history
 ```
 
 The engine returns a list of steps per spin (`hatch`, `bear`, `win`, `pop`, `wipe`), and `game.js` animates them. To rebuild the presentation in Pixi or Spine, keep `engine.js` and replace the drawing code.

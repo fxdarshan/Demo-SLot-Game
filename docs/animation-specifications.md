@@ -220,3 +220,30 @@ Timeline (30 FPS / Total 150 Frames):
 | `banner_bigwin_superb` | Big Win Banner | 5.00s | 150f | 30f | 90f | 30f | 
 | `banner_bigwin_sensational` | Big Win Banner | 5.00s | 150f | 30f | 90f | 30f | 
 | `banner_bigwin_epic` | Big Win Banner | 5.00s | 150f | 30f | 90f | 30f | 
+
+---
+
+## Prototype implementation status
+
+> This section was added for the prototype. Everything above is the animation spec, unchanged.
+
+Every frame count above is stored in `CONFIG.frames` (`src/config.js`) and played at 30 fps. The demo panel's speed slider scales them all together. Animations are currently drawn in code (`src/game.js`); Spine files will replace them later.
+
+| Asset ID | Status | Notes |
+| :--- | :--- | :--- |
+| `bg_base_loop` | Implemented | Ornament layer breathes scale 1.0 → 1.02, opacity 0.85 → 1.0. With real art, the whole `bg_base_main` breathes |
+| `bg_freegame_loop` | Implemented | Lights alternate red/gold every 30f, gold sparkles fall, reel 3 outline pulses on a 45f sine |
+| `sym_xx_win` / `sym_xx_upgrade` | Implemented | 10f scale to 1.15, 20f nest opens (lid lifts, glow, particle burst), 15f morph or settle |
+| `sym_wild_star_open` | Implemented | 15f landing squash, 20f star flash and hatch, 10f bear emerges |
+| `vfx_anticipation_reel3` | Partly | Aura ramp, sustained sparks and slam-stop flash are in. The slight reel slowdown is not; the reel keeps full speed |
+| `bear_scare_1x/2x/3x` | Implemented | 11.25f intro + one 22.5f roar wave per upgrade + 11.25f outro = 45 / 67.5 / 90f |
+| `bear_charm` | Implemented | 20f kiss hearts, 25f hearts fly to all 15 positions, 15f shimmer upgrade |
+| `bear_dance` | Implemented | 45f accordion riff with notes, 30f hand-over. The trigger banner follows once the spin's wins finish |
+| `vfx_wipe_win_sweep` | Implemented | 30f gold frame lock, 30f flash sweep with column-by-column morph, 30f green ghost transform and win burst (or settle) |
+| `trans_base_to_freegame` | Implemented | Accordion curtain: 15f close, 45f hold (scene swapped), 15f open |
+| `trans_freegame_to_base` | Implemented | 60f camera zoom-out (1.08 → 1.0) with background dissolve |
+| `banner_fg_trigger` | Implemented | 70% dimmer, elastic scale-in, pulse 1.0–1.04 with rays and glitter, outro scale 1.15 and fade. START continues (auto-continue on by default: `CONFIG.autoContinueModals`) |
+| `banner_fg_summary` | Implemented | Drops in from the top, 75f count-up, holds, shrinks to 0.8 and fades. COLLECT continues |
+| `banner_win_*` | Implemented | 75% dimmer, slam 0 → 1.2 → 1.0, impact cue at frame 15, tally frames 30–105, snap to HUD, zoom out to 1.3 and fade |
+
+**Win tiers:** section 7.1 lists five tiers from 25×. The asset spec (section 7.2) lists six tiers from 15×, and the prototype uses the asset spec. See `CONFIG.winTiers`.

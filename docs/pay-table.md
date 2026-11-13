@@ -84,3 +84,15 @@ Grid coordinates use row positions across Reels 1 through 5: **Top (T)**, **Midd
 | **15** | T – B – T – B – T | Full Screen Wide Waves (Top-Bottom) |
 | **16** | B – T – B – T – B | Full Screen Wide Waves (Bottom-Top) |
 | **17** | M – T – B – T – M | Middle-Top-Bottom-Top-Middle Diamond Pattern |
+---
+
+## Prototype implementation status
+
+> This section was added for the prototype. Everything above is the official pay table, unchanged.
+
+- **Pays** are stored as multiples of the total bet in `src/config.js` (`paytable`). The euro values above are quoted at a **€7.50 bet**, which the €750 special award = 100× confirms. Each multiplier is the euro value divided by 7.5, for example Yellow 5-of-a-kind €15.00 → 2.00×.
+- **Symbol IDs** follow the asset spec: rank 0 Yellow = `sym_00` … rank 6 Teal = `sym_06`.
+- **Paylines** 1–17 are in `CONFIG.paylines` in the same order and shapes as section 6.
+- **Scare Bear size** (small, medium, large = 1, 2, 3 upgrades) uses `sym_bear_scare_small/med/large`. The size weights are prototype tuning (`CONFIG.scareSizes`).
+- **Special award** = `CONFIG.specialWin` (100× bet), shown with the EPIC banner.
+- The in-game paytable (the **i** button) shows these pays at the current bet.

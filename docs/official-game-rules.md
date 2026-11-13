@@ -64,3 +64,24 @@
 * All game payouts and win combinations are paid out according to the paytable.
 * **Line Evaluation:** Only the highest win per payline is paid out, provided symbols appear in sequence from leftmost to right with no gaps and in combinations according to the paytable.
 * **Total Payout Presentation:** All payline wins accumulated during a game round are added and presented at the end of the game round.
+---
+
+## Prototype implementation status
+
+> This section was added for the prototype. Everything above is the official rules text, unchanged.
+
+| Rule | Status | Where |
+| :--- | :--- | :--- |
+| 5 reels, 17 fixed lines, highest win per line, left to right, no gaps | Implemented | `src/engine.js` → `evaluate`, `resolveSpin` |
+| Win symbol upgrade only when it creates new or longer lines | Implemented. Each value is tested on its own; all qualifying values upgrade together | `resolveSpin` → `newOrLonger` |
+| Wild on the middle reel, substitutes for all symbols | Implemented | `CONFIG.wildReel`, `evaluate` |
+| Wild may trigger Scare / Charm / Dance Bear on landing | Implemented. Shown as a star on the landed Wild; chance `CONFIG.starChance` | `resolveSpin` step 1 |
+| Scare Bear upgrades the lowest symbols 1–3 times | Implemented. Small, medium or large bear | `applyBear` |
+| Charm Bear upgrades all symbols once | Implemented | `applyBear` |
+| Free spins with the triggering bet, same round, guaranteed Wild | Implemented | `src/game.js` → `freeSpins` |
+| Wipe: 15 identical symbols upgrade once more | Implemented. Wild counts as matching; once per spin (assumptions) | `resolveSpin` |
+| Special win when the wipe applies to the highest symbol | Implemented. 100× bet | `CONFIG.specialWin` |
+| Wins accumulated and presented at the end of the round | Implemented. The HUD win box shows the running round total, which is added to the balance when the round ends | `play` |
+| Bets locked during a round | Implemented. Bet buttons are disabled while busy | `drawHUD`, input handler |
+| Autoplay | Implemented as on/off. The round-count page is not built yet | `autoplayLoop` |
+| Malfunction clause | Not applicable to the prototype | |
