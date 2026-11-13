@@ -192,8 +192,9 @@
       drawSprite(A.get('ghost'), cx, cy - Math.sin(t * 2 + c + r) * 6 * u, size, { alpha: u, scale: scale * (1 + .05 * Math.sin(t * 3 + c)) });
       return;
     }
-    if (s === C.WILD && fx.bear) { drawSprite(A.get('bear_' + fx.bear), cx, cy - cell * .04, size, { scale: 1.12 * scale, rot }); return; }
-    drawSprite(A.symbol(s, C, fx.scared), cx, cy, size, { rot, scale: (s === C.WILD ? 1.12 : 1) * scale });
+    if (s === C.WILD && fx.bear) { drawSprite(A.get('bear_' + fx.bear), cx, cy - cell * .04, size, { scale: 1.12 * scale * (fx.bearScale || 1), rot }); return; }
+    if (s === C.WILD && fx.star) { ctx.save(); ctx.globalAlpha = .35 + .25 * Math.sin(t * 6); const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, cell * .6); gr.addColorStop(0, '#fff6b0'); gr.addColorStop(1, 'rgba(255,240,150,0)'); ctx.fillStyle = gr; ctx.fillRect(cx - cell / 2, cy - cell / 2, cell, cell); ctx.restore(); }
+    drawSprite(A.symbol(s, C, fx.scared, fx.star), cx, cy, size, { rot, scale: (s === C.WILD ? 1.12 : 1) * scale });
     if (C.showLevelBadges && !A.real['symbol_L' + s] && s >= 1 && s <= 7) {
       ctx.save(); ctx.font = `600 20px ${UIF}`; ctx.fillStyle = 'rgba(30,20,50,.55)'; ctx.textAlign = 'center';
       ctx.beginPath(); ctx.roundRect(cx + size * .26, cy + size * .3, 44, 26, 13); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillText('L' + s, cx + size * .26 + 22, cy + size * .3 + 20); ctx.restore();
@@ -250,7 +251,7 @@
     ctx.beginPath(); ctx.ellipse(0, 0, 300, 165, 0, 0, 7); ctx.fill();
     ctx.beginPath(); ctx.moveTo(-210, 90); ctx.lineTo(-330, 210); ctx.lineTo(-140, 120); ctx.fill();
     ctx.setLineDash([16, 12]); ctx.lineWidth = 6; ctx.strokeStyle = col; ctx.beginPath(); ctx.ellipse(0, 0, 282, 148, 0, 0, 7); ctx.stroke(); ctx.setLineDash([]);
-    if (b.bear === 'scare') { ctx.font = `150px ${SCRIPT}`; ctx.fillStyle = col; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!!!', 0, 10); }
+    if (b.bear === 'scare') { ctx.font = `150px ${SCRIPT}`; ctx.fillStyle = col; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!'.repeat(b.size || 3), 0, 10); }
     if (b.bear === 'charm') { ctx.lineWidth = 9; ctx.strokeStyle = col; heartPath(0, 25, 150); ctx.stroke(); }
     if (b.bear === 'dance') { ctx.font = `96px ${SCRIPT}`; ctx.fillStyle = col; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Free spins', 0, 0); }
     ctx.restore();
@@ -347,20 +348,24 @@
       const [c, r] = s.pos, fx = G.fx[c][r];
       fx.wobble = now(); SND.play('egg_wobble');
       await wait(T.eggWobble);
-      fx.wobble = 0; fx.bear = s.bear; SND.play('egg_hatch');
+      fx.wobble = 0; fx.star = false; fx.bear = s.bear; fx.bearScale = s.bear === 'scare' ? [.82, 1, 1.18][(s.size || 2) - 1] : 1; SND.play('egg_hatch');
       const [cx, cy] = cellCenter(c, r);
       emit('shell', cx, cy - cell * .2, 14, { speed: 600, size: 26, color: '#f39a2a', life: 1.1 });
-      G.bubble = { bear: s.bear, c, r, t0: now() }; SND.play('bear_' + s.bear);
+      G.bubble = { bear: s.bear, size: s.size, c, r, t0: now() }; SND.play('bear_' + s.bear);
       await wait(T.bearReveal + .5);
     } else if (s.type === 'bear') {
       const b = G.bubble;
       if (s.bear === 'scare') {
-        G.bolts = { c: b.c, r: b.r, until: now() + 1.4 };
-        s.changes.forEach(ch => { const f = G.fx[ch.c][ch.r]; f.scared = true; f.shake = now() + .9; });
-        await wait(1.0);
-        s.changes.forEach(ch => { const f = G.fx[ch.c][ch.r]; f.scared = false; f.pop = { t0: now(), dur: T.pop / G.speed, from: ch.from }; G.board[ch.c][ch.r] = ch.to; });
-        if (s.changes.length) SND.play('pop');
-        await wait(T.pop + .2);
+        // the lowest valued dolls get scared and upgrade, once per bear size step
+        for (const round of s.rounds) {
+          G.bolts = { c: b.c, r: b.r, until: now() + 1.1 };
+          round.forEach(ch => { const f = G.fx[ch.c][ch.r]; f.scared = true; f.shake = now() + .7; });
+          SND.play('bear_scare');
+          await wait(.8);
+          round.forEach(ch => { const f = G.fx[ch.c][ch.r]; f.scared = false; f.pop = { t0: now(), dur: T.pop / G.speed, from: ch.from }; G.board[ch.c][ch.r] = ch.to; });
+          if (round.length) SND.play('pop');
+          await wait(T.pop + .15);
+        }
       } else if (s.bear === 'charm') {
         s.changes.forEach(ch => { const [cx, cy] = cellCenter(ch.c, ch.r); emit('heart', cx, cy, 2, { speed: 220, gravity: -120, size: 30, color: '#ff7ad9', life: 1.2 }); });
         await wait(.8);
@@ -375,15 +380,28 @@
       if (G.bubble) G.bubble.fade = now();
       await wait(.3, false); G.bubble = null;
     } else if (s.type === 'wipe') {
+      // all 15 the same: they upgrade once more; 15 Yellows become Ghosts (special win)
       clearWinFx();
       setBg('background_wipewin'); SND.play('wipe');
-      s.changes.forEach((ch, i) => { const f = G.fx[ch.c][ch.r]; f.ghost = now() + i * .02; f.ghostFrom = ch.from; G.board[ch.c][ch.r] = C.GHOST; });
-      await wait(T.wipeTransform);
-      addWin(s.amount);
-      G.celebration = { title: 'Wipe Win', amount: G.spinWin, t0: now(), count: T.wipeExecute + 1, colors: ['#ffffff', '#c9b6ff', '#ff8ee0'], rim: '#9a4fd6' };
-      await wait(T.wipeExecute + 3);
-      G.celebration.fade = now(); await wait(.35, false); G.celebration = null;
+      await wait(.6);
+      if (s.special) {
+        s.changes.forEach((ch, i) => { const f = G.fx[ch.c][ch.r]; f.ghost = now() + i * .02; f.ghostFrom = ch.from; G.board[ch.c][ch.r] = C.GHOST; });
+        await wait(T.wipeTransform);
+        addWin(s.amount);
+      } else {
+        s.changes.forEach(ch => { G.fx[ch.c][ch.r].pop = { t0: now(), dur: T.pop / G.speed, from: ch.from }; G.board[ch.c][ch.r] = ch.to; });
+        SND.play('pop');
+        await wait(T.pop + .3);
+      }
     }
+  }
+
+  async function celebrateWipe(total) {
+    SND.play('bigwin');
+    G.celebration = { title: 'Wipe Win', amount: total, t0: now(), count: T.wipeExecute + 1, colors: ['#ffffff', '#c9b6ff', '#ff8ee0'], rim: '#9a4fd6' };
+    await wait(T.wipeExecute + 3);
+    G.celebration.fade = now(); await wait(.35, false); G.celebration = null;
+    setBg(G.fs.active ? 'background_freespins' : 'background');
   }
 
   async function celebrate(total) {
@@ -399,10 +417,14 @@
   async function spinOnce(item, inFS) {
     const res = director.build(item || { type: 'random' }, { bet: bet(), inFreeSpins: inFS });
     G.fx = newFx(); G.patches.clear(); G.labels = []; G.bubble = null;
+    const hatch = res.steps.find(st => st.type === 'hatch');
+    if (hatch) G.fx[hatch.pos[0]][hatch.pos[1]].star = true;      // Wild lands showing a star
     if (!inFS) { G.balance = Math.round((G.balance - bet()) * 100) / 100; G.spinWin = 0; G.winShown = 0; }
     SND.play('spin');
     await startReels(res.start);
     for (const s of res.steps) await playStep(s);
+    res.wipe = res.steps.some(s => s.type === 'wipe');
+    if (res.wipe) await celebrateWipe(inFS ? G.spinWin : res.total);
     return res;
   }
   function nextItem() {
@@ -417,9 +439,8 @@
     try {
       const base = await spinOnce(nextItem(), false);
       let roundWin = base.total;
-      const hadWipe = base.steps.some(s => s.type === 'wipe');
       if (base.freeSpins) roundWin = await freeSpins(base.freeSpins, roundWin);
-      else if (!hadWipe) await celebrate(base.total);
+      else if (!base.wipe) await celebrate(base.total);
       roundWin = Math.min(roundWin, C.maxWin * bet());
       G.balance = Math.round((G.balance + roundWin) * 100) / 100;
       G.spinWin = roundWin; G.winShown = roundWin;

@@ -11,14 +11,14 @@ const eng = Engine.create(CONFIG);
 
 const rounds = Number(process.argv[2]) || 1e6;
 const bet = 1;
-let paid = 0, hits = 0, fsTriggers = 0, wipes = 0, capped = 0, maxX = 0;
+let paid = 0, hits = 0, fsTriggers = 0, wipes = 0, specials = 0, capped = 0, maxX = 0;
 const bears = { scare: 0, charm: 0, dance: 0 };
 const tiers = [0, 0, 0, 0];
 
 function tally(res) {
   res.steps.forEach(s => {
     if (s.type === 'hatch') bears[s.bear]++;
-    if (s.type === 'wipe') wipes++;
+    if (s.type === 'wipe') { wipes++; if (s.special) specials++; }
   });
 }
 
@@ -46,7 +46,7 @@ console.log(`Rounds simulated : ${rounds.toLocaleString()}`);
 console.log(`RTP              : ${pct(paid / (rounds * bet))}   (GDD 95.80%)`);
 console.log(`Hit frequency    : ${pct(hits / rounds)}   (GDD 29.80%)`);
 console.log(`Free spins       : 1 in ${(rounds / Math.max(1, fsTriggers)).toFixed(0)}   (GDD ~1 in 118)`);
-console.log(`Wipe wins        : 1 in ${(rounds / Math.max(1, wipes)).toFixed(0)}`);
+console.log(`Wipe wins        : 1 in ${(rounds / Math.max(1, wipes)).toFixed(0)}   (Ghost special 100x: 1 in ${(rounds / Math.max(1, specials)).toFixed(0)})`);
 console.log(`Bear hatches     : scare ${bears.scare}, charm ${bears.charm}, dance ${bears.dance}`);
 console.log(`Big/Mega/Epic    : ${tiers[1]} / ${tiers[2]} / ${tiers[3]}`);
 console.log(`Max win seen     : ${maxX.toFixed(1)}x   (cap ${CONFIG.maxWin}x, capped ${capped} times)`);

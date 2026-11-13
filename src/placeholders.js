@@ -140,14 +140,16 @@
     x.strokeStyle = '#4fc3d6'; x.lineWidth = s * .05; x.stroke();
     x.restore();
   }
-  function wild() {
+  function wild(star) {
     const c = mk(S, S), x = c.getContext('2d');
     x.save(); x.shadowColor = 'rgba(80,20,0,.45)'; x.shadowBlur = 20; x.shadowOffsetY = 10; eggPath(x); x.fillStyle = '#e8641f'; x.fill(); x.restore();
     eggBody(x);
-    // snowflake star
-    x.save(); x.translate(S / 2, S * .3); x.strokeStyle = '#2d7fa8'; x.lineWidth = 6; x.lineCap = 'round';
-    for (let i = 0; i < 6; i++) { x.rotate(Math.PI / 3); x.beginPath(); x.moveTo(0, 0); x.lineTo(0, -S * .09); x.stroke(); }
-    x.restore();
+    // the star means this Wild will open to a bear
+    if (star) {
+      x.save(); x.translate(S / 2, S * .3); x.shadowColor = '#fff'; x.shadowBlur = 14; x.strokeStyle = '#2d7fa8'; x.lineWidth = 7; x.lineCap = 'round';
+      for (let i = 0; i < 6; i++) { x.rotate(Math.PI / 3); x.beginPath(); x.moveTo(0, 0); x.lineTo(0, -S * .1); x.stroke(); x.beginPath(); x.moveTo(-S * .025, -S * .065); x.lineTo(0, -S * .045); x.lineTo(S * .025, -S * .065); x.stroke(); }
+      x.restore();
+    }
     drawW(x, S * .6, S * .32);
     x.lineWidth = 5; x.strokeStyle = '#8a3510'; eggPath(x); x.stroke();
     return c;

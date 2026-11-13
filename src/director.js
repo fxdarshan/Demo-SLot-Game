@@ -5,32 +5,32 @@
  */
 (function (root) {
   const OUTCOMES = {
-    random:   { label: 'Random spin',          color: '#8d8aa6' },
-    nowin:    { label: 'No win',               color: '#6c6a80' },
-    small:    { label: 'Single win',           color: '#4fbf8a' },
-    chain:    { label: 'Chain (3+ pops)',      color: '#3fb6c9' },
-    scare:    { label: 'Scare Bear',           color: '#e0794a' },
-    charm:    { label: 'Charm Bear',           color: '#e05aa0' },
+    random:   { label: 'Random spin',             color: '#8d8aa6' },
+    nowin:    { label: 'No win',                  color: '#6c6a80' },
+    small:    { label: 'Single win',              color: '#4fbf8a' },
+    chain:    { label: 'Upgrade chain (2+ pops)', color: '#3fb6c9' },
+    scare:    { label: 'Scare Bear (small, 1×)',  color: '#e0794a' },
+    scare3:   { label: 'Scare Bear (large, 3×)',  color: '#d9552a' },
+    charm:    { label: 'Charm Bear',              color: '#e05aa0' },
     dance:    { label: 'Dance Bear → Free Spins', color: '#9b6bff' },
-    wipe:     { label: 'Wipe Win',             color: '#f2c13a' },
-    big:      { label: 'Big win (10×+)',       color: '#ff9a3c' },
-    custom:   { label: 'Custom grid',          color: '#2fd0c0' }
+    big:      { label: 'Big win (10×+)',          color: '#ff9a3c' },
+    wipe:     { label: 'Wipe Win',                color: '#f2c13a' },
+    ghost:    { label: 'Wipe → Ghost (100×)',     color: '#fff3a8' },
+    custom:   { label: 'Custom grid',             color: '#2fd0c0' }
   };
 
   function create(CONFIG, engine) {
     const C = CONFIG, W = C.WILD;
+    const rnd = n => Math.floor(Math.random() * n);
 
-    function eggWinGrid(base) {
-      // make sure the egg sits on the wild reel inside a 3+ line through reels 1-3
-      const g = base || engine.randomGrid({ allowWild: false });
-      const line = C.paylines[Math.floor(Math.random() * C.paylines.length)];
-      const s = g[0][line[0]];
-      g[1][line[1]] = s;
-      g[C.wildReel][line[C.wildReel]] = W;
-      return g;
+    function withWild(g) { g[C.wildReel][rnd(C.rows)] = W; return g; }
+    function uniformGrid(pool, wild) {
+      const g = [];
+      for (let c = 0; c < C.reels; c++) { g.push([]); for (let r = 0; r < C.rows; r++) g[c].push(pool[rnd(pool.length)]); }
+      return wild ? withWild(g) : g;
     }
 
-    function search(test, make, tries = 4000) {
+    function search(test, make, tries = 5000) {
       let best = null;
       for (let i = 0; i < tries; i++) {
         const { grid, opts } = make();
@@ -39,47 +39,57 @@
         if (score === true) return res;
         if (typeof score === 'number' && (!best || score > best.score)) best = { score, res };
       }
-      return best ? best.res : engine.resolveSpin(make().grid, {});
+      return best ? best.res : engine.resolveSpin(make().grid, make().opts);
     }
 
     const count = (res, type) => res.steps.filter(s => s.type === type).length;
+    const bearOf = res => (res.steps.find(s => s.type === 'hatch') || {}).bear;
+    const wipeOf = res => res.steps.find(s => s.type === 'wipe');
 
     /** Build an outcome. ctx = { bet, inFreeSpins } */
     function build(item, ctx) {
       const bet = ctx.bet, fs = !!ctx.inFreeSpins;
-      const opts = { bet, inFreeSpins: fs };
+      const base = { bet, inFreeSpins: fs };
       const forceWild = fs && C.guaranteedWildInFreeSpins;
-      const plain = () => ({ grid: engine.randomGrid({ forceWild }), opts });
-      const noEgg = () => ({ grid: engine.randomGrid({ allowWild: forceWild, forceWild }), opts });
-      const hatchedBear = res => (res.steps.find(s => s.type === 'hatch') || {}).bear;
+      const noBear = Object.assign({}, base, { forceStar: false });
+      const quiet = () => ({ grid: engine.randomGrid({ allowWild: forceWild, forceWild }), opts: noBear });
+      const bearMake = (bear, extra = {}) => () => ({ grid: withWild(engine.randomGrid({ allowWild: false })), opts: Object.assign({}, base, { forceBear: bear }, extra) });
 
       switch (item.type) {
         case 'nowin':
-          return search(r => r.total === 0 && !r.freeSpins, plain);
+          return search(r => r.total === 0, quiet);
         case 'small':
-          return search(r => count(r, 'win') === 1 && r.total > 0 && !hatchedBear(r) && r.total / bet < C.winTiers.big, noEgg);
+          return search(r => (count(r, 'win') === 1 && r.total / bet >= .2 && r.total / bet < C.winTiers.big && !wipeOf(r)) || (r.total > 0 ? .5 : 0), quiet);
         case 'chain':
-          return search(r => (count(r, 'pop') >= 3 && !hatchedBear(r) && !count(r, 'wipe')) || count(r, 'pop'), noEgg);
-        case 'scare': case 'charm': case 'dance':
-          return search(r => (hatchedBear(r) === item.type && count(r, 'win') >= 2) || (hatchedBear(r) === item.type ? 1 : 0),
-            () => ({ grid: eggWinGrid(engine.randomGrid({ allowWild: false })), opts: Object.assign({}, opts, { forceBear: item.type }) }));
-        case 'wipe':
-          return search(r => count(r, 'wipe') > 0 || false, () => {
-            // high-value-heavy board with an egg, chained into a full Yellow board
-            const g = [];
-            for (let c = 0; c < C.reels; c++) { g.push([]); for (let r = 0; r < C.rows; r++) g[c].push(Math.random() < .55 ? 2 : (Math.random() < .5 ? 1 : 3)); }
-            return { grid: eggWinGrid(g), opts: Object.assign({}, opts, { forceBear: 'charm' }) };
-          }, 6000);
+          return search(r => (count(r, 'pop') >= 2 && !wipeOf(r)) || count(r, 'pop'), quiet, 8000);
+        case 'scare':
+          return search(r => (r.total > 0 && r.total / bet < C.winTiers.big && !wipeOf(r)) || .5, bearMake('scare', { scareSize: 1 }));
+        case 'scare3':
+          return search(r => (r.total > 0 && count(r, 'pop') >= 1 && !wipeOf(r)) || r.total, bearMake('scare', { scareSize: 3 }));
+        case 'charm':
+          return search(r => (count(r, 'win') >= 1 && count(r, 'pop') >= 1 && !wipeOf(r)) || r.total, bearMake('charm'));
+        case 'dance':
+          return search(r => bearOf(r) === 'dance' || false, bearMake('dance'), 50);
         case 'big':
-          return search(r => (r.total / bet >= C.winTiers.big && !count(r, 'wipe') && !r.freeSpins) || r.total / bet,
-            () => ({ grid: eggWinGrid(engine.randomGrid({ allowWild: false })), opts: Object.assign({}, opts, { forceBear: Math.random() < .6 ? 'charm' : 'scare' }) }));
+          return search(r => (r.total / bet >= C.winTiers.big && !wipeOf(r)) || r.total, () => {
+            const m = bearMake(Math.random() < .5 ? 'charm' : 'scare', { scareSize: 3 })();
+            return m;
+          }, 6000);
+        case 'wipe':
+          // a near-uniform board that chains into a full board of one value (not Yellow)
+          return search(r => { const w = wipeOf(r); return (w && !w.special) || false; },
+            () => { const lv = 2 + rnd(4); return { grid: uniformGrid([lv, lv, lv, lv, lv + 1], fs || Math.random() < .3), opts: noBear }; }, 8000);
+        case 'ghost':
+          return search(r => { const w = wipeOf(r); return (w && w.special) || false; },
+            () => ({ grid: uniformGrid([1, 1, 1, 1, 1, 1, 2], fs || Math.random() < .3), opts: noBear }), 8000);
         case 'custom': {
           const g = item.grid.map(col => col.slice());
           if (forceWild && !g[C.wildReel].includes(W)) g[C.wildReel][1] = W;
-          return engine.resolveSpin(g, Object.assign({}, opts, item.bear ? { forceBear: item.bear } : {}));
+          const opts = item.bear ? Object.assign({}, base, { forceBear: item.bear, scareSize: item.scareSize }) : noBear;
+          return engine.resolveSpin(g, opts);
         }
         default:
-          return engine.resolveSpin(engine.randomGrid({ forceWild }), opts);
+          return engine.resolveSpin(engine.randomGrid({ forceWild }), base);
       }
     }
     return { build };

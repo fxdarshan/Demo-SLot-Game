@@ -20,7 +20,7 @@
   document.addEventListener('keydown', e => { if (e.key.toLowerCase() === 'd' && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) togglePanel($('#app').classList.contains('no-panel')); });
 
   /* ---------- queue ---------- */
-  G.queue = [{ type: 'small' }, { type: 'chain' }, { type: 'scare' }, { type: 'charm' }, { type: 'dance' }, { type: 'wipe' }];
+  G.queue = [{ type: 'small' }, { type: 'chain' }, { type: 'scare3' }, { type: 'charm' }, { type: 'wipe' }, { type: 'dance' }, { type: 'ghost' }];
   function renderQueue() {
     const q = $('#queue'); q.innerHTML = '';
     if (!G.queue.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'Empty: spins are random.'; q.appendChild(li); }
@@ -35,7 +35,7 @@
     });
   }
   const adds = $('#adds');
-  ['nowin', 'small', 'chain', 'big', 'scare', 'charm', 'dance', 'wipe', 'random'].forEach(k => {
+  ['nowin', 'small', 'chain', 'big', 'scare', 'scare3', 'charm', 'dance', 'wipe', 'ghost', 'random'].forEach(k => {
     const b = document.createElement('button'); b.innerHTML = `<span class="dot" style="background:${OUT[k].color}"></span>${OUT[k].label}`;
     b.onclick = () => { G.queue.push({ type: k }); renderQueue(); }; adds.appendChild(b);
   });
@@ -62,18 +62,21 @@
       b.onclick = () => { if (pick === C.WILD && c !== C.wildReel) { info('The Wild Egg only lands on reel 3.'); return; } edGrid[c][r] = pick; renderEditor(); };
       ge.appendChild(b);
     }
-    const bear = $('#edBear').value || undefined;
-    const res = engine.resolveSpin(edGrid, { bet: root.Game.bet(), forceBear: bear || 'scare' });
-    const pops = res.steps.filter(s => s.type === 'pop').length, hatch = res.steps.find(s => s.type === 'hatch');
-    const parts = [res.total > 0 ? `Pays <b>${C.currency}${res.total.toFixed(2)}</b>` : 'No win'];
-    if (pops) parts.push(`${pops} pop round${pops > 1 ? 's' : ''}`);
-    if (hatch) parts.push(bear ? `egg hatches: <b>${bear} bear</b>` : 'egg hatches (random bear, preview assumes Scare)');
-    if (res.steps.some(s => s.type === 'wipe')) parts.push('<b>wipe win</b>');
+    const { bear, scareSize } = edBear();
+    const hasWild = edGrid[C.wildReel].includes(C.WILD);
+    const res = engine.resolveSpin(edGrid, bear && hasWild ? { bet: root.Game.bet(), forceBear: bear, scareSize } : { bet: root.Game.bet(), forceStar: false });
+    const pops = res.steps.filter(s => s.type === 'pop').length, wipe = res.steps.find(s => s.type === 'wipe');
+    const parts = [res.total > 0 ? `Pays <b>${C.currency}${res.total.toFixed(2)}</b> (${(res.total / root.Game.bet()).toFixed(1)}× bet)` : 'No win'];
+    if (pops) parts.push(`${pops} upgrade round${pops > 1 ? 's' : ''}`);
+    if (bear && hasWild) parts.push(`Wild opens: <b>${$('#edBear').selectedOptions[0].text}</b>`);
+    else if (bear) parts.push('add a Wild on reel 3 for the bear');
+    if (wipe) parts.push(wipe.special ? '<b>wipe → Ghost special win</b>' : '<b>wipe win</b>');
     info(parts.join(' · '));
   }
   const info = h => { $('#edInfo').innerHTML = h; };
+  function edBear() { const v = $('#edBear').value; if (!v) return {}; const [bear, size] = v.split(':'); return { bear, scareSize: size ? Number(size) : undefined }; }
   $('#edBear').onchange = renderEditor;
-  $('#addCustom').onclick = () => { G.queue.push({ type: 'custom', grid: edGrid.map(c => c.slice()), bear: $('#edBear').value || undefined }); renderQueue(); };
+  $('#addCustom').onclick = () => { const b = edBear(); G.queue.push({ type: 'custom', grid: edGrid.map(c => c.slice()), bear: b.bear, scareSize: b.scareSize }); renderQueue(); };
   $('#copyBoard').onclick = () => { edGrid = G.board.map(c => c.map(s => (s === C.GHOST ? 1 : s))); renderEditor(); };
 
   /* ---------- speed ---------- */

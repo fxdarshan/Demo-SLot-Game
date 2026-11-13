@@ -40,8 +40,15 @@
         <div id="palette" class="palette"></div>
         <div id="gridEd" class="grid-ed"></div>
         <div class="row">
-          <label class="f">Bear if the egg hatches
-            <select id="edBear"><option value="">Random</option><option value="scare">Scare Bear</option><option value="charm">Charm Bear</option><option value="dance">Dance Bear</option></select>
+          <label class="f">When the Wild lands
+            <select id="edBear">
+              <option value="">No star (plain Wild)</option>
+              <option value="scare:1">Star → Scare Bear, small (1×)</option>
+              <option value="scare:2">Star → Scare Bear, medium (2×)</option>
+              <option value="scare:3">Star → Scare Bear, large (3×)</option>
+              <option value="charm">Star → Charm Bear</option>
+              <option value="dance">Star → Dance Bear (free spins)</option>
+            </select>
           </label>
         </div>
         <p id="edInfo" class="info"></p>

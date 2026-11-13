@@ -45,8 +45,9 @@ window.ASSET_MANIFEST = {
     symbol_L1_scared: 'assets/images/symbols/L1_scared.png',
 
     wild:        'assets/images/symbols/wild_egg.png',
+    wild_star:   'assets/images/symbols/wild_egg_star.png',   // shown when the Wild lands with a star (it will open to a bear)
     ghost:       'assets/images/symbols/ghost.png',
-    bear_scare:  'assets/images/bears/bear_scare.png',
+    bear_scare:  'assets/images/bears/bear_scare.png',          // shown small / medium / large for 1 / 2 / 3 upgrades
     bear_charm:  'assets/images/bears/bear_charm.png',
     bear_dance:  'assets/images/bears/bear_dance.png',
     bubble_scare:'assets/images/bears/bubble_scare.png',

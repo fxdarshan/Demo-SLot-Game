@@ -20,7 +20,8 @@
     const W = Assets.W, H = Assets.H;
     let m;
     if ((m = key.match(/^symbol_L(\d)(_scared)?$/))) return P.doll(Number(m[1]), { scared: !!m[2] });
-    if (key === 'wild') return P.wild();
+    if (key === 'wild') return P.wild(false);
+    if (key === 'wild_star') return P.wild(true);
     if (key === 'ghost') return P.ghost();
     if ((m = key.match(/^bear_(\w+)$/))) return P.bear(m[1]);
     if (key === 'background') return P.knit(W, H, 'base');
@@ -48,13 +49,14 @@
       const k = 'symbol_L' + l, ks = k + '_scared';
       if (Assets.real[k] && !Assets.real[ks]) Assets.img[ks] = Assets.img[k];
     }
+    if (Assets.real.wild && !Assets.real.wild_star) Assets.img.wild_star = Assets.img.wild;
     if (missing.length) console.info('[assets] using placeholders for:', missing.join(', '));
     return { missing, loaded: entries.length - missing.length };
   };
 
   Assets.get = key => Assets.img[key] || null;
-  Assets.symbol = (id, CONFIG, scared) => {
-    if (id === CONFIG.WILD) return Assets.img.wild;
+  Assets.symbol = (id, CONFIG, scared, star) => {
+    if (id === CONFIG.WILD) return star ? Assets.img.wild_star : Assets.img.wild;
     if (id === CONFIG.GHOST) return Assets.img.ghost;
     return Assets.img['symbol_L' + id + (scared ? '_scared' : '')];
   };
