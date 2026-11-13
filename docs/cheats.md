@@ -70,7 +70,7 @@ Open the game with `?scenario=<id>` (or `#scenario-<id>`) and it loads that scen
 ```
 index.html?scenario=free-spins-big
 https://fxdarshan.github.io/Demo-SLot-Game/?scenario=all-banners    (once GitHub Pages is on)
-dist/nesting-dolls-prototype.html?scenario=max-win
+dist/x-mas-dolls-prototype.html?scenario=max-win
 ```
 
 Browsers keep sound off until the viewer clicks the page, so a scenario opened from a link starts silent.

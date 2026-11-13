@@ -2,7 +2,7 @@
 /*
  * Builds one self-contained HTML file with every script and stylesheet inlined.
  * Anyone can double-click the result to play, with no server or install.
- *   node tools/build-single.js            -> dist/nesting-dolls-prototype.html
+ *   node tools/build-single.js            -> dist/x-mas-dolls-prototype.html
  * Every image listed in assets/manifest.js that exists on disk is embedded as a
  * data URI, so the single file shows the real art. Sounds are not embedded
  * (the single file uses the synthesised placeholder sounds).
@@ -34,9 +34,9 @@ html = html.replace(/<script src="([^"]+)"><\/script>/g, (m, src) => {
 });
 
 const stamp = new Date().toISOString().slice(0, 10);
-html = html.replace('<head>', `<head>\n<!-- Nesting Dolls prototype, single-file build ${stamp}. Source: https://github.com/fxdarshan/Demo-SLot-Game -->`);
+html = html.replace('<head>', `<head>\n<!-- X-Mas Dolls prototype, single-file build ${stamp}. Source: https://github.com/fxdarshan/Demo-SLot-Game -->`);
 
 fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
-const out = path.join(root, 'dist', 'nesting-dolls-prototype.html');
+const out = path.join(root, 'dist', 'x-mas-dolls-prototype.html');
 fs.writeFileSync(out, html);
 console.log(`Wrote ${path.relative(root, out)} (${(html.length / 1024).toFixed(0)} KB, ${embedded} images embedded)`);

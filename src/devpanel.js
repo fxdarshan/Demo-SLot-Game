@@ -104,7 +104,7 @@
   }
   function stopRec() { if (!rec) return; const r = rec; rec = null; clearInterval(timer); $('#recTime').textContent = ''; r.stop(); update(); }
   function done(blob, ext) {
-    const url = URL.createObjectURL(blob), name = `nesting-dolls-demo-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.${ext}`;
+    const url = URL.createObjectURL(blob), name = `x-mas-dolls-demo-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.${ext}`;
     const out = $('#recOut'); out.innerHTML = '';
     const v = document.createElement('video'); v.src = url; v.controls = true; out.appendChild(v);
     const meta = document.createElement('p'); meta.className = 'hint'; meta.textContent = `${cv.width}×${cv.height} ${ext.toUpperCase()}, ${(blob.size / 1048576).toFixed(1)} MB`; out.appendChild(meta);

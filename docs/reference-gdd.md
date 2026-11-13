@@ -1,5 +1,5 @@
 # Game Design Document (GDD)
-## Project: Nesting Dolls (prototype, using Babushkas by Thunderkick, 2016, as reference)
+## Project: X-Mas Dolls (prototype, using Babushkas by Thunderkick, 2016, as reference)
 **Engine & tech:** HTML5 Canvas 2D, single canvas at 1920×1080, no build step  
 **Document version:** 2.0, aligned with the official rules, pay table, animation spec and asset spec
 
@@ -15,7 +15,7 @@
 
 ## 1. Core concept
 
-A 5-reel, 3-row, 17-line video slot built around Russian nesting dolls. Wins don't vanish. Winning dolls **open up to reveal a smaller, more valuable doll** inside, which can make new wins and chain again. A Wild Egg on the middle reel can hatch one of three Mystery Bears that upgrade the board or award free spins. When all 15 positions end up the same, the board upgrades once more. A full board of the top doll becomes Ghosts and pays a special award.
+**X-Mas Dolls** is a 5-reel, 3-row, 17-line Christmas video slot built around nesting dolls. Wins don't vanish. Winning dolls **open up to reveal a smaller, more valuable doll** inside, which can make new wins and chain again. A Wild Egg on the middle reel can hatch one of three Mystery Bears that upgrade the board or award free spins. When all 15 positions end up the same, the board upgrades once more. A full board of the top doll becomes Ghosts and pays a special award.
 
 ---
 

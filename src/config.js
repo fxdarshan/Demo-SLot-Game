@@ -13,7 +13,7 @@
  */
 (function (root) {
   const CONFIG = {
-    title: 'NESTING DOLLS',
+    title: 'X-Mas Dolls',                // game name, drawn at the top of the base game
 
     // ---------------------------------------------------------------- grid
     reels: 5,

@@ -443,6 +443,10 @@
   }
   function drawHUD(t) {
     const fs = G.fs;
+    if (!(fs.active || (G.modal && G.modal.kind === 'outro')) && C.title) {
+      // game name, top centre of the base game
+      scriptText(C.title, W / 2, 38, 46, { color: '#ffe9a8', stroke: 'rgba(60,15,5,.95)' });
+    }
     if (fs.active || (G.modal && G.modal.kind === 'outro')) {
       const img = A.real.ui_freegame_counter && A.get('ui_freegame_counter');
       const txt = `SPINS LEFT: ${fs.left} / ${fs.awarded}`;
@@ -635,7 +639,7 @@
     if (!G.info) return;
     dimmer(.85);
     ctx.save(); ctx.fillStyle = '#2a120a'; ctx.strokeStyle = '#f2c27a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.roundRect(120, 50, W - 240, H - 100, 30); ctx.fill(); ctx.stroke(); ctx.restore();
-    blockText('PAYTABLE', W / 2, 105, 54);
+    blockText(`${C.title.toUpperCase()}  ·  PAYTABLE`, W / 2, 105, 54, { maxW: W - 320 });
     ctx.textBaseline = 'middle';
     C.tiers.forEach((s, i) => {
       const col = i % 4, row = Math.floor(i / 4), x = 230 + col * 250, y = 230 + row * 190;
@@ -648,7 +652,7 @@
       'Wild appears on reel 3 only and substitutes for all symbols. A Wild landing with a star opens to a Mystery Bear:',
       'Scare Bear upgrades the lowest symbols 1, 2 or 3 times. Charm Bear upgrades all symbols once. Dance Bear awards 7 free spins with a Wild on reel 3 every spin.',
       'Winning symbols of the same value upgrade when that creates new or longer paylines. Only the highest win per payline is paid.',
-      `Wipe: 15 identical symbols upgrade once more. 15 Yellow Grandmothers become Ghosts and pay ${fmt(C.specialWin * bet())}.`
+      `Wipe: 15 identical symbols upgrade once more. 15 ${C.symbolNames[0]} symbols become Ghosts and pay ${fmt(C.specialWin * bet())}.`
     ];
     rules.forEach((r, i) => wrap(r, 1230, 170 + i * 110, 540, 26));
     // 17 payline thumbnails

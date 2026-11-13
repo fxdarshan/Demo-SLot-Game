@@ -2,6 +2,13 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Renamed to X-Mas Dolls
+- Game name **X-Mas Dolls** (`CONFIG.title`), shown at the top of the base game (the free spins counter takes that spot during free spins) and in the paytable header.
+- Page title "X-Mas Dolls Prototype"; recordings save as `x-mas-dolls-demo-<date>.<ext>`.
+- Single-file build renamed to `dist/x-mas-dolls-prototype.html` (the old `nesting-dolls-prototype.html` is removed).
+- Paytable rules text now names the top symbol from config ("15 Santa symbols become Ghosts") instead of the old "Yellow Grandmothers".
+- README, GDD and cheats doc updated. The GitHub repo keeps its name `Demo-SLot-Game`.
+
 ## 2026-11-13: Docs audit
 - Ran the project-sync checklist across the repo. GitHub matched local, all scripts passed syntax checks, the single-file build was current and the asset checklist matched the files on disk.
 - `docs/reference-gdd.md` section 8: symbol art direction updated from the painted-doll description to the delivered holiday characters.

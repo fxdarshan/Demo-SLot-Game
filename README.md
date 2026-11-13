@@ -1,6 +1,6 @@
-# Nesting Dolls: slot prototype
+# X-Mas Dolls: slot prototype
 
-A playable HTML5 prototype of a 5×3, 17-line nesting-doll slot. It's built so the final art, animation and audio can replace the placeholders file by file.
+A playable HTML5 prototype of **X-Mas Dolls**, a 5×3, 17-line Christmas nesting-doll slot. It's built so the final art, animation and audio can replace the placeholders file by file.
 
 | Spec | Drives |
 | --- | --- |
@@ -20,7 +20,7 @@ Slot Demo Studio, a separate general-purpose demo recorder, is in [`studio/`](st
 
 ## Play it
 
-- **Single file:** [`dist/nesting-dolls-prototype.html`](dist/nesting-dolls-prototype.html) has everything inlined, including every image in `assets/`. Download it and double-click; it runs in any modern browser with no server. Sounds aren't embedded, so it uses the synthesised placeholder sounds. Rebuild it after any change with `node tools/build-single.js`.
+- **Single file:** [`dist/x-mas-dolls-prototype.html`](dist/x-mas-dolls-prototype.html) has everything inlined, including every image in `assets/`. Download it and double-click; it runs in any modern browser with no server. Sounds aren't embedded, so it uses the synthesised placeholder sounds. Rebuild it after any change with `node tools/build-single.js`.
 - **Online link:** turn on GitHub Pages under the repo's **Settings → Pages**, with source **Deploy from a branch**, branch `main`, folder `/ (root)`. The game is then live at https://fxdarshan.github.io/Demo-SLot-Game/ and updates on every push. Real art and sound in `assets/` load there too.
 
 ## Run it
@@ -143,7 +143,7 @@ src/audio.js          file sounds or synthesised placeholders, routed into recor
 src/devpanel.js       demo controls (not part of the game)
 src/cheats.js         cheat menu, hotkeys, scenarios, scenario links
 tools/simulate.js     Monte Carlo maths check (Node)
-tools/build-single.js builds dist/nesting-dolls-prototype.html (one file, images embedded)
+tools/build-single.js builds dist/x-mas-dolls-prototype.html (one file, images embedded)
 tools/asset-pipeline/ background removal and symbol export scripts (Python)
 studio/index.html     Slot Demo Studio (generic slot demo recorder)
 docs/                 rules, pay table, animation spec, asset spec, GDD v2.0, cheats

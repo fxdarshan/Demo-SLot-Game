@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Nesting Dolls prototype, single-file build 2026-11-13. Source: https://github.com/fxdarshan/Demo-SLot-Game -->
+<!-- X-Mas Dolls prototype, single-file build 2026-11-13. Source: https://github.com/fxdarshan/Demo-SLot-Game -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nesting Dolls Prototype</title>
+<title>X-Mas Dolls Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Lilita+One&family=Pacifico&display=swap" rel="stylesheet">
@@ -213,7 +213,7 @@ details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
  */
 (function (root) {
   const CONFIG = {
-    title: 'NESTING DOLLS',
+    title: 'X-Mas Dolls',                // game name, drawn at the top of the base game
 
     // ---------------------------------------------------------------- grid
     reels: 5,
@@ -1682,6 +1682,10 @@ window.ASSET_MANIFEST = {
   }
   function drawHUD(t) {
     const fs = G.fs;
+    if (!(fs.active || (G.modal && G.modal.kind === 'outro')) && C.title) {
+      // game name, top centre of the base game
+      scriptText(C.title, W / 2, 38, 46, { color: '#ffe9a8', stroke: 'rgba(60,15,5,.95)' });
+    }
     if (fs.active || (G.modal && G.modal.kind === 'outro')) {
       const img = A.real.ui_freegame_counter && A.get('ui_freegame_counter');
       const txt = `SPINS LEFT: ${fs.left} / ${fs.awarded}`;
@@ -1874,7 +1878,7 @@ window.ASSET_MANIFEST = {
     if (!G.info) return;
     dimmer(.85);
     ctx.save(); ctx.fillStyle = '#2a120a'; ctx.strokeStyle = '#f2c27a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.roundRect(120, 50, W - 240, H - 100, 30); ctx.fill(); ctx.stroke(); ctx.restore();
-    blockText('PAYTABLE', W / 2, 105, 54);
+    blockText(`${C.title.toUpperCase()}  ·  PAYTABLE`, W / 2, 105, 54, { maxW: W - 320 });
     ctx.textBaseline = 'middle';
     C.tiers.forEach((s, i) => {
       const col = i % 4, row = Math.floor(i / 4), x = 230 + col * 250, y = 230 + row * 190;
@@ -1887,7 +1891,7 @@ window.ASSET_MANIFEST = {
       'Wild appears on reel 3 only and substitutes for all symbols. A Wild landing with a star opens to a Mystery Bear:',
       'Scare Bear upgrades the lowest symbols 1, 2 or 3 times. Charm Bear upgrades all symbols once. Dance Bear awards 7 free spins with a Wild on reel 3 every spin.',
       'Winning symbols of the same value upgrade when that creates new or longer paylines. Only the highest win per payline is paid.',
-      `Wipe: 15 identical symbols upgrade once more. 15 Yellow Grandmothers become Ghosts and pay ${fmt(C.specialWin * bet())}.`
+      `Wipe: 15 identical symbols upgrade once more. 15 ${C.symbolNames[0]} symbols become Ghosts and pay ${fmt(C.specialWin * bet())}.`
     ];
     rules.forEach((r, i) => wrap(r, 1230, 170 + i * 110, 540, 26));
     // 17 payline thumbnails
@@ -2276,7 +2280,7 @@ window.ASSET_MANIFEST = {
   }
   function stopRec() { if (!rec) return; const r = rec; rec = null; clearInterval(timer); $('#recTime').textContent = ''; r.stop(); update(); }
   function done(blob, ext) {
-    const url = URL.createObjectURL(blob), name = `nesting-dolls-demo-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.${ext}`;
+    const url = URL.createObjectURL(blob), name = `x-mas-dolls-demo-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.${ext}`;
     const out = $('#recOut'); out.innerHTML = '';
     const v = document.createElement('video'); v.src = url; v.controls = true; out.appendChild(v);
     const meta = document.createElement('p'); meta.className = 'hint'; meta.textContent = `${cv.width}×${cv.height} ${ext.toUpperCase()}, ${(blob.size / 1048576).toFixed(1)} MB`; out.appendChild(meta);
