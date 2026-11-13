@@ -34,6 +34,7 @@ window.ASSET_MANIFEST = {
   // tools/asset-pipeline/cut_sprite_sheet.py prints scale, ox and oy when run with --idle.
   sprites: {
     sym_00_win: { cols: 4, rows: 4, tpf: 3, scale: 1.2047, ox: -0.0412, oy: -0.0576 },
+    sym_01_win: { cols: 4, rows: 4, tpf: 3, scale: 1.0375, ox: -0.0051, oy: -0.0365 },
   },
 
   images: {
@@ -79,7 +80,8 @@ window.ASSET_MANIFEST = {
     sym_bear_charm:       'assets/images/symbols/sym_bear_charm.png',       // elegant reindeer with glowing antlers
     sym_bear_dance:       'assets/images/symbols/sym_bear_dance.png',       // joyful jingle-bell reindeer
     sym_ghost_idle:       'assets/images/symbols/sym_ghost_idle.png',
-    sym_00_win:           'assets/images/symbols/sym_00_santa_win_sheet.webp',   // Santa win animation: 4 x 3 sprite sheet, see sprites below
+    sym_00_win:           'assets/images/symbols/sym_00_santa_win_sheet.webp',   // Santa win animation: 4 x 4 sprite sheet, see sprites below
+    sym_01_win:           'assets/images/symbols/sym_01_mrs_claus_win_sheet.webp', // Mrs Claus win animation: 4 x 4 sprite sheet
 
     // 7 banners and modals (panel / title art; text and amounts are drawn on top)
     modal_freespins_intro:   'assets/images/banners/modal_freespins_intro.webp',   // 'Festive Win!' frame; text drawn in the centre

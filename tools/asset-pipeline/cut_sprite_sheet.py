@@ -9,6 +9,8 @@ fixed square cell, so the character keeps its position from frame to frame (jump
         [--clear FRAME:x0,y0,x1,y1 ...]      transparent box inside one frame, in frame pixels (watermarks)
         [--clear-gray FRAME:x0,y0,x1,y1 ...] like --clear, but only removes grey (unsaturated) pixels in the box, so a
                                              watermark next to the character can go without touching its colours
+        [--chroma]                            sheet is on solid magenta #FF00FF: key it directly (rembg mistakes magenta
+                                             for light and shifts the colours)
         [--idle <idle.png>]                   the symbol's idle image: prints how to size and place the sprite
 
 Frame boxes are rounded, so a sheet that does not divide evenly (1792 / 3 rows) still lines up.
@@ -28,6 +30,7 @@ ap.add_argument('--cell', type=int, default=400)
 ap.add_argument('--clear', action='append', default=[])
 ap.add_argument('--clear-gray', action='append', default=[])
 ap.add_argument('--idle')
+ap.add_argument('--chroma', action='store_true', help='the background is solid #FF00FF: key it out instead of using rembg')
 ap.add_argument('--png', help='also save the full-resolution cut-out sheet here')
 a = ap.parse_args()
 
@@ -42,18 +45,30 @@ cgray = {}
 for c in a.clear_gray:
     f, box = c.split(':'); cgray.setdefault(int(f), []).append([int(v) for v in box.split(',')])
 
-session = new_session('isnet-general-use')
+def chroma_cut(crop):
+    # alpha from magenta-ness d = min(r,b) - g (255 on #FF00FF, <= 0 on warm or green colours), magenta un-mixed from edges
+    src = np.asarray(crop).astype(np.float32)
+    d = np.minimum(src[..., 0], src[..., 2]) - src[..., 1]
+    al = np.clip(1 - (d - 20) / 215, 0, 1); al[al < .02] = 0
+    k = np.maximum(al, 1e-3)[..., None]
+    mag = np.array([255, 0, 255], np.float32)
+    rgb = np.clip((src - mag * (1 - al[..., None])) / k, 0, 255)
+    rgb[al == 0] = 0
+    out = np.dstack([rgb, al * 255]).astype(np.uint8)
+    return Image.fromarray(out, 'RGBA'), al > .9
+
+session = None if a.chroma else new_session('isnet-general-use')
 cells, bodies = [], []
 for i in range(a.cols * a.rows):
     col, row = i % a.cols, i // a.cols
     x0, x1 = round(col * fw), round((col + 1) * fw); y0, y1 = round(row * fh), round((row + 1) * fh)
     crop = sheet.crop((x0, y0, x1, y1))
-    img, solid = cut(crop, session=session)
+    img, solid = chroma_cut(crop) if a.chroma else cut(crop, session=session)
     arr = np.array(img)
-    src = np.asarray(crop).astype(np.float32)
+    src = (arr[..., :3] if a.chroma else np.asarray(crop)).astype(np.float32)   # chroma: judge the keyed colours
     sat = (src.max(-1) - src.min(-1)) / np.maximum(src.max(-1), 1)
     for (bx0, by0, bx1, by1) in cgray.get(i, []):
-        m = np.zeros(sat.shape, bool); m[by0:by1, bx0:bx1] = sat[by0:by1, bx0:bx1] < .10
+        m = np.zeros(sat.shape, bool); m[by0:by1, bx0:bx1] = sat[by0:by1, bx0:bx1] < (.22 if a.chroma else .10)
         arr[m, 3] = 0; solid[m] = False
     for (bx0, by0, bx1, by1) in clear.get(i, []):
         arr[by0:by1, bx0:bx1, 3] = 0; solid[by0:by1, bx0:bx1] = False

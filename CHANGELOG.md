@@ -2,6 +2,13 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Mrs Claus win animation
+- Mrs Claus (`sym_01`) now plays the supplied 16-frame sheet on a win: 3 ticks (100 ms) a frame, 1.6 s, same as Santa. Manifest: `images.sym_01_win` and `sprites.sym_01_win`.
+- She upgrades to Santa, so the upgrade step now waits for the sheet to finish (`playSteps` / `showWin`), then the morph runs as before. Santa never upgrades, so nothing changed for him.
+- `cut_sprite_sheet.py` gained `--chroma` for sheets on solid #FF00FF: rembg turned the magenta into light and shifted the colours (green hat, green sleeve), so it keys the magenta directly and un-mixes it from soft edges. `--clear-gray` now judges the keyed colours in that mode (higher grey threshold). The chroma-key watermark star in frame 15 was removed; a tiny notch is left on the right edge of the apron, invisible at game size.
+- The source sheet, cut-out and the alignment step (`align_sprite_sheet.py`) follow the same pipeline as Santa's sheet.
+- Also delivered outside the repo: `MrsClausSprite.jsx` (React component, canvas chroma key on load, 25% steps).
+
 ## 2026-11-13: Santa animation jerk fixed (even timing, aligned frames)
 - Cause 1, art: the generated sheet's cells are unevenly spaced, so Santa crept about 10 px left in every row of four and snapped back 30 to 40 px at the start of the next row (frames 4, 8, 12). New `tools/asset-pipeline/align_sprite_sheet.py` measures each column's body centre and shifts the columns into line; the centres now stay within about 12 px (was 41), and only real poses move him. Run it after `cut_sprite_sheet.py`.
 - Cause 2, timing: 45 ticks do not divide into 16 frames, so frames lasted 2 or 3 ticks unevenly. New manifest option `tpf` (ticks per frame): Santa holds every frame exactly 3 ticks (100 ms), 48 ticks (1.6 s) in total. The win step waits for the longer sheet (`Assets.winSpriteTicks`). Measured in the build: 93 to 105 ms per frame.

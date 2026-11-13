@@ -301,7 +301,7 @@
       drawSprite(A.get('sym_ghost_idle'), cx, cy - Math.sin(t * 2 + c + r) * 6 * u, size, { alpha: u, scale: scale * (1 + .04 * Math.sin(t * 3 + c)) });
       return;
     }
-    // symbol with a supplied win sprite sheet (Santa): play it over the 45-tick win window instead of the scale pulse
+    // symbol with a supplied win sprite sheet (Santa, Mrs Claus): play it instead of the scale pulse, for its own length (tpf ticks a frame) or the 45-tick window
     const ws = fx.win != null && s >= 0 && s <= 6 ? A.winSprite(s) : null;
     const wsTicks = ws ? A.winSpriteTicks(ws, FR.symWin[0] + FR.symWin[1] + FR.symWin[2]) : 0;
     if (ws && F(fx.win) < wsTicks) {
@@ -729,7 +729,9 @@
     let sheetTicks = 0;   // longest win sprite sheet among the winning symbols
     keys.forEach(k => { const [cc, r] = k.split(',').map(Number), ws = A.winSprite(G.board[cc][r]); if (ws) sheetTicks = Math.max(sheetTicks, A.winSpriteTicks(ws, 0)); });
     if (popStep) {
-      await waitF(a);
+      // a symbol with a win sheet (Mrs Claus) plays all of it before she upgrades, or the sheet would be cut short
+      let popSheet = 0; popStep.changes.forEach(ch => { const ws = A.winSprite(G.board[ch.c][ch.r]); if (ws) popSheet = Math.max(popSheet, A.winSpriteTicks(ws, 0)); });
+      await waitF(Math.max(a, popSheet));
       const t1 = now();
       popStep.changes.forEach(ch => { const f = G.fx[ch.c][ch.r]; f.win = null; f.up = { t0: t1, from: ch.from }; G.board[ch.c][ch.r] = ch.to; const [cx, cy] = cellCenter(ch.c, ch.r); emit('spark', cx, cy, 10, { angle: 0, spread: 6, speed: 320, gravity: 200, life: .6, size: 9, color: ['#fff6c8', '#ffd34a', colorOf(ch.to)] }); });
       SND.play('sfx_symbol_upgrade');

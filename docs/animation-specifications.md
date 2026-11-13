@@ -234,6 +234,7 @@ Every frame count above is stored in `CONFIG.frames` (`src/config.js`) and playe
 | `bg_base_loop` | Implemented | Ornament layer breathes scale 1.0 → 1.02, opacity 0.85 → 1.0. With real art, the whole `bg_base_main` breathes |
 | `bg_freegame_loop` | Implemented | Lights alternate red/gold every 30f, gold sparkles fall, reel 3 outline pulses on a 45f sine |
 | `sym_xx_win` / `sym_xx_upgrade` | Implemented | 10f scale to 1.15, 20f nest opens (lid lifts, glow, particle burst), 15f morph or settle |
+| `sym_01_win` (Mrs Claus) | Implemented as a sprite sheet | The supplied 16-frame sheet plays once at 3 ticks (100 ms) per frame, 48f / 1.6 s, instead of the scale pulse. Mrs Claus can upgrade to Santa mid-win, so the upgrade waits for her sheet to finish, then the morph runs as before |
 | `sym_00_win` (Santa) | Implemented as a sprite sheet | The supplied 16-frame sheet plays one pass at exactly 3 ticks (100 ms) per frame, 48f / 1.6 s, instead of the scale pulse, ending on the last frame. The win step waits for the longer sheet. Santa is the top tier, so he never upgrades mid-win. Other symbols keep the pulse until they get a sheet |
 | `sym_wild_star_open` | Implemented | 15f landing squash, 20f star flash and hatch, 10f bear emerges |
 | `vfx_anticipation_reel3` | Partly | Aura ramp, sustained sparks and slam-stop flash are in. The slight reel slowdown is not; the reel keeps full speed |
