@@ -128,7 +128,8 @@ Tips:
 index.html            page + demo panel
 css/style.css         panel styling
 assets/manifest.js    every asset path, keyed by spec asset ID  ← edit this to swap assets
-assets/images/…       artwork, by spec category
+assets/images/…       artwork the game loads, by spec category
+assets/source/…       master files: originals as supplied + full-size cut-outs (not loaded by the game)
 assets/audio/…        sound
 src/config.js         maths, frame timings (30 fps), banner tiers, presentation switches
 src/engine.js         pure maths: paylines, conditional upgrades, bears, wipe and special win
@@ -139,6 +140,8 @@ src/assets.js         loads manifest files, falls back to placeholders
 src/audio.js          file sounds or synthesised placeholders, routed into recordings
 src/devpanel.js       demo controls (not part of the game)
 tools/simulate.js     Monte Carlo maths check (Node)
+tools/build-single.js builds dist/nesting-dolls-prototype.html (one file, images embedded)
+tools/asset-pipeline/ background removal and symbol export scripts (Python)
 studio/index.html     Slot Demo Studio (generic slot demo recorder)
 docs/                 rules, pay table, animation spec, asset spec, GDD v2.0
 CHANGELOG.md          update history

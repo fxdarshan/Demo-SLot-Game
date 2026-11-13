@@ -23,6 +23,8 @@ The full list of IDs and descriptions is in [`docs/game-asset-specification.md`]
 
 Everything else is still a placeholder.
 
+The supplied originals and full-size cut-outs are kept in [`source/`](source/README.md), with notes on how each file was processed.
+
 | Asset ID | Path | Size | Delivered |
 | :--- | :--- | :--- | :---: |
 | `bg_base_main` | `assets/images/environment/bg_base_main.jpg` | 1920×1080 | [x] |

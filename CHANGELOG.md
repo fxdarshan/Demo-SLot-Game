@@ -2,6 +2,11 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Source art in the repo
+- `assets/source/originals/`: every supplied file as received (symbols, backgrounds, banners, popups, anticipation spiral), renamed by the asset ID it became.
+- `assets/source/cutouts/`: full-resolution background-removed versions, plus the Total Win sign with its text removed.
+- `tools/asset-pipeline/`: `cut_backgrounds.py` (rembg) and `place_symbols.py` (exports the 300×300 symbols; reproduces the shipped files exactly).
+
 ## 2026-11-13: Win banners, free spins popups, anticipation FX
 - Five win banners, cut out and converted to WebP:
   - Nice List = `banner_win_nice`
