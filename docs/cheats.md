@@ -43,7 +43,7 @@ Each key puts one outcome at the front of the list. Press **Space** to spin.
 
 ## Symbol wins
 
-Pick a symbol and 3, 4 or 5 in a row to see that symbol's win animation (Santa plays his sprite sheet; the others use the scale pulse and upgrade). The board puts the symbol on the middle payline for exactly that length, with no Wild or bear, and the search only accepts boards where that symbol is the win. Wins of lower symbols can still upgrade into higher ones afterwards, as in a normal spin. It is a real engine result, so the maths is unchanged. The same dropdowns are in the demo panel under **Next spins** (**Add to list**), where the item is labelled for example "Elf win, 4 in a row". In code it is the outcome `{ type: 'symwin', sym: 0-6, len: 3-5 }`.
+Pick a symbol and 3, 4 or 5 in a row to see that symbol's win animation (every symbol except the Gift Egg plays its 16-frame sprite sheet; the Gift Egg uses the scale pulse; lower symbols still upgrade afterwards). The board puts the symbol on the middle payline for exactly that length, with no Wild or bear, and the search only accepts boards where that symbol is the win. Wins of lower symbols can still upgrade into higher ones afterwards, as in a normal spin. It is a real engine result, so the maths is unchanged. The same dropdowns are in the demo panel under **Next spins** (**Add to list**), where the item is labelled for example "Elf win, 4 in a row". In code it is the outcome `{ type: 'symwin', sym: 0-6, len: 3-5 }`.
 
 ## Scenarios
 

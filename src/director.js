@@ -101,7 +101,7 @@
             () => ({ grid: uniformGrid([0, 0, 0, 0, 0, 0, 1], fs || Math.random() < .3), opts: noBear }), 8000);
         case 'symwin': {
           // the chosen symbol on the middle payline, len in a row; only boards where that symbol is the win
-          const s = item.sym == null ? 0 : item.sym, n = Math.max(3, Math.min(5, item.len || 3));
+          const s = Math.max(0, Math.min(6, Math.round(Number(item.sym)) || 0)), n = Math.max(3, Math.min(5, Math.round(Number(item.len)) || 3));
           const make = () => {
             const g = engine.randomGrid({ allowWild: false });
             for (let c = 0; c < C.reels; c++) {
@@ -118,6 +118,8 @@
           }, make, 4000);
         }
         case 'custom': {
+          const ok = Array.isArray(item.grid) && item.grid.length === C.reels && item.grid.every(col => Array.isArray(col) && col.length === C.rows);
+          if (!ok) return engine.resolveSpin(engine.randomGrid({ forceWild }), base);   // a malformed grid plays as a normal spin
           const g = item.grid.map(col => col.slice());
           if (forceWild && !g[C.wildReel].includes(W)) g[C.wildReel][1] = W;
           const opts = item.bear ? Object.assign({}, base, { forceBear: item.bear, scareSize: item.scareSize }) : noBear;
@@ -134,8 +136,8 @@
   function describe(item, CONFIG) {
     const o = OUTCOMES[item.type] || OUTCOMES.random;
     if (item.type === 'symwin') {
-      const names = (CONFIG && CONFIG.symbolNames) || {};
-      return `${names[item.sym == null ? 0 : item.sym] || 'Symbol'} win, ${item.len || 3} in a row`;
+      const names = (CONFIG && CONFIG.symbolNames) || {}, sym = Math.max(0, Math.min(6, Math.round(Number(item.sym)) || 0));
+      return `${names[sym] || 'Symbol'} win, ${Math.max(3, Math.min(5, Math.round(Number(item.len)) || 3))} in a row`;
     }
     return o.label;
   }

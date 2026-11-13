@@ -2,6 +2,17 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Edge cases reviewed and fixed
+- New [`docs/edge-cases.md`](docs/edge-cases.md) and `tools/edge-cases.py` (17 checks in headless Chrome; run against the previous build it failed the balance checks, with balances of -77 and -99.95).
+- **Balance:** a spin with a balance below the bet used to run and go negative, and autoplay carried on. Now the bet drops to the highest affordable one, or the demo balance is refilled when it is below the smallest bet, with a short notice above the balance.
+- **Speed slider:** held until the next spin starts, so a win animation cannot speed up or slow down halfway (and a slowed sheet cannot be cut off).
+- **AUTO** toggled off and on during a round no longer starts a second loop.
+- **Errors mid-round** now reset the banner, modal, transition, spinning state, free-spins look and autoplay instead of leaving them stuck.
+- **Cheats:** malformed items (bad symbol or length, missing or wrong-sized custom grid) are clamped or played as a normal spin; an unknown `?scenario=` id shows a message.
+- **Win sheets:** after an upgrade, the step waits until the longest sheet among its winners has finished, so a neighbouring winner's sheet is not cut off.
+- **Loading:** if asset loading throws, the game starts with placeholders and the splash leaves.
+- `docs/cheats.md`: the symbol-win text no longer says only Santa has a sheet.
+
 ## 2026-11-13: Win sheets pinned to each symbol's round bottom
 - Problem: in the generated sheets the character drifted between frames. Measured on the shipped sheets, the bottom of the body moved up to 35 px (of 400), the bottom centre up to 40 px sideways, and the size changed several percent; the last frame did not match the first, so every win ended with a pop back to the idle art.
 - New `tools/asset-pipeline/normalize_sprite_sheet.py` (replaces `align_sprite_sheet.py` in the pipeline): measures every frame at its round bottom and scales and moves it so grounded frames share one ground line, one bottom centre and one size. Size is the median of belly width, body height and the root of the body area, so spread feet or raised arms do not rescale a frame. Jump and turn frames (`--air`, default 5-9; Santa also 11) keep a jump but get the correction interpolated and never sink below the ground. Santa's, Mrs Claus's, Elf's, Nutcracker's, Snowman's and Gingerbread's sheets all went through it.

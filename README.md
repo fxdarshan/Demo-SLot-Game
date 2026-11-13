@@ -9,6 +9,7 @@ A playable HTML5 prototype of **X-Mas Dolls**, a 5×3, 17-line Christmas nesting
 | [`docs/animation-specifications.md`](docs/animation-specifications.md) | Every animation duration and keyframe phase (30 fps) |
 | [`docs/game-asset-specification.md`](docs/game-asset-specification.md) | Asset IDs, file names, win banner tiers, audio list |
 | [`docs/cheats.md`](docs/cheats.md) | Cheat menu, hotkeys, scenarios, scenario links |
+| [`docs/edge-cases.md`](docs/edge-cases.md) | Edge cases: what was fixed, what is already handled, known limits; checked by `tools/edge-cases.py` |
 | [`docs/reference-gdd.md`](docs/reference-gdd.md) | GDD v2.0: the whole design in one place, aligned with the specs above; max win, bet range |
 
 Other docs:
@@ -151,7 +152,7 @@ tools/simulate.js     Monte Carlo maths check (Node)
 tools/build-single.js builds dist/x-mas-dolls-prototype.html (one file, images embedded)
 tools/asset-pipeline/ background removal (plain and glow-keeping) and symbol export scripts (Python)
 studio/index.html     Slot Demo Studio (generic slot demo recorder)
-docs/                 rules, pay table, animation spec, asset spec, GDD v2.0, cheats
+docs/                 rules, pay table, animation spec, asset spec, GDD v2.0, cheats, edge cases
 CHANGELOG.md          update history
 ```
 

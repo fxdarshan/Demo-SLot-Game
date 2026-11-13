@@ -41,6 +41,9 @@
     queue: [], onChange: () => {}
   };
   const bet = () => C.bets[G.betIndex];
+  // presentation speed changes (demo slider) wait until the next spin starts, so a win animation never speeds up or slows down halfway
+  const setSpeed = v => { G.speedWanted = v; if (!G.busy) G.speed = v; };
+  const applySpeed = () => { if (G.speedWanted) G.speed = G.speedWanted; };
   const sec = frames => frames / C.fps / G.speed;          // spec frames -> seconds at current speed
 
   /* ------------------------------------------------------------ layout */
@@ -470,6 +473,7 @@
     else { const g = ctx.createLinearGradient(0, by, 0, H); g.addColorStop(0, 'rgba(38,16,10,.94)'); g.addColorStop(1, 'rgba(18,8,4,.98)'); ctx.fillStyle = g; ctx.fillRect(0, by, W, barH); ctx.fillStyle = '#c98a4e'; ctx.fillRect(0, by, W, 3); }
     const label = (txt, x, y, align = 'left') => { ctx.font = `600 16px ${UIF}`; ctx.fillStyle = 'rgba(255,230,200,.6)'; ctx.textAlign = align; ctx.fillText(txt, x, y); };
     const value = (txt, x, y, align = 'left', col = '#fff', size = 38) => { ctx.font = `${size}px ${BLOCK}`; ctx.fillStyle = col; ctx.textAlign = align; ctx.fillText(txt, x, y); };
+    if (G.notice && performance.now() - G.notice.t0 < 2600) { ctx.font = `600 18px ${UIF}`; ctx.fillStyle = '#ffd45a'; ctx.textAlign = 'left'; ctx.fillText(G.notice.text, 170, by - 14); }
     label('BALANCE', 170, by + 40); value(fmt(G.balance), 170, by + 84);                                           // disp_balance
     const wv = G.winFrom + (G.win - G.winFrom) * ease.out(clamp((t - G.winT0) / .6, 0, 1));
     label('WIN', W / 2, by + 40, 'center'); value(G.win > 0 ? fmt(wv) : '', W / 2, by + 86, 'center', '#ffd45a', 46); // disp_win
@@ -731,11 +735,12 @@
     if (popStep) {
       // a symbol with a win sheet (Mrs Claus) plays all of it before she upgrades, or the sheet would be cut short
       let popSheet = 0; popStep.changes.forEach(ch => { const ws = A.winSprite(G.board[ch.c][ch.r]); if (ws) popSheet = Math.max(popSheet, A.winSpriteTicks(ws, 0)); });
-      await waitF(Math.max(a, popSheet));
+      const first = Math.max(a, popSheet);
+      await waitF(first);
       const t1 = now();
       popStep.changes.forEach(ch => { const f = G.fx[ch.c][ch.r]; f.win = null; f.up = { t0: t1, from: ch.from }; G.board[ch.c][ch.r] = ch.to; const [cx, cy] = cellCenter(ch.c, ch.r); emit('spark', cx, cy, 10, { angle: 0, spread: 6, speed: 320, gravity: 200, life: .6, size: 9, color: ['#fff6c8', '#ffd34a', colorOf(ch.to)] }); });
       SND.play('sfx_symbol_upgrade');
-      await waitF(b + c);
+      await waitF(Math.max(b + c, sheetTicks - first));   // winners that did not upgrade may still be playing a longer sheet
     } else await waitF(Math.max(a + b + c, sheetTicks));   // a win sheet (Santa) may be longer than the pulse window
     keys.forEach(k => { const [cc, r] = k.split(',').map(Number); G.fx[cc][r].win = null; });
     clearLines();
@@ -837,6 +842,7 @@
   /* ------------------------------------------------------------ spin flow */
   async function spinOnce(item, inFS) {
     const res = director.build(item || { type: 'random' }, { bet: bet(), inFreeSpins: inFS });
+    applySpeed();
     G.fx = newFx(); G.lines = null; G.labels = []; G.bubble = null;
     const hatch = res.steps.find(st => st.type === 'hatch');
     if (hatch) G.fx[hatch.pos[0]][hatch.pos[1]].star = true;
@@ -865,8 +871,20 @@
     G.onChange(); return it;
   }
 
+  // a spin must be affordable: lower the bet to the highest one the balance covers, or refill the demo balance
+  function ensureFunds() {
+    if (G.balance >= bet() - 1e-9) return;
+    if (G.balance < C.bets[0] - 1e-9) {
+      G.balance = C.startBalance; G.notice = { text: 'DEMO BALANCE REFILLED', t0: performance.now() };
+    } else {
+      let i = G.betIndex; while (i > 0 && C.bets[i] > G.balance + 1e-9) i--;
+      G.betIndex = i; G.notice = { text: 'BET LOWERED TO ' + fmt(bet()), t0: performance.now() };
+    }
+    G.onChange();
+  }
   async function play() {
     if (G.busy || G.info) return false;
+    ensureFunds();
     G.busy = true; G.onChange(); SND.init(root.ASSET_MANIFEST); SND.playMusic('bgm_basegame_loop');
     try {
       const base = await spinOnce(nextItem(), false);
@@ -875,8 +893,13 @@
       roundWin = Math.min(roundWin, C.maxWin * bet());
       G.balance = Math.round((G.balance + roundWin) * 100) / 100;
       setWin(roundWin, true);
-    } catch (e) { console.error(e); }
-    G.busy = false; G.onChange();
+    } catch (e) {
+      // an error mid-round must not leave the game stuck on a banner, modal, transition or the free-spins look
+      console.error(e);
+      G.spinning = false; G.banner = null; G.modal = null; G.trans = null; G.antic = null; G.lock = null;
+      G.fs.active = false; G.envTarget = 0; G.env = 0; G.autoplay = false;
+    }
+    G.busy = false; G.onChange(); applySpeed();
     return true;
   }
   async function freeSpins(count, roundWin) {
@@ -904,16 +927,19 @@
     SND.playMusic('bgm_basegame_loop');
     return roundWin;
   }
+  let autoLoop = 0;    // id of the running autoplay loop, so toggling AUTO off and on never runs two loops
   async function autoplayLoop() {
     G.autoplay = !G.autoplay; G.onChange();
-    while (G.autoplay) { await play(); if (G.autoplay) await wait(.5); }
+    const me = ++autoLoop;
+    while (G.autoplay && me === autoLoop) { await play(); if (G.autoplay && me === autoLoop) await wait(.5); }
   }
   async function playQueue(n) {
     G.autoplay = true; G.onChange();
+    const me = ++autoLoop;
     let i = 0; const max = n ?? G.queue.length;
     // stop once the list is used up: free spins consume list items inside a single round
-    while (G.autoplay && i < max && (i === 0 || G.queue.length)) { await play(); i++; if (i < max && G.queue.length) await wait(.8); }
-    G.autoplay = false; G.onChange();
+    while (G.autoplay && me === autoLoop && i < max && (i === 0 || G.queue.length)) { await play(); i++; if (i < max && G.queue.length) await wait(.8); }
+    if (me === autoLoop) { G.autoplay = false; G.onChange(); }
   }
 
   /* ------------------------------------------------------------ input */
@@ -941,11 +967,12 @@
     const splash = root.Splash && C.splash && C.splash.enabled && !/[?&]nosplash\b/.test(location.search) ? root.Splash : null;
     if (splash) splash.start(C);
     try { await Promise.race([Promise.all([document.fonts.load(`80px ${SCRIPT}`), document.fonts.load(`80px ${BLOCK}`)]), new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
-    G.assetInfo = await A.load(root.ASSET_MANIFEST, W, H, L, splash && splash.progress);
+    try { G.assetInfo = await A.load(root.ASSET_MANIFEST, W, H, L, splash && splash.progress); }
+    catch (e) { console.error('asset load failed, starting with placeholders', e); G.assetInfo = G.assetInfo || {}; }
     requestAnimationFrame(frame);
     G.onChange();
     if (splash) splash.finish();
   }
 
-  root.Game = { G, C, engine, director, play, playQueue, autoplayLoop, boot, canvas: cv, bet, cellCenter };
+  root.Game = { G, C, engine, director, setSpeed, play, playQueue, autoplayLoop, boot, canvas: cv, bet, cellCenter };
 })(window);

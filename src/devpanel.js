@@ -83,7 +83,7 @@
   $('#copyBoard').onclick = () => { edGrid = G.board.map(c => c.map(s => (s === C.GHOST ? 0 : s))); renderEditor(); };
 
   /* ---------- speed ---------- */
-  $('#speed').oninput = e => { G.speed = Number(e.target.value); $('#speedOut').textContent = G.speed + '×'; };
+  $('#speed').oninput = e => { const v = Number(e.target.value); Game.setSpeed(v); $('#speedOut').textContent = v + '×'; $('#speedOut').title = G.busy ? 'applies from the next spin' : ''; };
 
   /* ---------- recording ---------- */
   let rec = null, chunks = [], t0 = 0, timer = 0, downloads = null;

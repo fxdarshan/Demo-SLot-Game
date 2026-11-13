@@ -61,7 +61,7 @@
   const symbolOptions = () => Object.entries(Game.C.symbolNames).filter(([k]) => k >= 0 && k <= 6).sort((a, b) => a[0] - b[0])
     .map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
   function playScenario(id, opts = {}) {
-    const sc = SCENARIOS.find(s => s.id === id); if (!sc) return false;
+    const sc = SCENARIOS.find(s => s.id === id); if (!sc) { note(`Unknown scenario: ${String(id).slice(0, 40)}`); return false; }
     G.queue = sc.items.map(type => ({ type, cheat: true }));
     G.onChange();
     note(`Scenario: ${sc.label}`);
