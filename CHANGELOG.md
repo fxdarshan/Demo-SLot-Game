@@ -2,6 +2,11 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Santa animation jerk fixed (even timing, aligned frames)
+- Cause 1, art: the generated sheet's cells are unevenly spaced, so Santa crept about 10 px left in every row of four and snapped back 30 to 40 px at the start of the next row (frames 4, 8, 12). New `tools/asset-pipeline/align_sprite_sheet.py` measures each column's body centre and shifts the columns into line; the centres now stay within about 12 px (was 41), and only real poses move him. Run it after `cut_sprite_sheet.py`.
+- Cause 2, timing: 45 ticks do not divide into 16 frames, so frames lasted 2 or 3 ticks unevenly. New manifest option `tpf` (ticks per frame): Santa holds every frame exactly 3 ticks (100 ms), 48 ticks (1.6 s) in total. The win step waits for the longer sheet (`Assets.winSpriteTicks`). Measured in the build: 93 to 105 ms per frame.
+- `loops` and `holds` still work for other sheets.
+
 ## 2026-11-13: Santa win animation upgraded to 16 frames
 - Santa's win sprite sheet is replaced by the supplied **16-frame** sheet (4 × 4: standing laugh with "Haha!", jump with dust, two gold sparkle swirls, arms-up cheer, a landing with dust and sparks), for smoother motion than the 12-frame one.
 - It plays **one pass of all 16 frames over the 1.5 s win window** (`CONFIG.frames.symWin` = 45 ticks): about 94 ms per frame (10.7 fps), ending on frame 15, then Santa returns to his idle art. The speed slider scales it as before.

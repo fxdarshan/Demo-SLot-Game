@@ -104,7 +104,7 @@ Each tier has its own FX: coin fountain, coin drop, double cascade, fireworks wi
 - Five of the six win banners (BIG WIN is still code-drawn).
 - Both free spins popups and the reel 3 anticipation spiral.
 - The Ghost symbol (glowing winged egg) and the X-Mas Dolls logo on the splash screen.
-- Santa's win animation, a 16-frame sprite sheet played once over the 1.5 s win (`sym_00_win`). Other symbols still use the scale pulse; add `sym_0x_win` and a `sprites` entry in the manifest to animate them too.
+- Santa's win animation, a 16-frame sprite sheet played once at 100 ms a frame, 1.6 s (`sym_00_win`). Other symbols still use the scale pulse; add `sym_0x_win` and a `sprites` entry in the manifest to animate them too.
 
 Still placeholders: the reel frames, reel strips, UI buttons and BIG WIN banner. [`assets/README.md`](assets/README.md) tracks what has been delivered.
 

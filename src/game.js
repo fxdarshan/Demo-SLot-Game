@@ -303,8 +303,9 @@
     }
     // symbol with a supplied win sprite sheet (Santa): play it over the 45-tick win window instead of the scale pulse
     const ws = fx.win != null && s >= 0 && s <= 6 ? A.winSprite(s) : null;
-    if (ws && F(fx.win) < FR.symWin[0] + FR.symWin[1] + FR.symWin[2]) {
-      const frame = A.winSpriteFrame(ws, F(fx.win) / (FR.symWin[0] + FR.symWin[1] + FR.symWin[2]));
+    const wsTicks = ws ? A.winSpriteTicks(ws, FR.symWin[0] + FR.symWin[1] + FR.symWin[2]) : 0;
+    if (ws && F(fx.win) < wsTicks) {
+      const frame = A.winSpriteFrame(ws, F(fx.win) / wsTicks, wsTicks);
       const fw = ws.img.width / ws.cols, fh = ws.img.height / ws.rows, d = size * ws.scale;
       ctx.save(); ctx.translate(cx + ws.ox * size, cy + ws.oy * size);
       ctx.drawImage(ws.img, (frame % ws.cols) * fw, Math.floor(frame / ws.cols) * fh, fw, fh, -d / 2, -d * (fh / fw) / 2, d, d * (fh / fw));
@@ -725,13 +726,15 @@
     keys.forEach(k => { const [c, r] = k.split(',').map(Number); G.fx[c][r].win = t0; });
     SND.play('sfx_symbol_win_line'); setWin(G.win + step.amount);
     const [a, b, c] = FR.symWin;
+    let sheetTicks = 0;   // longest win sprite sheet among the winning symbols
+    keys.forEach(k => { const [cc, r] = k.split(',').map(Number), ws = A.winSprite(G.board[cc][r]); if (ws) sheetTicks = Math.max(sheetTicks, A.winSpriteTicks(ws, 0)); });
     if (popStep) {
       await waitF(a);
       const t1 = now();
       popStep.changes.forEach(ch => { const f = G.fx[ch.c][ch.r]; f.win = null; f.up = { t0: t1, from: ch.from }; G.board[ch.c][ch.r] = ch.to; const [cx, cy] = cellCenter(ch.c, ch.r); emit('spark', cx, cy, 10, { angle: 0, spread: 6, speed: 320, gravity: 200, life: .6, size: 9, color: ['#fff6c8', '#ffd34a', colorOf(ch.to)] }); });
       SND.play('sfx_symbol_upgrade');
       await waitF(b + c);
-    } else await waitF(a + b + c);
+    } else await waitF(Math.max(a + b + c, sheetTicks));   // a win sheet (Santa) may be longer than the pulse window
     keys.forEach(k => { const [cc, r] = k.split(',').map(Number); G.fx[cc][r].win = null; });
     clearLines();
   }

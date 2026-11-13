@@ -71,7 +71,10 @@
     return m && Assets.real[k] ? Object.assign({ key: k, img: Assets.img[k] }, m) : null;
   };
   // frame to show at progress p (0..1) of the win window
-  Assets.winSpriteFrame = (sp, p) => {
+  // length in ticks of a sheet's animation: tpf ticks per frame, or the whole 45-tick win window
+  Assets.winSpriteTicks = (sp, window) => sp.tpf ? sp.cols * sp.rows * sp.tpf : window;
+  Assets.winSpriteFrame = (sp, p, ticks) => {
+    if (sp.tpf) return Math.min(sp.cols * sp.rows - 1, Math.floor((p * ticks) / sp.tpf));
     if (sp.loops) {                                  // whole sheet played `loops` times, ending on the last frame
       const n = sp.cols * sp.rows;
       return p >= 1 ? n - 1 : Math.min(n - 1, Math.floor(((p * sp.loops) % 1) * n));
