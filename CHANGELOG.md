@@ -2,6 +2,14 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Santa win animation (sprite sheet)
+- Santa (`sym_00`) now plays the supplied 12-frame sprite sheet (4 × 3: laugh with "Haha!", a jump with dust, a gold sparkle swirl, settle) whenever he is in a winning line, instead of the generic scale pulse.
+- It runs over the whole 45-tick win window (`CONFIG.frames.symWin` 10 + 20 + 15 = 1.5 s at 30 fps). The 12 frames are held for `[3,3,4,4,3,3,5,4,4,4,5,3]` ticks (36 + 9 extra on the key poses), so the animation always ends with the win and Santa returns to his idle art. The speed slider scales it with everything else.
+- New asset `sym_00_win` (`assets/images/symbols/sym_00_santa_win_sheet.webp`, 1600 × 1197, 400 px cells) with a `sprites` entry in `assets/manifest.js` (holds, draw scale and offset so the body matches the idle art). Any symbol can get a sheet the same way: add `sym_0x_win` and a `sprites.sym_0x_win` entry.
+- New tool `tools/asset-pipeline/cut_sprite_sheet.py` cuts each frame separately (solid body plus translucent sparkles), keeps every frame in a fixed cell, clears a box (used for the watermark in frame 11) and prints the scale and offset. `cut_glow.py` now exposes a `cut()` function; its output is unchanged.
+- Originals and the full-resolution cut-out are in `assets/source/`.
+- Only Santa is affected by this sheet; Santa is the top tier so a win never upgrades him mid-animation.
+
 ## 2026-11-13: Ghost symbol and splash screen
 - **Ghost symbol** (`sym_ghost_idle`): the supplied glowing winged egg with a halo replaces the code-drawn ghost. It appears when a wipe turns Santas into Ghosts, and on the wipe banner. The wings, halo and sparkles are kept as soft translucent light rather than cut away with the grey background.
 - **Splash / loading screen** (new): the supplied loading screen design, built in as a DOM overlay on the stage. It shows the X-Mas Dolls logo (`ui_splash_logo`, from the supplied logo image, cut out the same way) floating over the living-room backdrop with falling snow and gold dust, a gold progress bar that follows the real asset loading, cycling status lines and a "Welcome to X-Mas Dolls!" finish. Corner buttons toggle sound and fullscreen.

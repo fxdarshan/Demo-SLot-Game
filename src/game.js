@@ -301,6 +301,16 @@
       drawSprite(A.get('sym_ghost_idle'), cx, cy - Math.sin(t * 2 + c + r) * 6 * u, size, { alpha: u, scale: scale * (1 + .04 * Math.sin(t * 3 + c)) });
       return;
     }
+    // symbol with a supplied win sprite sheet (Santa): play it over the 45-tick win window instead of the scale pulse
+    const ws = fx.win != null && s >= 0 && s <= 6 ? A.winSprite(s) : null;
+    if (ws && F(fx.win) < FR.symWin[0] + FR.symWin[1] + FR.symWin[2]) {
+      const frame = A.winSpriteFrame(ws, F(fx.win) / (FR.symWin[0] + FR.symWin[1] + FR.symWin[2]));
+      const fw = ws.img.width / ws.cols, fh = ws.img.height / ws.rows, d = size * ws.scale;
+      ctx.save(); ctx.translate(cx + ws.ox * size, cy + ws.oy * size);
+      ctx.drawImage(ws.img, (frame % ws.cols) * fw, Math.floor(frame / ws.cols) * fh, fw, fh, -d / 2, -d * (fh / fw) / 2, d, d * (fh / fw));
+      ctx.restore();
+      return;
+    }
     drawSprite(A.symbol(s, C, { scared: fx.scared, star: fx.star }), cx, cy, size, { rot, scale: (s === C.WILD ? 1.12 : 1) * scale, scaleY: sy });
     if (C.showLevelBadges && s >= 0 && s <= 6 && !A.real['sym_0' + s + '_idle']) {
       ctx.save(); ctx.font = `600 18px ${UIF}`; ctx.fillStyle = 'rgba(30,20,50,.6)'; ctx.textAlign = 'center';

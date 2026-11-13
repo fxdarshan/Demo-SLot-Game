@@ -65,6 +65,17 @@
   };
 
   Assets.get = key => Assets.img[key] || null;
+  // win sprite sheet for a symbol (manifest.sprites.sym_0x_win), or null when no real sheet was supplied
+  Assets.winSprite = id => {
+    const k = 'sym_0' + id + '_win', m = root.ASSET_MANIFEST.sprites && root.ASSET_MANIFEST.sprites[k];
+    return m && Assets.real[k] ? Object.assign({ key: k, img: Assets.img[k] }, m) : null;
+  };
+  // frame to show at progress p (0..1) of the win window
+  Assets.winSpriteFrame = (sp, p) => {
+    const total = sp.holds.reduce((a, b) => a + b, 0), tick = Math.min(total - 1, Math.max(0, Math.floor(p * total)));
+    let acc = 0; for (let i = 0; i < sp.holds.length; i++) { acc += sp.holds[i]; if (tick < acc) return i; }
+    return sp.holds.length - 1;
+  };
   Assets.symbol = (id, CONFIG, o = {}) => {
     if (id === CONFIG.WILD) return o.star ? Assets.img.sym_wild_star_idle : Assets.img.sym_wild_idle;
     if (id === CONFIG.GHOST) return Assets.img.sym_ghost_idle;
