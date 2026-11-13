@@ -17,6 +17,11 @@ Other docs:
 
 Slot Demo Studio, a separate general-purpose demo recorder, is in [`studio/`](studio/index.html).
 
+## Play it
+
+- **Single file:** [`dist/nesting-dolls-prototype.html`](dist/nesting-dolls-prototype.html) has everything inlined. Download it and double-click; it runs in any modern browser with no server. It always shows the placeholder art, because files from `assets/` are not embedded. Rebuild it after changes with `node tools/build-single.js`.
+- **Online link:** turn on GitHub Pages under the repo's **Settings → Pages**, with source **Deploy from a branch**, branch `main`, folder `/ (root)`. The game is then live at https://fxdarshan.github.io/Demo-SLot-Game/ and updates on every push. Real art and sound in `assets/` load there too.
+
 ## Run it
 
 You don't need to build anything. Serve the folder over http so sounds can load:

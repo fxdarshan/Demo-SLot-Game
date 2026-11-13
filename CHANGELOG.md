@@ -2,6 +2,10 @@
 
 All notable changes to the prototype. Newest first.
 
+## 2026-11-13: Shareable builds
+- `tools/build-single.js` builds `dist/nesting-dolls-prototype.html`, a single self-contained file anyone can double-click to play.
+- Added `.nojekyll` so the repo can be served as-is by GitHub Pages (setup steps in the README).
+
 ## 2026-11-13: Animation and asset specs
 - Symbols renumbered to the asset spec tiers: `sym_00` Yellow (highest) … `sym_06` Teal (lowest).
 - `assets/manifest.js` keyed by spec asset IDs. Asset folders follow the spec categories (environment, symbols, ui, banners, fx); the audio list follows spec section 9.
